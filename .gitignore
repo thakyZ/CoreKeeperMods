@@ -1,4 +1,5 @@
 Packages*
+!Packages/*.json
 todo.txt
 ideas.txt
 todo.txt.meta
