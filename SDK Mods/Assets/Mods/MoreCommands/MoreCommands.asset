@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc43e4983a160e543856e5ba0421c9e1, type: 3}
+  m_Name: MoreCommands
+  m_EditorClassIdentifier: 
+  metadata:
+    guid: 623d74c59e574f22a797ee279ca4b6e5
+    name: MoreCommands
+    skipSafetyChecks: 0
+    disableScripts: 0
+    accessesExtraAssemblies: 1
+    disableHarmonyPatching: 0
+    requiredOn: 0
+    files:
+    - path: Scripts/Scripts/Util/Extensions.cs
+    - path: Scripts/Scripts/Systems/HouseListSystem.cs
+    - path: Scripts/Scripts/Patches/Death_Patch.cs
+    - path: Scripts/Scripts/MoreCommandsMod.cs
+    - path: Scripts/Scripts/Commands/HomeCommand.cs
+    - path: Scripts/Scripts/Commands/BackCommand.cs
+    dependencies:
+    - modName: CoreLib
+      required: 1
+    - modName: CoreLib.Commands
+      required: 1
+    - modName: CoreLib.JsonLoader
+      required: 0
+  modPath: Assets\Mods\MoreCommands
+  forceReimport: 1
+  buildBundles: 0
+  buildLinux: 0
+  buildBurst: 1
+  cachedBuild: 0
+  assets:
+  - path: Assets/Mods/MoreCommands/MoreCommands.asset
+    hash: 22D14272481E9253C3E7C22A99F33B3107A86593140977EDC7AFB0314A7306C7
+  - path: Assets/Mods/MoreCommands/MoreCommands_modio.asset
+    hash: EF28A67720CAA7D9CB9B6DC70ED661F0D882AF3BD0D10D3A6E54363778F47F98
+  lastBuildLinux: 0
