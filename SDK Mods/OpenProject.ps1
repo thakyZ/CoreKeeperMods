@@ -1,4 +1,4 @@
-﻿$editorVersion = "2021.3.14f1"
+﻿$editorVersion = "2022.3.10f1"
 
 # Check if the UnitySetup module is installed
 if (-not (Get-Module -ListAvailable -Name UnitySetup)) {
@@ -31,4 +31,4 @@ if (-not $unityEditor) {
     Write-Host "Done"
 }
 
-& Start-UnityEditor -Version $editorVersion -Project (Get-UnityProjectInstance .\)
+& Start-UnityEditor -Version $editorVersion -Project (Get-UnityProjectInstance $PSScriptRoot)
