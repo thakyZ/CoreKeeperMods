@@ -1,11 +1,63 @@
-﻿# EditorConfig is awesome: https://EditorConfig.org
+# EditorConfig is awesome: https://EditorConfig.org
 
 # top-most EditorConfig file
 root = true
 
+[Library/{PackageCache/**,**/*,**,*}]
+generated_code = true
+dotnet_analyzer_diagnostic.severity = none
+dotnet_diagnostic.CS8669.severity = none
+dotnet_diagnostic.CA1824.severity = none
+dotnet_diagnostic.CS0618.severity = none
+dotnet_analyzer_diagnostic.category-Style.severity = none
+dotnet_code_quality.CA1822.api_surface = private
+
+# VSSpell001: Spell Check
+dotnet_diagnostic.VSSpell001.severity = none
+
+# VSSpell002: Spell Check
+dotnet_diagnostic.VSSpell002.severity = none
+
+# Default severity for analyzer diagnostics with category 'Naming'
+dotnet_analyzer_diagnostic.category-Naming.severity = none
+
+[Assets/{Samples,TextMesh Pro,Resources,Plugins/CoreKeeper,Plugins/NGTools}/**/*.cs]
+generated_code = true
+dotnet_analyzer_diagnostic.severity = none
+dotnet_diagnostic.CS8669.severity = none
+dotnet_diagnostic.CA1824.severity = none
+dotnet_diagnostic.CS0618.severity = none
+dotnet_analyzer_diagnostic.category-Style.severity = none
+
+# VSSpell001: Spell Check
+dotnet_diagnostic.VSSpell001.severity = none
+
+# VSSpell002: Spell Check
+dotnet_diagnostic.VSSpell002.severity = none
+
+# Default severity for analyzer diagnostics with category 'Naming'
+dotnet_analyzer_diagnostic.category-Naming.severity = none
+
+[Assets/ModSDK/**/*.cs]
+
+# IDE1006: Naming Styles
+dotnet_diagnostic.IDE1006.severity = none
+
+# IDE0007: use 'var' instead of explicit type
+dotnet_diagnostic.IDE007.severity = none
+
 # Don't use tabs for indentation.
 [*]
 indent_style = space
+tab_width = 2
+end_of_line = crlf
+vsspell_section_id = e71b92b15a6c46a5aa8373108c6c5444
+vsspell_dictionary_languages_e71b92b15a6c46a5aa8373108c6c5444 = inherited,en-US
+vsspell_ignored_words_e71b92b15a6c46a5aa8373108c6c5444 = Ctrl|Dropdown|ECS|Lexer|Lexers|Navbar|Scroller|Unpatch|Util|Uuid
+vsspell_exclusion_expressions_e71b92b15a6c46a5aa8373108c6c5444 = Nav(?=Button)(?@@PND@@ Nav Prefix)(?@@PND@@/Options/Singleline)UE_(?=\w+)(?@@PND@@ Unity Explorer Prefix)(?@@PND@@/Options/Singleline)Sav(?=Wav)(?@@PND@@ Some misspelled library)(?@@PND@@/Options/Singleline)(?<=SortDragger)Heirarchy(?@@PND@@ PreCompiled library)(?@@PND@@/Options/Singleline)
+
+# NetCode: Unity NetCode Debugger
+dotnet_diagnostic.NetCode.severity = none
 
 # Code files
 [*.{cs,csx,vb,vbx}]
@@ -15,7 +67,7 @@ charset = utf-8-bom
 
 # XML project files
 [*.{csproj,vbproj,vcxproj,vcxproj.filters,proj,projitems,shproj}]
-indent_size = 2
+indent_size = 4
 
 # XML config files
 [*.{props,targets,ruleset,config,nuspec,resx,vsixmanifest,vsct}]
@@ -69,7 +121,7 @@ dotnet_naming_style.non_private_static_field_style.capitalization = pascal_case
 # Non-private readonly fields are PascalCase
 dotnet_naming_rule.non_private_readonly_fields_should_be_pascal_case.severity = suggestion
 dotnet_naming_rule.non_private_readonly_fields_should_be_pascal_case.symbols = non_private_readonly_fields
-dotnet_naming_rule.non_private_readonly_fields_should_be_pascal_case.style = non_private_readonly_field_style
+dotnet_naming_rule.non_private_readonly_fields_should_be_pascal_case.style = non_private_static_field_style
 
 dotnet_naming_symbols.non_private_readonly_fields.applicable_kinds = field
 dotnet_naming_symbols.non_private_readonly_fields.applicable_accessibilities = public, protected, internal, protected_internal, private_protected
@@ -80,7 +132,7 @@ dotnet_naming_style.non_private_readonly_field_style.capitalization = pascal_cas
 # Constants are PascalCase
 dotnet_naming_rule.constants_should_be_pascal_case.severity = suggestion
 dotnet_naming_rule.constants_should_be_pascal_case.symbols = constants
-dotnet_naming_rule.constants_should_be_pascal_case.style = constant_style
+dotnet_naming_rule.constants_should_be_pascal_case.style = non_private_static_field_style
 
 dotnet_naming_symbols.constants.applicable_kinds = field, local
 dotnet_naming_symbols.constants.required_modifiers = const
@@ -90,7 +142,7 @@ dotnet_naming_style.constant_style.capitalization = pascal_case
 # Static fields are camelCase and start with _
 dotnet_naming_rule.static_fields_should_be_camel_case.severity = suggestion
 dotnet_naming_rule.static_fields_should_be_camel_case.symbols = static_fields
-dotnet_naming_rule.static_fields_should_be_camel_case.style = static_field_style
+dotnet_naming_rule.static_fields_should_be_camel_case.style = instance_field_style
 
 dotnet_naming_symbols.static_fields.applicable_kinds = field
 dotnet_naming_symbols.static_fields.required_modifiers = static
@@ -120,7 +172,7 @@ dotnet_naming_style.camel_case_style.capitalization = camel_case
 # Local functions are PascalCase
 dotnet_naming_rule.local_functions_should_be_pascal_case.severity = suggestion
 dotnet_naming_rule.local_functions_should_be_pascal_case.symbols = local_functions
-dotnet_naming_rule.local_functions_should_be_pascal_case.style = local_function_style
+dotnet_naming_rule.local_functions_should_be_pascal_case.style = non_private_static_field_style
 
 dotnet_naming_symbols.local_functions.applicable_kinds = local_function
 
@@ -129,7 +181,7 @@ dotnet_naming_style.local_function_style.capitalization = pascal_case
 # By default, name items with PascalCase
 dotnet_naming_rule.members_should_be_pascal_case.severity = suggestion
 dotnet_naming_rule.members_should_be_pascal_case.symbols = all_members
-dotnet_naming_rule.members_should_be_pascal_case.style = pascal_case_style
+dotnet_naming_rule.members_should_be_pascal_case.style = non_private_static_field_style
 
 dotnet_naming_symbols.all_members.applicable_kinds = *
 
@@ -142,6 +194,18 @@ dotnet_public_api_analyzer.require_api_files = true
 
 # IDE0046: Convert to conditional expression
 dotnet_diagnostic.IDE0046.severity = none
+dotnet_style_operator_placement_when_wrapping = beginning_of_line
+dotnet_style_prefer_is_null_check_over_reference_equality_method = true:suggestion
+dotnet_style_prefer_auto_properties = true:silent
+dotnet_style_prefer_collection_expression = true:suggestion
+dotnet_style_prefer_simplified_boolean_expressions = true:suggestion
+dotnet_style_prefer_conditional_expression_over_assignment = true:suggestion
+dotnet_style_prefer_conditional_expression_over_return = true:suggestion
+dotnet_style_prefer_inferred_tuple_names = true:suggestion
+dotnet_style_prefer_inferred_anonymous_type_member_names = true:suggestion
+dotnet_style_prefer_compound_assignment = true:suggestion
+dotnet_style_prefer_simplified_interpolation = true:suggestion
+dotnet_style_namespace_match_folder = true:suggestion
 
 # CSharp code style settings:
 [*.cs]
@@ -256,6 +320,15 @@ dotnet_diagnostic.S4035.severity = none
 
 # NetCode: NetCode Generator
 dotnet_diagnostic.NetCode.severity = none
+csharp_using_directive_placement = outside_namespace:suggestion
+csharp_prefer_simple_using_statement = false:silent
+csharp_style_namespace_declarations = file_scoped:silent
+csharp_style_prefer_method_group_conversion = true:silent
+csharp_style_prefer_top_level_statements = false:warning
+csharp_style_prefer_primary_constructors = true:suggestion
+csharp_style_expression_bodied_lambdas = false:silent
+csharp_style_expression_bodied_local_functions = false:silent
+csharp_style_prefer_null_check_over_type_check = true:suggestion
 
 [src/{Compilers,ExpressionEvaluator,Scripting}/**Test**/*.{cs,vb}]
 
