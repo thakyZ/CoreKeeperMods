@@ -1,21 +1,26 @@
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
 using System;
-using ModIO;
+
 using UnityEditor;
+
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UIElements;
 
 namespace PugMod
 {
-	public partial class AcceptTermsWindow : EditorWindow
-	{
-		private const string ACCEPTED_TERMS_KEY = "PugMod/AcceptTerms/AcceptedTerms";
+    public partial class AcceptTermsWindow : EditorWindow
+  {
+    private const string ACCEPTED_TERMS_KEY = "PugMod/AcceptTerms/AcceptedTerms";
 
-		private const string TERMS_URL = "https://raw.githubusercontent.com/Pugstorm/CoreKeeperModSDK/main/EULA.txt";
+    private const string TERMS_URL = "https://raw.githubusercontent.com/Pugstorm/CoreKeeperModSDK/main/EULA.txt";
 
-		private static Action<bool> AcceptDenyCallback { get; set; }
-		private static string TermsToAccept { get; set; }
-		
+    private static Action<bool> AcceptDenyCallback { get; set; }
+    private static string TermsToAccept { get; set; }
+
 #if !PUG_MOD_SDK
 		[MenuItem("PugMod/Clear accepted terms")]
 		public static void ClearAcceptedTerms()
@@ -24,93 +29,91 @@ namespace PugMod
 		}
 #endif
 
-		public static void CheckIfTermsAccepted(Action<bool> callback)
-		{
-			UnityWebRequest www = UnityWebRequest.Get(TERMS_URL);
-			www.SendWebRequest().completed += operation =>
-			{
-				string terms;
-				if (www.result == UnityWebRequest.Result.Success)
-				{
-					terms = www.downloadHandler.text;
-					
-					if (EditorPrefs.HasKey(ACCEPTED_TERMS_KEY) && string.Equals(terms, EditorPrefs.GetString(ACCEPTED_TERMS_KEY)))
-					{
-						// We have accepted these terms
-						callback?.Invoke(true);
-						return;
-					}
-				}
-				else if (EditorPrefs.HasKey(ACCEPTED_TERMS_KEY))
-				{
-					// Assume that any terms accepted are as good or better as default
-					callback?.Invoke(true);
-					return;
-				}
-				else
-				{
-					terms = DEFAULT_TERMS;
-				}
+    public static void CheckIfTermsAccepted(Action<bool> callback)
+    {
+      UnityWebRequest www = UnityWebRequest.Get(TERMS_URL);
+      www.SendWebRequest().completed += operation =>
+      {
+        string terms;
+        if (www.result == UnityWebRequest.Result.Success)
+        {
+          terms = www.downloadHandler.text;
 
-				AcceptDenyCallback = callback;
-				TermsToAccept = terms;
+          if (EditorPrefs.HasKey(ACCEPTED_TERMS_KEY) && string.Equals(terms, EditorPrefs.GetString(ACCEPTED_TERMS_KEY)))
+          {
+            // We have accepted these terms
+            callback?.Invoke(true);
+            return;
+          }
+        } else if (EditorPrefs.HasKey(ACCEPTED_TERMS_KEY))
+        {
+          // Assume that any terms accepted are as good or better as default
+          callback?.Invoke(true);
+          return;
+        } else
+        {
+          terms = DEFAULT_TERMS;
+        }
 
-				AcceptTermsWindow wnd = GetWindow<AcceptTermsWindow>("EULA");
+        AcceptDenyCallback = callback;
+        TermsToAccept = terms;
 
-				wnd.minSize = new Vector2(600, 400);
-				// Want to set size without messing with position so doing it in a somewhat hacky way
-				var oldMaxSize = wnd.maxSize;
-				wnd.maxSize = new Vector2(600, 400);
-				wnd.maxSize = oldMaxSize;
-				
-				www.Dispose();
-			};
-		}
+        AcceptTermsWindow wnd = GetWindow<AcceptTermsWindow>("EULA");
 
-		private void OnDestroy()
-		{
-			AcceptDenyCallback?.Invoke(false);
-		}
+        wnd.minSize = new Vector2(600, 400);
+        // Want to set size without messing with position so doing it in a somewhat hacky way
+        var oldMaxSize = wnd.maxSize;
+        wnd.maxSize = new Vector2(600, 400);
+        wnd.maxSize = oldMaxSize;
 
-		public void CreateGUI()
-		{
-			if (string.IsNullOrEmpty(TermsToAccept))
-			{
-				// Null ref if Close is called directly from here
-				EditorApplication.delayCall += Close;
-			}
-			
-			// Each editor window contains a root VisualElement object
-			VisualElement root = rootVisualElement;
+        www.Dispose();
+      };
+    }
 
-			// Import UXML
-			var uxml = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/ModSDK/UI/AcceptTermsPopUp.uxml");
+    private void OnDestroy()
+    {
+      AcceptDenyCallback?.Invoke(false);
+    }
 
-			root.Add(uxml.CloneTree());
+    public void CreateGUI()
+    {
+      if (string.IsNullOrEmpty(TermsToAccept))
+      {
+        // Null ref if Close is called directly from here
+        EditorApplication.delayCall += Close;
+      }
 
-			root.Q<Button>("AcceptButton").clicked += () =>
-			{
-				EditorPrefs.SetString(ACCEPTED_TERMS_KEY, TermsToAccept);
-				AcceptDenyCallback?.Invoke(true);
-				AcceptDenyCallback = null;
-				Close();
-			};
+      // Each editor window contains a root VisualElement object
+      VisualElement root = rootVisualElement;
 
-			root.Q<Button>("DenyButton").clicked += () =>
-			{
-				Close();
-			};
+      // Import UXML
+      var uxml = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/ModSDK/UI/AcceptTermsPopUp.uxml");
 
-			var contentLabel = root.Q<Label>("TermsText");
-			if (contentLabel == null)
-			{
-				EditorApplication.delayCall += Close;
-			}
+      root.Add(uxml.CloneTree());
 
-			contentLabel.text = TermsToAccept;
-		}
+      root.Q<Button>("AcceptButton").clicked += () =>
+      {
+        EditorPrefs.SetString(ACCEPTED_TERMS_KEY, TermsToAccept);
+        AcceptDenyCallback?.Invoke(true);
+        AcceptDenyCallback = null;
+        Close();
+      };
 
-		private const string DEFAULT_TERMS = @"END USER LICENSE AGREEMENT (“EULA”)
+      root.Q<Button>("DenyButton").clicked += () =>
+      {
+        Close();
+      };
+
+      var contentLabel = root.Q<Label>("TermsText");
+      if (contentLabel == null)
+      {
+        EditorApplication.delayCall += Close;
+      }
+
+      contentLabel.text = TermsToAccept;
+    }
+
+    private const string DEFAULT_TERMS = @"END USER LICENSE AGREEMENT (“EULA”)
 
 <b>IMPORTANT</b> - READ CAREFULLY BEFORE INSTALLING, ACCESSING OR USING THE MOD TOOL
 
@@ -150,7 +153,7 @@ Pugstorm grants you the non-exclusive, limited right and license to use the Mod 
 
  - <indent=3%>make any commercial use or exploitation of the Mod Tool in any manner whatsoever</indent>
 
- - <indent=3%>sell, rent, lease, license, distribute, upload or otherwise transfer or make available to any other person the Mod Tool other than for the purpose of making improvements to the Mod Tool</indent> 
+ - <indent=3%>sell, rent, lease, license, distribute, upload or otherwise transfer or make available to any other person the Mod Tool other than for the purpose of making improvements to the Mod Tool</indent>
 
  - <indent=3%>except as the applicable law expressly permits, or upon written permission from Pugstorm to reverse engineer, derive source code, modify, decompile, disassemble, or create derivative works based on the whole or any part of the Mod Tool and where applicable law expressly permits any such acts, and any lawful modifications, adaptations and improvements, any and all intellectual property rights (including copyright) therein shall be deemed assigned to and shall belong to, vest in and be the exclusive property of Pugstorm to the maximum extent permitted by law and you hereby waive all or any moral rights in such creations</indent>
 
@@ -206,5 +209,5 @@ This EULA shall be governed by and construed in accordance with the laws of Swed
 
 From time to time this EULA may be updated by Pugstorm. Any changes will be communicated to you by posting a notice or by other reasonable means.
 ";
-	}
+  }
 }
