@@ -14,7 +14,7 @@ RailLogistics*
 Examples.zip
 Examples.zip.meta
 
-/[Ll]ibrary/
+# /[Ll]ibrary/
 /[Tt]emp/
 /[Oo]bj/
 /[Bb]uild/
