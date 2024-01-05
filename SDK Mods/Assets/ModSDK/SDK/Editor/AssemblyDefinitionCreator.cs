@@ -1,4 +1,8 @@
-﻿using System;
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+using System;
 using System.IO;
 using UnityEngine;
 
@@ -17,13 +21,13 @@ public static class AssemblyDefinitionCreator
             return false;
         }
     }
-    
+
     public static AssemblyDefinition GetAssemblyDefinition(string assetPath)
     {
         try
         {
             var json = File.ReadAllText(assetPath);
-            AssemblyDefinition asmdef = new AssemblyDefinition();
+            var asmdef = new AssemblyDefinition();
             JsonUtility.FromJsonOverwrite(json, asmdef);
             return asmdef;
         }
@@ -32,7 +36,7 @@ public static class AssemblyDefinitionCreator
             return null;
         }
     }
-    
+
     public class AssemblyDefinition
     {
         public string name;
@@ -41,7 +45,7 @@ public static class AssemblyDefinitionCreator
         public string[] excludePlatforms;
         public bool allowUnsafeCode;
         public bool overrideReferences;
-        public string[] precompiledReferences;
+        public string[] preCompiledReferences;
         public bool autoReferenced;
         public string[] defineConstraints;
         public VersionDefine[] versionDefines;
@@ -52,7 +56,7 @@ public static class AssemblyDefinitionCreator
             references = Array.Empty<string>();
             includePlatforms = Array.Empty<string>();
             excludePlatforms = Array.Empty<string>();
-            precompiledReferences = Array.Empty<string>();
+            preCompiledReferences = Array.Empty<string>();
             defineConstraints = Array.Empty<string>();
             versionDefines = Array.Empty<VersionDefine>();
         }
