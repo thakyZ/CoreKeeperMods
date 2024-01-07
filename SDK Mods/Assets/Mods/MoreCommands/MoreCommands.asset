@@ -23,8 +23,13 @@ MonoBehaviour:
     files:
     - path: Scripts/Scripts/Util/Extensions.cs
     - path: Scripts/Scripts/Systems/HouseListSystem.cs
+    - path: Scripts/Scripts/Systems/DeathSystem.cs
     - path: Scripts/Scripts/Patches/Death_Patch.cs
     - path: Scripts/Scripts/MoreCommandsMod.cs
+    - path: Scripts/Scripts/Data/Configuration/JsonConfigFile.cs
+    - path: Scripts/Scripts/Data/Configuration/JsonCommentConverter.cs
+    - path: Scripts/Scripts/Data/Configuration/IConfiguration.cs
+    - path: Scripts/Scripts/Data/Configuration/Configuration.cs
     - path: Scripts/Scripts/Commands/HomeCommand.cs
     - path: Scripts/Scripts/Commands/BackCommand.cs
     dependencies:
@@ -32,8 +37,6 @@ MonoBehaviour:
       required: 1
     - modName: CoreLib.Commands
       required: 1
-    - modName: CoreLib.JsonLoader
-      required: 0
   modPath: Assets\Mods\MoreCommands
   forceReimport: 1
   buildBundles: 0
@@ -42,7 +45,7 @@ MonoBehaviour:
   cachedBuild: 0
   assets:
   - path: Assets/Mods/MoreCommands/MoreCommands.asset
-    hash: 22D14272481E9253C3E7C22A99F33B3107A86593140977EDC7AFB0314A7306C7
+    hash: 58F154BDB471F4CC57D0AE7815E37F38620C5D234A7B12C159EB378A403857C8
   - path: Assets/Mods/MoreCommands/MoreCommands_modio.asset
-    hash: EF28A67720CAA7D9CB9B6DC70ED661F0D882AF3BD0D10D3A6E54363778F47F98
+    hash: A7AEC12D8FBE4AF7EECD21B8645A36D1DE00B29E5428525D50B7B3F5B291FFE0
   lastBuildLinux: 0

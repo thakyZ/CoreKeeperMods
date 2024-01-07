@@ -16,7 +16,6 @@
         "PugMod.SDK",
         "CoreLib",
         "CoreLib.Commands",
-        "CoreLib.JsonLoader",
         "Unity.Entities.Editor.Properties"
     ],
     "includePlatforms": [],
@@ -86,8 +85,7 @@
         "Unity.Burst.Cecil.dll",
         "PugProperties.Editor.dll",
         "Pug.UnityExtensions.Editor.dll",
-        "modio.UnityPlugin.dll",
-        "UnityExplorer.Access.dll"
+        "modio.UnityPlugin.dll"
     ],
     "autoReferenced": false,
     "defineConstraints": [],

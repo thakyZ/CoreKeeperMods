@@ -32,7 +32,7 @@ namespace UnityExplorer.UI.Widgets
             {
                 Texture2D or Cubemap => Pool<Texture2DWidget>.Borrow(),
                 Sprite s when s.texture => Pool<Texture2DWidget>.Borrow(),
-                Image i when i.sprite?.texture => Pool<Texture2DWidget>.Borrow(),
+                Image i when i.sprite != null && i.sprite.texture => Pool<Texture2DWidget>.Borrow(),
 
                 Material when MaterialWidget.MaterialWidgetSupported => Pool<MaterialWidget>.Borrow(),
 
@@ -86,7 +86,7 @@ namespace UnityExplorer.UI.Widgets
             if (this.unityObject)
             {
                 nameInput.Text = unityObject.name;
-                
+
                 owner.Tab.TabText.text = $"{owner.TabButtonText} \"{unityObject.name}\"";
             }
         }

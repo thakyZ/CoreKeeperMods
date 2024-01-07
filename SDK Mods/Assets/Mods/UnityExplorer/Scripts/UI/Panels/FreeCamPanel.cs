@@ -115,8 +115,7 @@ namespace UnityExplorer.UI.Panels
             if (!freeCamScript)
                 freeCamScript = ourCamera.gameObject.AddComponent<FreeCamBehaviour>();
 
-            ourCamera.transform.position = (Vector3)currentUserCameraPosition;
-            ourCamera.transform.rotation = (Quaternion)currentUserCameraRotation;
+            ourCamera.transform.SetPositionAndRotation((Vector3)currentUserCameraPosition, (Quaternion)currentUserCameraRotation);
 
             ourCamera.gameObject.SetActive(true);
             ourCamera.enabled = true;
@@ -132,8 +131,7 @@ namespace UnityExplorer.UI.Panels
 
                 if (lastMainCamera)
                 {
-                    lastMainCamera.transform.position = originalCameraPosition;
-                    lastMainCamera.transform.rotation = originalCameraRotation;
+                    lastMainCamera.transform.SetPositionAndRotation(originalCameraPosition, originalCameraRotation);
                 }
             }
 
@@ -289,8 +287,7 @@ namespace UnityExplorer.UI.Panels
 
             if (inFreeCamMode && ourCamera)
             {
-                ourCamera.transform.position = (Vector3)currentUserCameraPosition;
-                ourCamera.transform.rotation = (Quaternion)currentUserCameraRotation;
+                ourCamera.transform.SetPositionAndRotation((Vector3)currentUserCameraPosition, (Quaternion)currentUserCameraRotation);
             }
 
             positionInput.Text = ParseUtility.ToStringForInput<Vector3>(originalCameraPosition);
@@ -357,22 +354,22 @@ namespace UnityExplorer.UI.Panels
                     moveSpeed *= 10f;
 
                 if (UInputManager.GetKey(KeyCode.LeftArrow) || UInputManager.GetKey(KeyCode.A))
-                    transform.position += transform.right * -1 * moveSpeed;
+                    transform.position += -1 * moveSpeed * transform.right;
 
                 if (UInputManager.GetKey(KeyCode.RightArrow) || UInputManager.GetKey(KeyCode.D))
-                    transform.position += transform.right * moveSpeed;
+                    transform.position += -1 * moveSpeed * transform.right;
 
                 if (UInputManager.GetKey(KeyCode.UpArrow) || UInputManager.GetKey(KeyCode.W))
                     transform.position += transform.forward * moveSpeed;
 
                 if (UInputManager.GetKey(KeyCode.DownArrow) || UInputManager.GetKey(KeyCode.S))
-                    transform.position += transform.forward * -1 * moveSpeed;
+                    transform.position += -1 * moveSpeed * transform.forward;
 
                 if (UInputManager.GetKey(KeyCode.Space) || UInputManager.GetKey(KeyCode.PageUp))
                     transform.position += transform.up * moveSpeed;
 
                 if (UInputManager.GetKey(KeyCode.LeftControl) || UInputManager.GetKey(KeyCode.PageDown))
-                    transform.position += transform.up * -1 * moveSpeed;
+                    transform.position += -1 * moveSpeed * transform.up;
 
                 if (UInputManager.GetMouseButton(1))
                 {
