@@ -1,0 +1,17 @@
+[{**,**/*,*}]
+generated_code = true
+dotnet_analyzer_diagnostic.severity = none
+# NetCode: NetCode Generator
+dotnet_diagnostic.NetCode.severity = none
+dotnet_diagnostic.CS8669.severity = none
+dotnet_diagnostic.CA1824.severity = none
+dotnet_diagnostic.CS0618.severity = none
+
+# VSSpell001: Spell Check
+dotnet_diagnostic.VSSpell001.severity = none
+
+# VSSpell002: Spell Check
+dotnet_diagnostic.VSSpell002.severity = none
+
+# Default severity for analyzer diagnostics with category 'Naming'
+dotnet_analyzer_diagnostic.category-Naming.severity = none

@@ -6,18 +6,16 @@
         "Unity.Collections",
         "Unity.Entities",
         "Unity.Entities.Hybrid",
-        "Unity.Jobs",
         "Unity.Mathematics",
         "Unity.NetCode",
         "Unity.NetCode.Physics",
         "Unity.Networking.Transport",
         "Unity.Physics",
         "Unity.Physics.Hybrid",
-        "Unity.Properties",
         "Unity.Transforms",
         "PugMod.SDK",
         "Unity.Nuget.Mono-Cecil",
-        "Unity.Nuget.Mono-Cecil"
+        "UnityEngine.UI"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -102,7 +100,9 @@
         "Unity.Burst.Cecil.Mdb.dll",
         "Unity.Burst.Cecil.Pdb.dll",
         "Unity.Burst.Cecil.Rocks.dll",
-        "Unity.Burst.Unsafe.dll"
+        "Unity.Burst.Unsafe.dll",
+        "mcs.dll",
+        "NGCore.dll"
     ],
     "autoReferenced": false,
     "defineConstraints": [],

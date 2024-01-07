@@ -103,7 +103,7 @@ namespace UnityExplorer.UI.Widgets
                 SceneButton.ButtonText.text = Target.scene.IsValid() ? Target.scene.name : "None (Asset/Resource)";
             }
 
-            if (force || (!TagInput.Component.isFocused && Target.tag != lastTag))
+            if (force || (!TagInput.Component.isFocused && !Target.CompareTag(lastTag)))
             {
                 lastTag = Target.tag;
                 TagInput.Text = lastTag;
@@ -228,7 +228,7 @@ namespace UnityExplorer.UI.Widgets
                 ExplorerCore.LogWarning($"Exception setting tag! {ex.ReflectionExToString()}");
             }
         }
-        
+
         void OnSceneButtonClicked()
         {
             InspectorManager.Inspect(Target.scene);
@@ -453,6 +453,6 @@ namespace UnityExplorer.UI.Widgets
         }
 
         #endregion
-   
+
     }
 }

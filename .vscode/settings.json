@@ -1,0 +1,7 @@
+{
+  "dotnet.server.useOmnisharp": false,
+  "dotnet.preferCSharpExtension": true,
+  "dotnet.defaultSolution": "SDK Mods/SDK Mods.sln",
+  "cSpell.words": ["mscorlib", "Respawn"],
+  "cSpell.ignoreRegExpList": ["Dont(?=\\w+)", "UE(?=_\\w+)"]
+}

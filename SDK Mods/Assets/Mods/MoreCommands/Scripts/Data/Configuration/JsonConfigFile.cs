@@ -3,25 +3,22 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
-using System.Xml;
-using Assets.Mods.MoreCommands.Scripts.Util;
 using CoreLib.Data.Configuration;
 using PugMod;
 
-namespace MoreCommands {
-  public class JsonConfig<T> where T : IConfiguration {
-    private string _configPath;
-    private bool _saveOnInit;
+namespace MoreCommands.Data.Configuration {
+  public class JsonConfigFile<T> where T : IConfiguration {
     private readonly LoadedMod _ownerMetadata;
 
     private static Encoding UTF8NoBom { get; } = new UTF8Encoding(false);
 
     /// <inheritdoc cref="JsonConfig" />
-    public JsonConfig(string configPath, bool saveOnInit) : this(configPath, saveOnInit, null) { }
+    public JsonConfigFile(string configPath, bool saveOnInit) : this(configPath, saveOnInit, null) { }
+
+    private T _context;
 
     /// <summary>
     ///     Create a new config file at the specified config path.
@@ -30,18 +27,18 @@ namespace MoreCommands {
     /// <param name="saveOnInit">If the config file/directory doesn't exist, create it immediately.</param>
     /// <param name="ownerMetadata">Information about the plugin that owns this setting file.</param>
     /// <param name="context"></param>
-    public JsonConfig(string configPath, bool saveOnInit, LoadedMod ownerMetadata) {
+    public JsonConfigFile(string configPath, bool saveOnInit, LoadedMod ownerMetadata) {
       _ownerMetadata = ownerMetadata;
-      _context = default(T);
+      _context = (T)Activator.CreateInstance(typeof(T));
 
       ConfigFilePath = configPath ?? throw new ArgumentNullException(nameof(configPath));
 
-      if (API.ConfigFilesystem.FileExists(ConfigFilePath))
+      if (API.ConfigFilesystem.FileExists(ConfigFilePath)) {
         Reload();
-      else if (saveOnInit) Save();
+      } else if (saveOnInit) {
+        Save();
+      }
     }
-
-    private T _context;
 
     /// <summary>
     ///     Full path to the config file. The file might not exist until a setting is added and changed, or <see cref="Save" />
@@ -63,13 +60,9 @@ namespace MoreCommands {
     /// </summary>
     public T Context {
       get {
-        lock (_ioLock) {
-          return _context;
-        }
+         return _context;
       }
     }
-
-    private readonly object _ioLock = new();
 
     /// <summary>
     /// Generate user-readable comments for each of the settings in the saved .cfg file.
@@ -80,21 +73,21 @@ namespace MoreCommands {
     /// Reloads the config from disk. Unsaved changes are lost.
     /// </summary>
     public void Reload() {
-      lock (_ioLock) {
-        var options = new JsonDocumentOptions {
-          CommentHandling = JsonCommentHandling.Allow,
-          AllowTrailingCommas = true,
-          MaxDepth = 1000,
-        };
-        var fileData = API.ConfigFilesystem.Read(ConfigFilePath);
-        var fileText = UTF8NoBom.GetString(fileData);
+      var options = new JsonSerializerOptions
+      {
+        ReadCommentHandling = JsonCommentHandling.Allow,
+        AllowTrailingCommas = true,
+        MaxDepth = 1000,
+      };
 
-        try {
-          _context = JsonSerializer.Deserialize<T>(JsonDocument.Parse(new ReadOnlyMemory<byte>(Encoding.UTF8.GetBytes(fileText)), options));
-        } catch (Exception exception) {
-          MoreCommandsMod.Log.LogError($"Failed to deserialize the json object for context of type {typeof(T)}\n{exception.Message}\n{exception.StackTrace}");
-          return;
-        }
+      var fileData = API.ConfigFilesystem.Read(ConfigFilePath);
+      var fileText = UTF8NoBom.GetString(fileData);
+
+      try {
+        _context = JsonSerializer.Deserialize<T>(fileText, options);
+      } catch (Exception exception) {
+        MoreCommandsMod.Log.LogError($"Failed to deserialize the json object for context of type {typeof(T)}\n{exception.Message}\n{exception.StackTrace}");
+        return;
       }
 
       OnConfigReloaded();
@@ -103,35 +96,34 @@ namespace MoreCommands {
     /// <summary>
     /// Writes the config to disk.
     /// </summary>
-    public void Save() {
-      lock (_ioLock) {
-        var directoryName = GetDirectoryName(ConfigFilePath);
-        if (directoryName != null) API.ConfigFilesystem.CreateDirectory(directoryName);
+    public void Save()
+    {
+      var directoryName = GetDirectoryName(ConfigFilePath);
+      if (directoryName != null) API.ConfigFilesystem.CreateDirectory(directoryName);
 
-        var stringBuilder = new StringBuilder();
+      var stringBuilder = new StringBuilder();
 
-        if (_ownerMetadata != null) {
-          stringBuilder.AppendLine($"// Settings file was created by plugin {_ownerMetadata.Metadata.name}");
-          stringBuilder.AppendLine();
-        }
-
-        try {
-          var options = new JsonSerializerOptions {
-            AllowTrailingCommas = true,
-            WriteIndented = true,
-            ReadCommentHandling = JsonCommentHandling.Skip,
-            MaxDepth = 1000,
-          };
-          var jsonData = JsonSerializer.Serialize(_context, typeof(T), options);
-          stringBuilder.Append(jsonData);
-        } catch (Exception exception) {
-          MoreCommandsMod.Log.LogError($"Failed to serialize the json object for context of type {typeof(T)}\n{exception.Message}\n{exception.StackTrace}");
-          return;
-        }
-
-        var fileData = UTF8NoBom.GetBytes(stringBuilder.ToString());
-        API.ConfigFilesystem.Write(ConfigFilePath, fileData);
+      if (_ownerMetadata != null) {
+        stringBuilder.AppendLine($"// Settings file was created by plugin {_ownerMetadata.Metadata.name}");
+        stringBuilder.AppendLine();
       }
+
+      try {
+        var options = new JsonSerializerOptions {
+          AllowTrailingCommas = true,
+          WriteIndented = true,
+          ReadCommentHandling = JsonCommentHandling.Skip,
+          MaxDepth = 1000,
+        };
+        var jsonData = JsonSerializer.Serialize(_context, typeof(T), options);
+        stringBuilder.Append(jsonData);
+      } catch (Exception exception) {
+        MoreCommandsMod.Log.LogError($"Failed to serialize the json object for context of type {typeof(T)}\n{exception.Message}\n{exception.StackTrace}");
+        return;
+      }
+
+      var fileData = UTF8NoBom.GetBytes(stringBuilder.ToString());
+      API.ConfigFilesystem.Write(ConfigFilePath, fileData);
     }
 
     internal static readonly char[] PathSeparatorChars = new[] { '/', '\\' };
@@ -140,19 +132,25 @@ namespace MoreCommands {
       if (path == string.Empty) {
         throw new ArgumentException("Invalid path");
       }
+
       if (path == null) {
         return null;
       }
+
       if (path.Trim().Length == 0) {
         throw new ArgumentException("Argument string consists of whitespace characters only.");
       }
+
       var num = path.LastIndexOfAny(PathSeparatorChars);
+
       if (num == 0) {
         num++;
       }
+
       if (num <= 0) {
         return string.Empty;
       }
+
       var text = path[..num];
 
       return text;
@@ -182,11 +180,13 @@ namespace MoreCommands {
       }
 
       var settingChanged = SettingChanged;
+
       if (settingChanged == null) {
         return;
       }
 
       var args = new SettingChangedEventArgs(changedEntryBase);
+
       foreach (var callback in settingChanged.GetInvocationList().Cast<EventHandler<SettingChangedEventArgs>>()) {
         try {
           callback(sender, args);
@@ -198,6 +198,7 @@ namespace MoreCommands {
 
     private void OnConfigReloaded() {
       var configReloaded = ConfigReloaded;
+
       if (configReloaded == null) {
         return;
       }
