@@ -128,7 +128,7 @@ namespace UnityExplorer.CacheObject
         }
 
         public abstract void TrySetUserValue(object value);
-        
+
         public abstract object TryEvaluate();
 
         protected virtual void ProcessOnEvaluate()
@@ -262,10 +262,10 @@ namespace UnityExplorer.CacheObject
             cell.NameLabel.text = NameLabelText;
             if (cell.HiddenNameLabel != null)
                 cell.HiddenNameLabel.Text = NameLabelTextRaw ?? string.Empty;
-            
+
             cell.ValueLabel.gameObject.SetActive(true);
 
-            cell.SubContentHolder.gameObject.SetActive(SubContentShowWanted);
+            cell.SubContentHolder.SetActive(SubContentShowWanted);
             if (IValue != null)
             {
                 IValue.UIRoot.transform.SetParent(cell.SubContentHolder.transform, false);

@@ -1,0 +1,43 @@
+# EditorConfig is awesome: https://EditorConfig.org
+
+# top-most EditorConfig file
+root = true
+
+# Don't use tabs for indentation.
+[*]
+indent_style = space
+tab_width = 2
+end_of_line = crlf
+
+# NetCode: NetCode Generator
+dotnet_diagnostic.NetCode.severity = none
+
+
+# Code files
+#[*.{cs,csx,vb,vbx}]
+#indent_size = 4
+#insert_final_newline = true
+#charset = utf-8-bom
+vsspell_section_id = e71b92b15a6c46a5aa8373108c6c5444
+vsspell_dictionary_languages_e71b92b15a6c46a5aa8373108c6c5444 = inherited,en-US
+vsspell_ignored_words_e71b92b15a6c46a5aa8373108c6c5444 = Ctrl|deserialize|Dropdown|ECS|Lexer|Lexers|Navbar|NekoBoiNick|Respawn|Scroller|Unpatch|Util|Uuid
+vsspell_exclusion_expressions_e71b92b15a6c46a5aa8373108c6c5444 = Nav(?=Button)(?@@PND@@ Nav Prefix)(?@@PND@@/Options/Singleline)UE_(?=\w+)(?@@PND@@ Unity Explorer Prefix)(?@@PND@@/Options/Singleline)Sav(?=Wav)(?@@PND@@ Some misspelled library)(?@@PND@@/Options/Singleline)(?<=SortDragger)Heirarchy(?@@PND@@ PreCompiled library)(?@@PND@@/Options/Singleline)(?<=Neko)Boi(?=Nick)(?@@PND@@ Name of mod creator)(?@@PND@@/Options/IgnoreCase, Singleline)Neko(?=BoiNick)(?@@PND@@ Name of mod creator)(?@@PND@@/Options/IgnoreCase, Singleline)
+
+# XML project files
+[*.{csproj,vbproj,vcxproj,vcxproj.filters,proj,projitems,shproj}]
+indent_size = 2
+
+# NetCode: NetCode Generator
+dotnet_diagnostic.NetCode.severity = none
+
+# XML config files
+[*.{props,targets,ruleset,config,nuspec,resx,vsixmanifest,vsct}]
+indent_size = 2
+
+# JSON files
+[*.json]
+indent_size = 2
+
+# Powershell files
+[*.ps1]
+indent_size = 2

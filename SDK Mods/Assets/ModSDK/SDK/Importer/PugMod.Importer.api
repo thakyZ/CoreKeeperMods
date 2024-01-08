@@ -1,0 +1,30 @@
+// This file is generated. Do not modify by hand.
+// XML documentation file not found. To check if public methods have XML comments,
+// make sure the XML doc file is present and located next to the scraped dll
+namespace PugMod
+{
+    public class GameAssemblyPostProcessor : UnityEditor.AssetPostprocessor
+    {
+        public GameAssemblyPostProcessor() {}
+    }
+
+    public class ImporterSettings : UnityEngine.ScriptableObject
+    {
+        public System.Collections.Generic.List<string> excludeGameAssemblies;
+        public const string GAME_NAME = @"CoreKeeper";
+        public string gameAssemblyPath = @"Assets/Plugins/CoreKeeper/";
+        public bool includeAllAssemblies = true;
+        public System.Collections.Generic.List<string> includeGameAssemblies;
+        [UnityEngine.HideInInspector] public int initializedToVersion;
+        public string sdkAssemblyPath = @"Assets/Plugins/CoreKeeperModSDK/";
+        public static ImporterSettings Instance { get; }
+        public ImporterSettings() {}
+    }
+
+    public class ImporterWindow : UnityEditor.EditorWindow
+    {
+        public ImporterWindow() {}
+        public static void ShowWindow();
+        public static void UpdateFromGamePath(ImporterSettings settings, string gamePath, out System.Collections.Generic.List<string> addedAssemblies);
+    }
+}

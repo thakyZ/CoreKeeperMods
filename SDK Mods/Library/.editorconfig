@@ -1,4 +1,4 @@
-[{**,**/*,*}]
+[**]
 generated_code = true
 dotnet_analyzer_diagnostic.severity = none
 # NetCode: NetCode Generator

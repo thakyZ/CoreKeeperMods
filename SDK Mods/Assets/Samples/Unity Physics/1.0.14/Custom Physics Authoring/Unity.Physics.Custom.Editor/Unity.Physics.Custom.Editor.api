@@ -1,0 +1,37 @@
+// This file is generated. Do not modify by hand.
+// XML documentation file not found. To check if public methods have XML comments,
+// make sure the XML doc file is present and located next to the scraped dll
+namespace Unity.Physics.Editor
+{
+    [UnityEditor.CustomEditor(typeof(Unity.Physics.Authoring.BallAndSocketJoint))] public class BallAndSocketEditor : UnityEditor.Editor
+    {
+        public BallAndSocketEditor() {}
+        protected virtual void OnSceneGUI();
+    }
+
+    public class EditorUtilities
+    {
+        public EditorUtilities() {}
+        public static void EditLimits(Unity.Mathematics.RigidTransform worldFromA, Unity.Mathematics.RigidTransform worldFromB, Unity.Mathematics.float3 pivotA, Unity.Mathematics.float3 axisA, Unity.Mathematics.float3 axisB, Unity.Mathematics.float3 perpendicularA, Unity.Mathematics.float3 perpendicularB, ref float minLimit, ref float maxLimit, UnityEditor.IMGUI.Controls.JointAngularLimitHandle limitHandle, UnityEngine.Object target);
+        public static void EditPivot(Unity.Mathematics.RigidTransform worldFromA, Unity.Mathematics.RigidTransform worldFromB, bool lockBtoA, ref Unity.Mathematics.float3 pivotA, ref Unity.Mathematics.float3 pivotB, UnityEngine.Object target);
+        public class AxisEditor
+        {
+            public AxisEditor() {}
+            public void Update(Unity.Mathematics.RigidTransform worldFromA, Unity.Mathematics.RigidTransform worldFromB, bool lockBtoA, Unity.Mathematics.float3 pivotA, Unity.Mathematics.float3 pivotB, ref Unity.Mathematics.float3 directionA, ref Unity.Mathematics.float3 directionB, ref Unity.Mathematics.float3 perpendicularA, ref Unity.Mathematics.float3 perpendicularB, UnityEngine.Object target);
+        }
+    }
+
+    [UnityEditor.CustomEditor(typeof(Unity.Physics.Authoring.LimitedHingeJoint))] public class LimitedHingeEditor : UnityEditor.Editor
+    {
+        public LimitedHingeEditor() {}
+        public override void OnInspectorGUI();
+        protected virtual void OnSceneGUI();
+    }
+
+    [UnityEditor.CustomEditor(typeof(Unity.Physics.Authoring.RagdollJoint))] public class RagdollJointEditor : UnityEditor.Editor
+    {
+        public RagdollJointEditor() {}
+        public override void OnInspectorGUI();
+        protected virtual void OnSceneGUI();
+    }
+}

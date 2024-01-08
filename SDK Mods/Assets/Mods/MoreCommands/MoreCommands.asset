@@ -22,7 +22,7 @@ MonoBehaviour:
     requiredOn: 0
     files:
     - path: Scripts/Scripts/Util/Extensions.cs
-    - path: Scripts/Scripts/Systems/HouseListSystem.cs
+    - path: Scripts/Scripts/Systems/HomeListSystem.cs
     - path: Scripts/Scripts/Systems/DeathSystem.cs
     - path: Scripts/Scripts/Patches/Death_Patch.cs
     - path: Scripts/Scripts/MoreCommandsMod.cs
@@ -44,8 +44,10 @@ MonoBehaviour:
   buildBurst: 1
   cachedBuild: 0
   assets:
+  - path: Assets/Mods/MoreCommands/MoreCommands.api
+    hash: 904414FA1886FA853B47FA542157A3232D281FD66E3758180B622C27E2D3D872
   - path: Assets/Mods/MoreCommands/MoreCommands.asset
-    hash: 58F154BDB471F4CC57D0AE7815E37F38620C5D234A7B12C159EB378A403857C8
+    hash: A238C46C51E07335183A182BA7DC68A73C79D1B7379EEBBD344B1177F36F5294
   - path: Assets/Mods/MoreCommands/MoreCommands_modio.asset
     hash: A7AEC12D8FBE4AF7EECD21B8645A36D1DE00B29E5428525D50B7B3F5B291FFE0
   lastBuildLinux: 0

@@ -65,7 +65,7 @@ namespace UnityExplorer.CacheObject.Views
             // Subcontent
 
             SubContentHolder = UIFactory.CreateUIObject("SubContent", UIRoot);
-            UIFactory.SetLayoutElement(SubContentHolder.gameObject, minHeight: 30, flexibleHeight: 600, minWidth: 100, flexibleWidth: 9999);
+            UIFactory.SetLayoutElement(SubContentHolder, minHeight: 30, flexibleHeight: 600, minWidth: 100, flexibleWidth: 9999);
             UIFactory.SetLayoutGroup<VerticalLayoutGroup>(SubContentHolder, true, true, true, true, 2, childAlignment: TextAnchor.UpperLeft);
             //SubContentHolder.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.MinSize;
             SubContentHolder.SetActive(false);

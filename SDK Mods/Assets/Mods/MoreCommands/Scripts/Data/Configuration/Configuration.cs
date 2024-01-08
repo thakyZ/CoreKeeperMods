@@ -3,6 +3,7 @@ using MoreCommands.Systems;
 using System.Text.Json.Serialization;
 using System.Text.Json.Nodes;
 using System.Collections.Generic;
+using System.Text.Json;
 
 namespace MoreCommands.Data.Configuration {
   [Serializable()]
@@ -17,25 +18,24 @@ namespace MoreCommands.Data.Configuration {
     [JsonPropertyName("housing_system")]
     [JsonPropertyOrder(2)]
     [JsonRequired()]
-    public Dictionary<string, HousingSystem> HousingSystem { get; set; } = new();
+    public List<HomeListWorldEntry> HomeListSystem { get; set; } = new();
 
     //[JsonComment("Death System Config")]
     [JsonPropertyName("death_system")]
     [JsonPropertyOrder(3)]
     [JsonRequired()]
-    public Dictionary<string, DeathSystem> DeathSystem { get; set; } = new();
+    public List<DeathWorldEntry> DeathSystem { get; set; } = new();
 
-    [JsonConstructor]
-    public Configuration(CommandsEnabled commands_enabled, Dictionary<string, HousingSystem> housing_system, Dictionary<string, DeathSystem> death_system) {
+    public Configuration(CommandsEnabled commands_enabled, List<HomeListWorldEntry> housing_system, List<DeathWorldEntry> death_system) {
       this.CommandsEnabled = commands_enabled;
 
       if (housing_system == null) {
         MoreCommandsMod.Log.LogInfo($"[{MoreCommandsMod.NAME}]: housing_system  is  null");
-        this.HousingSystem = new();
-        this.HousingSystem.Init();
+        this.HomeListSystem = new();
+        this.HomeListSystem.Init();
       } else {
-        this.HousingSystem = housing_system;
-        this.HousingSystem.Init();
+        this.HomeListSystem = housing_system;
+        this.HomeListSystem.Init();
       }
 
       if (death_system == null) {
@@ -47,7 +47,7 @@ namespace MoreCommands.Data.Configuration {
         this.DeathSystem.Init();
       }
 
-      if (this.HousingSystem == null) {
+      if (this.HomeListSystem == null) {
         MoreCommandsMod.Log.LogInfo($"[{MoreCommandsMod.NAME}]: this.HousingSystem  is  null");
       }
       if (this.DeathSystem == null) {
@@ -55,11 +55,13 @@ namespace MoreCommands.Data.Configuration {
       }
     }
 
-    public Configuration()
-    {
-    }
+    [JsonConstructor()]
+    public Configuration() { }
 
+    [JsonIgnore()]
     public static Configuration Default => new();
+
+    public override string ToString() => JsonSerializer.Serialize(this);
   }
 
   [Serializable()]
@@ -76,13 +78,15 @@ namespace MoreCommands.Data.Configuration {
     [JsonRequired()]
     public bool Back { get; set; } = true;
 
-    [JsonConstructor]
     public CommandsEnabled(bool home, bool back)
     {
       this.Home = home;
       this.Back = back;
     }
 
+    [JsonConstructor()]
     public CommandsEnabled() { }
+
+    public override string ToString() => JsonSerializer.Serialize(this);
   }
 }

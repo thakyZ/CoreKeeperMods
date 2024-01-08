@@ -31,9 +31,9 @@ namespace MoreCommands.Data.Configuration {
    */
 
   public class JsonCommentConverter : JsonConverter<string> {
-    private readonly string _comment;
+    private readonly string comment;
     public JsonCommentConverter(string comment) {
-      _comment = comment;
+      this.comment = comment;
     }
 
     public override string? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
@@ -41,7 +41,7 @@ namespace MoreCommands.Data.Configuration {
     }
 
     public override void Write(Utf8JsonWriter writer, string? value, JsonSerializerOptions options) {
-      writer.WriteCommentValue(_comment);
+      writer.WriteCommentValue(comment);
     }
   }
 
