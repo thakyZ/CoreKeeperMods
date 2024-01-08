@@ -1,5 +1,5 @@
 {
-  "dotnet.server.useOmnisharp": false,
+  "dotnet.server.useOmnisharp": true,
   "dotnet.preferCSharpExtension": true,
   "dotnet.defaultSolution": "SDK Mods/SDK Mods.sln",
   "cSpell.words": ["mscorlib", "Respawn"],

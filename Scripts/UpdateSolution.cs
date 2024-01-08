@@ -4,7 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System;
+
+// cSpell:ignoreRegexp SYSLIB\d{3,4}
+// cSpell:ignore Hashtable
 
 #nullable enable
 namespace NekoBoiNick.CoreKeeperMods
