@@ -1,0 +1,1903 @@
+// This file is generated. Do not modify by hand.
+// XML documentation file not found. To check if public methods have XML comments,
+// make sure the XML doc file is present and located next to the scraped dll
+namespace ECSExtension
+{
+    public class BufferView<T> where T : struct, unmanaged, new()
+    {
+        public readonly Unity.Entities.DynamicBuffer<T> buffer;
+        public BufferView(Unity.Entities.DynamicBuffer<T> buffer) {}
+    }
+
+    public class ButtonNativeListHandler<TData, TCell> : UniverseLib.UI.Widgets.ScrollView.ICellPoolDataSource<TCell> where TData : struct, unmanaged, new() where TCell : UniverseLib.UI.Widgets.ButtonList.ButtonCell
+    {
+        protected System.Func<Unity.Collections.NativeArray<TData>> GetEntries;
+        protected System.Action<int> OnCellClicked;
+        protected System.Action<TCell, int> SetICell;
+        protected System.Func<TData, string, bool> ShouldDisplay;
+        public System.Collections.Generic.List<TData> CurrentEntries { get; }
+        public string CurrentFilter { get; set; }
+        public int ItemCount { get; }
+        public UniverseLib.UI.Widgets.ScrollView.ScrollPool<TCell> ScrollPool { get; }
+        public ButtonNativeListHandler(UniverseLib.UI.Widgets.ScrollView.ScrollPool<TCell> scrollPool, System.Func<Unity.Collections.NativeArray<TData>> getEntriesMethod, System.Action<TCell, int> setICellMethod, System.Func<TData, string, bool> shouldDisplayMethod, System.Action<int> onCellClickedMethod) {}
+        public virtual void OnCellBorrowed(TCell cell);
+        public void RefreshData();
+        public virtual void SetCell(TCell cell, int index);
+    }
+
+    public class ECSComponentCell : UniverseLib.UI.Widgets.ButtonList.ButtonCell
+    {
+        public UniverseLib.UI.Models.ButtonRef DestroyButton;
+        public System.Action<int> OnDestroyClicked;
+        public UnityEngine.UI.Text typeLabel;
+        public ECSComponentCell() {}
+        public void ConfigureCell(Unity.Entities.ComponentType type);
+        public override UnityEngine.GameObject CreateContent(UnityEngine.GameObject parent);
+    }
+
+    public class ECSComponentList : ECSExtension.ButtonNativeListHandler<Unity.Entities.ComponentType, ECSComponentCell>
+    {
+        public EntityInspector Parent;
+        public ECSComponentList(UniverseLib.UI.Widgets.ScrollView.ScrollPool<ECSComponentCell> scrollPool, System.Func<Unity.Collections.NativeArray<Unity.Entities.ComponentType>> getEntriesMethod) {}
+        public void Clear();
+        public override void OnCellBorrowed(ECSComponentCell cell);
+    }
+
+    public class EntityCell : UniverseLib.UI.ObjectPool.IPooledObject, UniverseLib.UI.Widgets.ScrollView.ICell
+    {
+        public Unity.Entities.Entity entity;
+        public System.Action<Unity.Entities.Entity, bool> onEnableClicked;
+        public System.Action<Unity.Entities.Entity> OnEntityClicked;
+        public float DefaultHeight { get; }
+        public bool Enabled { get; }
+        public UnityEngine.RectTransform Rect { get; set; }
+        public UnityEngine.GameObject UIRoot { get; set; }
+        public EntityCell() {}
+        public void ConfigureCell(Unity.Entities.Entity entity, Unity.Entities.EntityManager entityManager);
+        public UnityEngine.GameObject CreateContent(UnityEngine.GameObject parent);
+        public void Disable();
+        public void Enable();
+    }
+
+    public class EntityInspector : UnityExplorer.Inspectors.InspectorBase, UnityExplorer.CacheObject.ICacheObjectController
+    {
+        public UnityEngine.GameObject Content;
+        public Unity.Entities.Entity currentEntity;
+        public Unity.Entities.World currentWorld;
+        public int currentWorldIndex;
+        public Unity.Entities.EntityManager entityManager;
+        public System.Collections.Generic.List<Unity.Entities.World> validWorlds;
+        public bool CanWrite { get; }
+        public UnityExplorer.CacheObject.CacheObjectBase ParentCacheObject { get; }
+        public EntityInspector() {}
+        public override void CloseInspector();
+        public override UnityEngine.GameObject CreateContent(UnityEngine.GameObject parent);
+        public ECSExtension.Cache.CacheComponent<T> GetComponentData<T>() where T : struct, unmanaged, Unity.Entities.IComponentData, new();
+        public Unity.Entities.DynamicBuffer<T> GetDynamicBuffer<T>() where T : struct, unmanaged, Unity.Entities.IBufferElementData, new();
+        public string GetEntityName();
+        public ECSExtension.Cache.CacheManagedComponent<T> GetManagedComponentData<T>() where T : class, Unity.Entities.IComponentData, new();
+        public ECSExtension.Cache.CacheSharedComponent<T> GetSharedComponentData<T>() where T : struct, unmanaged, Unity.Entities.ISharedComponentData, new();
+        public void InspectEntity(Unity.Entities.Entity entity);
+        public override void OnBorrowedFromPool(object target);
+        public void RemoveComponent(Unity.Entities.ComponentType type);
+        public void SetWorld(int index);
+        public override void Update();
+        public void UpdateComponents();
+    }
+}
+
+namespace ECSExtension.Cache
+{
+    public abstract class BaseComponentCache<T> : UnityExplorer.CacheObject.CacheObjectBase
+    {
+        protected Unity.Entities.Entity entity;
+        protected Unity.Entities.EntityManager entityManager;
+        public override bool CanWrite { get; }
+        public override bool HasArguments { get; }
+        public override bool RefreshFromSource { get; }
+        public override bool ShouldAutoEvaluate { get; }
+        protected BaseComponentCache(EntityInspector inspector) {}
+        protected override bool TryAutoEvaluateIfUnitialized(UnityExplorer.CacheObject.Views.CacheObjectCell objectcell);
+    }
+
+    public sealed class CacheComponent<T> : ECSExtension.Cache.BaseComponentCache<T> where T : struct, unmanaged, Unity.Entities.IComponentData, new()
+    {
+        public CacheComponent(EntityInspector inspector) {}
+        public override object TryEvaluate();
+        public override void TrySetUserValue(object value);
+    }
+
+    public sealed class CacheManagedComponent<T> : ECSExtension.Cache.BaseComponentCache<T> where T : class, Unity.Entities.IComponentData, new()
+    {
+        public CacheManagedComponent(EntityInspector inspector) {}
+        public override object TryEvaluate();
+        public override void TrySetUserValue(object value);
+    }
+
+    public sealed class CacheSharedComponent<T> : ECSExtension.Cache.BaseComponentCache<T> where T : struct, unmanaged, Unity.Entities.ISharedComponentData, new()
+    {
+        public CacheSharedComponent(EntityInspector inspector) {}
+        public override object TryEvaluate();
+        public override void TrySetUserValue(object value);
+    }
+}
+
+namespace ECSExtension.Panels
+{
+    public class EntityTree : UniverseLib.UI.Widgets.ScrollView.ICellPoolDataSource<EntityCell>
+    {
+        public System.Action<Unity.Entities.Entity> OnClickHandler;
+        public UniverseLib.UI.Widgets.ScrollView.ScrollPool<EntityCell> ScrollPool;
+        public int ItemCount { get; }
+        public EntityTree(UniverseLib.UI.Widgets.ScrollView.ScrollPool<EntityCell> scrollPool, System.Action<Unity.Entities.Entity> onCellClicked) {}
+        public void OnCellBorrowed(EntityCell cell);
+        public void RefreshData(bool jumpToTop);
+        public void SetCell(EntityCell cell, int index);
+        public void SetFilter(string filter);
+        public void SetWorld(Unity.Entities.World world);
+        public void UseQuery(Unity.Entities.ComponentType[] include, Unity.Entities.ComponentType[] exclude, bool includeDisabled);
+    }
+
+    public class QueryComponentCell : UniverseLib.UI.ObjectPool.IPooledObject, UniverseLib.UI.Widgets.ScrollView.ICell
+    {
+        public System.Action<int, int> OnSearchTypeChanged;
+        public System.Action<int, string> OnTextChanged;
+        public float DefaultHeight { get; }
+        public bool Enabled { get; }
+        public UnityEngine.RectTransform Rect { get; set; }
+        public UnityEngine.GameObject UIRoot { get; set; }
+        public QueryComponentCell() {}
+        public void ConfigureCell(int index, QueryComponentList.SearchData currentValue);
+        public UnityEngine.GameObject CreateContent(UnityEngine.GameObject parent);
+        public void Disable();
+        public void Enable();
+        public void SetCellToDefault(int index);
+    }
+
+    public class QueryComponentList : UniverseLib.UI.Widgets.ScrollView.ICellPoolDataSource<QueryComponentCell>
+    {
+        public int ItemCount { get; }
+        public QueryComponentList(UniverseLib.UI.Widgets.ScrollView.ScrollPool<QueryComponentCell> scrollPool, UnityEngine.UI.LayoutElement viewportLayout) {}
+        public Unity.Entities.ComponentType[] GetComponents(QueryComponentList.SearchType searchType);
+        public void OnCellBorrowed(QueryComponentCell cell);
+        public void SetCell(QueryComponentCell cell, int index);
+        public class SearchData
+        {
+            public string componentName;
+            public QueryComponentList.SearchType searchType;
+            public SearchData(string componentName) {}
+        }
+        public enum SearchType
+        {
+            Exclude = 1,
+            Include = 0,
+        }
+    }
+
+    public class WorldExplorer : UnityExplorer.ObjectExplorer.UITabPanel
+    {
+        public EntityTree Tree;
+        public override string Name { get; }
+        public UnityExplorer.UI.Panels.ObjectExplorerPanel Parent { get; }
+        public Unity.Entities.World SelectedWorld { get; }
+        public override UnityEngine.GameObject UIRoot { get; }
+        public WorldExplorer(UnityExplorer.UI.Panels.ObjectExplorerPanel parent) {}
+        public override void ConstructUI(UnityEngine.GameObject content);
+        public override void Update();
+        public void UpdateTree();
+    }
+}
+
+namespace ECSExtension.Patch
+{
+    [HarmonyLib.HarmonyPatch] public static class World_Dispose_Patch
+    {
+        [HarmonyLib.HarmonyPatch(typeof(Unity.Entities.World), @"Dispose")] [HarmonyLib.HarmonyPostfix] public static void OnWorldDispose(Unity.Entities.World __instance);
+    }
+
+    [HarmonyLib.HarmonyPatch] public static class World_Init_Patch
+    {
+        [HarmonyLib.HarmonyPostfix] public static void OnWorldInit(Unity.Entities.World __instance);
+        public static System.Collections.Generic.IEnumerable<System.Reflection.MethodBase> TargetMethods();
+    }
+}
+
+namespace ECSExtension.Widgets
+{
+    public class EntityInfoPanel
+    {
+        public EntityInspector Owner { get; }
+        public EntityInfoPanel(EntityInspector owner) {}
+        public void Create();
+        public string GetEntityName();
+        public bool IsEntityEnabled();
+        public void UpdateEntityInfo(bool firstUpdate, bool force);
+    }
+}
+
+namespace Mods.UnityExplorer.Scripts.ECS.Panels
+{
+    public class ArrayWrapper<T> : Unity.Collections.IIndexable<T> where T : struct, unmanaged, new()
+    {
+        public T[] array;
+        public int Length { get; set; }
+        public ArrayWrapper(T[] array) {}
+        public ref T ElementAt(int index);
+    }
+}
+
+namespace Mods.UnityExplorer.Scripts.Loader.CoreKeeper
+{
+    public class UnityExplorerMod : PugMod.IMod
+    {
+        public static UnityExplorer.Loader.CoreKeeper.Logger logger;
+        public const string NAME = @"Unity Explorer";
+        public UnityExplorerMod() {}
+        public void EarlyInit();
+        public static PugMod.LoadedMod GetModInfo(PugMod.IMod mod);
+        public void Init();
+        public void ModObjectLoaded(UnityEngine.Object obj);
+        public void Shutdown();
+        public void Update();
+    }
+}
+
+namespace UnityExplorer
+{
+    public class ExplorerBehaviour : UnityEngine.MonoBehaviour
+    {
+        public ExplorerBehaviour() {}
+    }
+
+    public static class ExplorerCore
+    {
+        public const string AUTHOR = @"Sinai";
+        public const string DEFAULT_EXPLORER_FOLDER_NAME = @"sinai-dev-UnityExplorer";
+        public const string GUID = @"com.sinai.unityexplorer";
+        public const string NAME = @"UnityExplorer";
+        public const string VERSION = @"4.10.5";
+        public static string ExplorerFolder { get; }
+        public static HarmonyLib.Harmony Harmony { get; }
+        public static IExplorerLoader Loader { get; }
+        public static void CopyAll(System.IO.DirectoryInfo source, System.IO.DirectoryInfo target);
+        public static void Init(IExplorerLoader loader);
+        public static void Log(object message);
+        public static void LogError(object message);
+        public static void LogUnity(object message, UnityEngine.LogType logType);
+        public static void LogWarning(object message);
+    }
+
+    public class ExplorerStandalone : IExplorerLoader
+    {
+        protected static string explorerFolderDest;
+        public static event System.Action<string, UnityEngine.LogType> OnLog;
+        public Config.ConfigHandler ConfigHandler { get; }
+        public string ExplorerFolderDestination { get; }
+        public string ExplorerFolderName { get; }
+        public static ExplorerStandalone Instance { get; protected set; }
+        public ExplorerStandalone() {}
+        protected virtual void CheckExplorerFolder();
+        public static ExplorerStandalone CreateInstance();
+        public static ExplorerStandalone CreateInstance(System.Action<string, UnityEngine.LogType> logListener);
+    }
+
+    public interface IExplorerLoader
+    {
+        public Config.ConfigHandler ConfigHandler { get; }
+        public string ExplorerFolderDestination { get; }
+        public string ExplorerFolderName { get; }
+        public System.Action<object> OnLogError { get; }
+        public System.Action<object> OnLogMessage { get; }
+        public System.Action<object> OnLogWarning { get; }
+    }
+
+    public static class InspectorManager
+    {
+        public static System.Collections.Generic.List<System.Func<object, System.Type>> customInspectors;
+        public static System.Collections.Generic.Dictionary<System.Type, System.Func<object, object, bool>> equalityCheckers;
+        public static readonly System.Collections.Generic.List<Inspectors.InspectorBase> Inspectors;
+        public static float PanelWidth;
+        public static event System.Action OnInspectedTabsChanged;
+        public static Inspectors.InspectorBase ActiveInspector { get; }
+        public static void CloseAllTabs();
+        public static void Inspect(System.Type type);
+        public static void Inspect(object obj, CacheObject.CacheObjectBase parent = default(CacheObject.CacheObjectBase));
+        public static void Inspect(object obj, CacheObject.CacheObjectBase parent, bool useCustomInspectors);
+        public static void ReleaseInspector<T>(T inspector) where T : Inspectors.InspectorBase;
+        public static void SetInspectorActive(Inspectors.InspectorBase inspector);
+        public static void UnsetActiveInspector();
+    }
+}
+
+namespace UnityExplorer.CacheObject
+{
+    public class CacheConfigEntry : CacheObjectBase
+    {
+        public UnityExplorer.Config.IConfigElement RefConfigElement;
+        public override bool CanWrite { get; }
+        public override bool HasArguments { get; }
+        public override bool RefreshFromSource { get; }
+        public override bool ShouldAutoEvaluate { get; }
+        public CacheConfigEntry(UnityExplorer.Config.IConfigElement configElement) {}
+        protected override bool TryAutoEvaluateIfUnitialized(Views.CacheObjectCell cell);
+        public override object TryEvaluate();
+        public override void TrySetUserValue(object value);
+        public void UpdateValueFromSource();
+    }
+
+    public class CacheConstructor : CacheMember
+    {
+        public override bool CanWrite { get; }
+        public System.Reflection.ConstructorInfo CtorInfo { get; }
+        public override System.Type DeclaringType { get; }
+        public override bool IsStatic { get; }
+        public override bool RefreshFromSource { get; }
+        public override bool ShouldAutoEvaluate { get; }
+        public CacheConstructor(System.Reflection.ConstructorInfo ci) {}
+        public CacheConstructor(System.Type typeForStructConstructor) {}
+        public override void SetInspectorOwner(UnityExplorer.Inspectors.ReflectionInspector inspector, System.Reflection.MemberInfo member);
+        public override object TryEvaluate();
+        protected override void TrySetValue(object value);
+    }
+
+    public class CacheField : CacheMember
+    {
+        public override bool CanWrite { get; }
+        public override System.Type DeclaringType { get; }
+        public System.Reflection.FieldInfo FieldInfo { get; }
+        public override bool IsStatic { get; }
+        public override bool RefreshFromSource { get; }
+        public override bool ShouldAutoEvaluate { get; }
+        public CacheField(System.Reflection.FieldInfo fi) {}
+        public override void SetInspectorOwner(UnityExplorer.Inspectors.ReflectionInspector inspector, System.Reflection.MemberInfo member);
+        public override object TryEvaluate();
+        protected override void TrySetValue(object value);
+    }
+
+    public class CacheKeyValuePair : CacheObjectBase
+    {
+        public float DesiredKeyWidth;
+        public float DesiredValueWidth;
+        public int DictIndex;
+        public object DictKey;
+        public object DisplayedKey;
+        public bool InspectWanted;
+        public string KeyInputText;
+        public string KeyInputTypeText;
+        public bool KeyInputWanted;
+        public string KeyLabelText;
+        public override bool CanWrite { get; }
+        public override bool HasArguments { get; }
+        public override bool RefreshFromSource { get; }
+        public override bool ShouldAutoEvaluate { get; }
+        public CacheKeyValuePair() {}
+        public override void SetDataToCell(Views.CacheObjectCell cell);
+        public void SetDictOwner(IValues.InteractiveDictionary dict, int index);
+        public void SetKey(object key);
+        protected override bool TryAutoEvaluateIfUnitialized(Views.CacheObjectCell cell);
+        public override object TryEvaluate();
+        public override void TrySetUserValue(object value);
+    }
+
+    public class CacheListEntry : CacheObjectBase
+    {
+        public int ListIndex;
+        public override bool CanWrite { get; }
+        public override bool HasArguments { get; }
+        public override bool RefreshFromSource { get; }
+        public override bool ShouldAutoEvaluate { get; }
+        public CacheListEntry() {}
+        public override void SetDataToCell(Views.CacheObjectCell cell);
+        public void SetListOwner(IValues.InteractiveList list, int listIndex);
+        protected override bool TryAutoEvaluateIfUnitialized(Views.CacheObjectCell cell);
+        public override object TryEvaluate();
+        public override void TrySetUserValue(object value);
+    }
+
+    public abstract class CacheMember : CacheObjectBase
+    {
+        public System.Reflection.ParameterInfo[] Arguments { get; protected set; }
+        public object DeclaringInstance { get; }
+        public abstract System.Type DeclaringType { get; }
+        public bool Evaluating { get; }
+        public UnityExplorer.UI.Widgets.EvaluateWidget Evaluator { get; protected set; }
+        public System.Type[] GenericArguments { get; protected set; }
+        public override bool HasArguments { get; }
+        public abstract bool IsStatic { get; }
+        public string NameForFiltering { get; protected set; }
+        protected CacheMember() {}
+        public void Evaluate();
+        public void EvaluateAndSetCell();
+        public void OnEvaluateClicked();
+        public override void ReleasePooledObjects();
+        public virtual void SetInspectorOwner(UnityExplorer.Inspectors.ReflectionInspector inspector, System.Reflection.MemberInfo member);
+        protected override void SetValueState(Views.CacheObjectCell cell, CacheObjectBase.ValueStateArgs args);
+        protected override bool TryAutoEvaluateIfUnitialized(Views.CacheObjectCell objectcell);
+        public override void TrySetUserValue(object value);
+        protected abstract void TrySetValue(object value);
+        public override void UnlinkFromView();
+        public void UpdateDeclaringInstance();
+    }
+
+    public static class CacheMemberFactory
+    {
+        public static System.Collections.Generic.List<CacheMember> GetCacheMembers(System.Type type, UnityExplorer.Inspectors.ReflectionInspector inspector);
+    }
+
+    public class CacheMethod : CacheMember
+    {
+        public override bool CanWrite { get; }
+        public override System.Type DeclaringType { get; }
+        public override bool IsStatic { get; }
+        public System.Reflection.MethodInfo MethodInfo { get; }
+        public override bool RefreshFromSource { get; }
+        public override bool ShouldAutoEvaluate { get; }
+        public CacheMethod(System.Reflection.MethodInfo mi) {}
+        public override void SetInspectorOwner(UnityExplorer.Inspectors.ReflectionInspector inspector, System.Reflection.MemberInfo member);
+        public override object TryEvaluate();
+        protected override void TrySetValue(object value);
+    }
+
+    public abstract class CacheObjectBase
+    {
+        protected const string NOT_YET_EVAL = @"<color=grey>Not yet evaluated</color>";
+        public abstract bool CanWrite { get; }
+        public Views.CacheObjectCell CellView { get; }
+        public System.Type CurrentIValueType { get; }
+        public System.Type FallbackType { get; protected set; }
+        public abstract bool HasArguments { get; }
+        public IValues.InteractiveValue IValue { get; }
+        public System.Exception LastException { get; protected set; }
+        public string NameLabelText { get; protected set; }
+        public string NameLabelTextRaw { get; protected set; }
+        public ICacheObjectController Owner { get; set; }
+        public abstract bool RefreshFromSource { get; }
+        public abstract bool ShouldAutoEvaluate { get; }
+        public ValueState State { get; set; }
+        public bool SubContentShowWanted { get; }
+        public object Value { get; protected set; }
+        public string ValueLabelText { get; protected set; }
+        protected CacheObjectBase() {}
+        public ValueState GetStateForType(System.Type type);
+        protected string GetValueLabel();
+        public virtual void OnCellApplyClicked();
+        public virtual void OnCellSubContentToggle();
+        protected virtual void ProcessOnEvaluate();
+        public virtual void ReleaseIValue();
+        public virtual void ReleasePooledObjects();
+        public virtual void SetDataToCell(Views.CacheObjectCell cell);
+        public virtual void SetFallbackType(System.Type fallbackType);
+        public void SetUserValue(object value);
+        public virtual void SetValueFromSource(object value);
+        protected virtual void SetValueState(Views.CacheObjectCell cell, CacheObjectBase.ValueStateArgs args);
+        public virtual void SetView(Views.CacheObjectCell cellView);
+        protected abstract bool TryAutoEvaluateIfUnitialized(Views.CacheObjectCell cell);
+        public abstract object TryEvaluate();
+        public abstract void TrySetUserValue(object value);
+        public virtual void UnlinkFromView();
+        public struct ValueStateArgs
+        {
+            public bool applyActive;
+            public bool inputActive;
+            public bool inspectActive;
+            public bool subContentButtonActive;
+            public bool toggleActive;
+            public bool typeLabelActive;
+            public bool valueActive;
+            public UnityEngine.Color valueColor;
+            public bool valueRichText;
+            public static CacheObjectBase.ValueStateArgs Default { get; }
+            public ValueStateArgs(bool valueActive = true, bool valueRichText = true, System.Nullable<UnityEngine.Color> valueColor = default(System.Nullable<UnityEngine.Color>), bool typeLabelActive = false, bool toggleActive = false, bool inputActive = false, bool applyActive = false, bool inspectActive = false, bool subContentButtonActive = false) {}
+        }
+    }
+
+    public static class CacheObjectControllerHelper
+    {
+        public static void SetCell(Views.CacheObjectCell cell, int index, System.Collections.IList cachedEntries, System.Action<Views.CacheObjectCell> onDataSetToCell);
+    }
+
+    public class CacheProperty : CacheMember
+    {
+        public override bool CanWrite { get; }
+        public override System.Type DeclaringType { get; }
+        public override bool IsStatic { get; }
+        public System.Reflection.PropertyInfo PropertyInfo { get; }
+        public override bool RefreshFromSource { get; }
+        public override bool ShouldAutoEvaluate { get; }
+        public CacheProperty(System.Reflection.PropertyInfo pi) {}
+        public override void SetInspectorOwner(UnityExplorer.Inspectors.ReflectionInspector inspector, System.Reflection.MemberInfo member);
+        public override object TryEvaluate();
+        protected override void TrySetValue(object value);
+    }
+
+    public interface ICacheObjectController
+    {
+        public bool CanWrite { get; }
+        public CacheObjectBase ParentCacheObject { get; }
+        public object Target { get; }
+        public System.Type TargetType { get; }
+    }
+
+    public enum ValueState
+    {
+        Boolean = 2,
+        Collection = 6,
+        Color = 9,
+        Dictionary = 7,
+        Enum = 5,
+        Exception = 1,
+        NotEvaluated = 0,
+        Number = 3,
+        String = 4,
+        Unsupported = 10,
+        ValueStruct = 8,
+    }
+}
+
+namespace UnityExplorer.CacheObject.IValues
+{
+    public struct CachedEnumValue
+    {
+        public readonly object ActualValue;
+        public int EnumIndex;
+        public readonly string Name;
+        public CachedEnumValue(object value, int index, string name) {}
+    }
+
+    public class InteractiveColor : InteractiveValue
+    {
+        public UnityEngine.Color EditedColor;
+        public bool IsValueColor32;
+        public InteractiveColor() {}
+        public override UnityEngine.GameObject CreateContent(UnityEngine.GameObject parent);
+        public override void OnBorrowed(CacheObjectBase owner);
+        public override void SetValue(object value);
+        public void SetValueToOwner();
+    }
+
+    public class InteractiveDictionary : InteractiveValue, ICacheObjectController, UniverseLib.UI.Widgets.ScrollView.ICellPoolDataSource<UnityExplorer.CacheObject.Views.CacheKeyValuePairCell>
+    {
+        public System.Type KeysType;
+        public UnityEngine.UI.LayoutElement KeyTitleLayout;
+        public System.Collections.IDictionary RefIDictionary;
+        public UnityEngine.UI.Text TopLabel;
+        public System.Type ValuesType;
+        public UnityEngine.UI.LayoutElement ValueTitleLayout;
+        public int AdjustedWidth { get; }
+        public override bool CanWrite { get; }
+        public UniverseLib.UI.Widgets.ScrollView.ScrollPool<UnityExplorer.CacheObject.Views.CacheKeyValuePairCell> DictScrollPool { get; }
+        public int ItemCount { get; }
+        public System.Type TargetType { get; }
+        public InteractiveDictionary() {}
+        public override UnityEngine.GameObject CreateContent(UnityEngine.GameObject parent);
+        public override void OnBorrowed(CacheObjectBase owner);
+        public void OnCellBorrowed(UnityExplorer.CacheObject.Views.CacheKeyValuePairCell cell);
+        public override void ReleaseFromOwner();
+        public void SetCell(UnityExplorer.CacheObject.Views.CacheKeyValuePairCell cell, int index);
+        public override void SetLayout();
+        public override void SetValue(object value);
+        public void TrySetValueToKey(object key, object value, int keyIndex);
+    }
+
+    public class InteractiveEnum : InteractiveValue
+    {
+        public System.Collections.Specialized.OrderedDictionary CurrentValues;
+        public System.Type EnumType;
+        public bool IsFlags;
+        public InteractiveEnum() {}
+        public override UnityEngine.GameObject CreateContent(UnityEngine.GameObject parent);
+        public override void SetValue(object value);
+        public CachedEnumValue ValueAtIndex(int idx);
+        public CachedEnumValue ValueAtKey(object key);
+    }
+
+    public class InteractiveList : InteractiveValue, ICacheObjectController, UniverseLib.UI.Widgets.ScrollView.ICellPoolDataSource<UnityExplorer.CacheObject.Views.CacheListEntryCell>
+    {
+        public System.Type EntryType;
+        public System.Collections.IList RefIList;
+        public UnityEngine.UI.Text TopLabel;
+        public override bool CanWrite { get; }
+        public int ItemCount { get; }
+        public UniverseLib.UI.Widgets.ScrollView.ScrollPool<UnityExplorer.CacheObject.Views.CacheListEntryCell> ListScrollPool { get; }
+        public System.Type TargetType { get; }
+        public InteractiveList() {}
+        public override UnityEngine.GameObject CreateContent(UnityEngine.GameObject parent);
+        public override void OnBorrowed(CacheObjectBase owner);
+        public void OnCellBorrowed(UnityExplorer.CacheObject.Views.CacheListEntryCell cell);
+        public override void ReleaseFromOwner();
+        public void SetCell(UnityExplorer.CacheObject.Views.CacheListEntryCell cell, int index);
+        public override void SetLayout();
+        public override void SetValue(object value);
+        public void TrySetValueToIndex(object value, int index);
+    }
+
+    public class InteractiveString : InteractiveValue
+    {
+        public UniverseLib.UI.Models.ButtonRef ApplyButton;
+        public string EditedValue = @"";
+        public UniverseLib.UI.Models.InputFieldRef inputField;
+        public UniverseLib.UI.Models.InputFieldRef SaveFilePath;
+        public UnityEngine.GameObject SaveFileRow;
+        public InteractiveString() {}
+        public override UnityEngine.GameObject CreateContent(UnityEngine.GameObject parent);
+        public override void OnBorrowed(CacheObjectBase owner);
+        public override void SetValue(object value);
+    }
+
+    public abstract class InteractiveValue : UniverseLib.UI.ObjectPool.IPooledObject
+    {
+        public bool PendingValueWanted;
+        public virtual bool CanWrite { get; }
+        public CacheObjectBase CurrentOwner { get; }
+        public float DefaultHeight { get; }
+        public UnityEngine.GameObject UIRoot { get; set; }
+        protected InteractiveValue() {}
+        public abstract UnityEngine.GameObject CreateContent(UnityEngine.GameObject parent);
+        public static System.Type GetIValueTypeForState(ValueState state);
+        public virtual void OnBorrowed(CacheObjectBase owner);
+        public virtual void ReleaseFromOwner();
+        public virtual void SetLayout();
+        public abstract void SetValue(object value);
+    }
+
+    public class InteractiveValueStruct : InteractiveValue
+    {
+        public InteractiveValueStruct.StructInfo CurrentInfo;
+        public object RefInstance;
+        public InteractiveValueStruct() {}
+        public override UnityEngine.GameObject CreateContent(UnityEngine.GameObject parent);
+        public override void OnBorrowed(CacheObjectBase owner);
+        public override void SetValue(object value);
+        public static bool SupportsType(System.Type type);
+        public class StructInfo
+        {
+            public System.Reflection.FieldInfo[] Fields;
+            public bool IsSupported;
+            public StructInfo(bool isSupported, System.Reflection.FieldInfo[] fields) {}
+            public string GetValue(object instance, int fieldIndex);
+            public void SetValue(object instance, string input, int fieldIndex);
+        }
+    }
+}
+
+namespace UnityExplorer.CacheObject.Views
+{
+    public class CacheKeyValuePairCell : CacheObjectCell
+    {
+        public static UnityEngine.Color EvenColor;
+        public UnityEngine.UI.LayoutElement KeyGroupLayout;
+        public UniverseLib.UI.Models.InputFieldRef KeyInputField;
+        public UnityEngine.UI.Text KeyInputTypeLabel;
+        public UniverseLib.UI.Models.ButtonRef KeyInspectButton;
+        public UnityEngine.UI.Text KeyLabel;
+        public static UnityEngine.Color OddColor;
+        public int AdjustedWidth { get; }
+        public UnityExplorer.CacheObject.IValues.InteractiveDictionary DictOwner { get; }
+        public UnityEngine.UI.Image Image { get; }
+        public CacheKeyValuePairCell() {}
+        protected override void ConstructEvaluateHolder(UnityEngine.GameObject parent);
+        public override UnityEngine.GameObject CreateContent(UnityEngine.GameObject parent);
+    }
+
+    public class CacheListEntryCell : CacheObjectCell
+    {
+        public static UnityEngine.Color EvenColor;
+        public static UnityEngine.Color OddColor;
+        public UnityEngine.UI.Image Image { get; }
+        public UnityExplorer.CacheObject.IValues.InteractiveList ListOwner { get; }
+        public CacheListEntryCell() {}
+        protected override void ConstructEvaluateHolder(UnityEngine.GameObject parent);
+        public override UnityEngine.GameObject CreateContent(UnityEngine.GameObject parent);
+    }
+
+    public class CacheMemberCell : CacheObjectCell
+    {
+        public UniverseLib.UI.Models.ButtonRef EvaluateButton;
+        public UnityEngine.GameObject EvaluateHolder;
+        public CacheMember MemberOccupant { get; }
+        public CacheMemberCell() {}
+        protected override void ConstructEvaluateHolder(UnityEngine.GameObject parent);
+        protected virtual void EvaluateClicked();
+    }
+
+    public abstract class CacheObjectCell : UniverseLib.UI.ObjectPool.IPooledObject, UniverseLib.UI.Widgets.ScrollView.ICell
+    {
+        public UniverseLib.UI.Models.ButtonRef ApplyButton;
+        public UniverseLib.UI.Models.ButtonRef CopyButton;
+        public UniverseLib.UI.Models.InputFieldRef HiddenNameLabel;
+        public UniverseLib.UI.Models.InputFieldRef InputField;
+        public UniverseLib.UI.Models.ButtonRef InspectButton;
+        public UnityEngine.UI.Text NameLabel;
+        public UnityEngine.UI.LayoutElement NameLayout;
+        public UniverseLib.UI.Models.ButtonRef PasteButton;
+        public UnityEngine.GameObject RightGroupContent;
+        public UnityEngine.UI.LayoutElement RightGroupLayout;
+        public readonly UnityEngine.Color subActiveColor;
+        public UniverseLib.UI.Models.ButtonRef SubContentButton;
+        public UnityEngine.GameObject SubContentHolder;
+        public readonly UnityEngine.Color subInactiveColor;
+        public UnityEngine.UI.Toggle Toggle;
+        public UnityEngine.UI.Text ToggleText;
+        public UnityEngine.UI.Text TypeLabel;
+        public UnityEngine.UI.Text ValueLabel;
+        public float DefaultHeight { get; }
+        public bool Enabled { get; }
+        public CacheObjectBase Occupant { get; set; }
+        public UnityEngine.RectTransform Rect { get; set; }
+        public bool SubContentActive { get; }
+        public UnityEngine.GameObject UIRoot { get; set; }
+        protected CacheObjectCell() {}
+        protected virtual void ApplyClicked();
+        protected abstract void ConstructEvaluateHolder(UnityEngine.GameObject parent);
+        public virtual UnityEngine.GameObject CreateContent(UnityEngine.GameObject parent);
+        public void Disable();
+        public void Enable();
+        protected virtual void InspectClicked();
+        protected virtual void OnCopyClicked();
+        protected virtual void OnPasteClicked();
+        public void RefreshSubcontentButton();
+        protected virtual void SubContentClicked();
+        protected virtual void ToggleClicked(bool value);
+    }
+
+    public class ConfigEntryCell : CacheObjectCell
+    {
+        public ConfigEntryCell() {}
+        protected override void ConstructEvaluateHolder(UnityEngine.GameObject parent);
+        public override UnityEngine.GameObject CreateContent(UnityEngine.GameObject parent);
+    }
+}
+
+namespace UnityExplorer.Config
+{
+    public class ConfigElement<T> : IConfigElement
+    {
+        public System.Action<T> OnValueChanged;
+        public object DefaultValue { get; }
+        public string Description { get; }
+        public System.Type ElementType { get; }
+        public ConfigHandler Handler { get; }
+        public bool IsInternal { get; }
+        public string Name { get; }
+        public System.Action OnValueChangedNotify { get; set; }
+        public T Value { get; set; }
+        public ConfigElement(string name, string description, T defaultValue, bool isInternal = false) {}
+        public T GetLoaderConfigValue();
+        public void RevertToDefaultValue();
+    }
+
+    public abstract class ConfigHandler
+    {
+        protected ConfigHandler() {}
+        public abstract T GetConfigValue<T>(UnityExplorer.Config.ConfigElement<T> element);
+        public abstract void Init();
+        public abstract void LoadConfig();
+        public virtual void OnAnyConfigChanged();
+        public abstract void RegisterConfigElement<T>(UnityExplorer.Config.ConfigElement<T> element);
+        public abstract void SaveConfig();
+        public abstract void SetConfigValue<T>(UnityExplorer.Config.ConfigElement<T> element, T value);
+    }
+
+    public static class ConfigManager
+    {
+        public static UnityExplorer.Config.ConfigElement<string> CSConsole_Assembly_Blacklist;
+        public static UnityExplorer.Config.ConfigElement<string> Default_Output_Path;
+        public static UnityExplorer.Config.ConfigElement<bool> Disable_EventSystem_Override;
+        public static UnityExplorer.Config.ConfigElement<string> DnSpy_Path;
+        public static UnityExplorer.Config.ConfigElement<bool> Force_Unlock_Mouse;
+        public static UnityExplorer.Config.ConfigElement<UnityEngine.KeyCode> Force_Unlock_Toggle;
+        public static UnityExplorer.Config.ConfigElement<bool> Hide_On_Startup;
+        public static UnityExplorer.Config.ConfigElement<bool> Log_Unity_Debug;
+        public static UnityExplorer.Config.ConfigElement<UnityExplorer.UI.UE_UIManager.VerticalAnchor> Main_Navbar_Anchor;
+        public static UnityExplorer.Config.ConfigElement<UnityEngine.KeyCode> Master_Toggle;
+        public static UnityExplorer.Config.ConfigElement<string> Reflection_Signature_Blacklist;
+        public static UnityExplorer.Config.ConfigElement<float> Startup_Delay_Time;
+        public static UnityExplorer.Config.ConfigElement<int> Target_Display;
+        public static UnityExplorer.Config.ConfigElement<UnityEngine.KeyCode> UI_MouseInspect_Keybind;
+        public static UnityExplorer.Config.ConfigElement<UnityEngine.KeyCode> World_MouseInspect_Keybind;
+        public static ConfigHandler Handler { get; }
+        public static void Init(ConfigHandler configHandler);
+    }
+
+    public interface IConfigElement
+    {
+        public object BoxedValue { get; set; }
+        public object DefaultValue { get; }
+        public string Description { get; }
+        public System.Type ElementType { get; }
+        public bool IsInternal { get; }
+        public string Name { get; }
+        public System.Action OnValueChangedNotify { get; set; }
+        public object GetLoaderConfigValue();
+        public void RevertToDefaultValue();
+    }
+
+    public class InternalConfigHandler : ConfigHandler
+    {
+        public InternalConfigHandler() {}
+        public override T GetConfigValue<T>(UnityExplorer.Config.ConfigElement<T> element);
+        public override void Init();
+        public override void LoadConfig();
+        public override void OnAnyConfigChanged();
+        public override void RegisterConfigElement<T>(UnityExplorer.Config.ConfigElement<T> element);
+        public override void SaveConfig();
+        public override void SetConfigValue<T>(UnityExplorer.Config.ConfigElement<T> element, T value);
+        public bool TryLoadConfig();
+    }
+}
+
+namespace UnityExplorer.CSConsole
+{
+    public static class ConsoleController
+    {
+        public static CSAutoCompleter Completer { get; }
+        public static float DefaultInputFieldAlpha { get; set; }
+        public static bool EnableAutoIndent { get; }
+        public static bool EnableCtrlRShortcut { get; }
+        public static bool EnableSuggestions { get; }
+        public static ScriptEvaluator Evaluator { get; }
+        public static UniverseLib.UI.Models.InputFieldRef Input { get; }
+        public static int LastCaretPosition { get; }
+        public static LexerBuilder Lexer { get; }
+        public static UnityExplorer.UI.Panels.CSConsolePanel Panel { get; }
+        public static string ScriptsFolder { get; }
+        public static bool SRENotSupported { get; }
+        public static void AddUsing(string assemblyName);
+        public static void Evaluate();
+        public static void Evaluate(string input, bool supressLog = false);
+        public static void HelpSelected(int index);
+        public static void Init();
+        public static void InsertSuggestionAtCaret(string suggestion);
+        public static void ResetConsole();
+        public static void ResetConsole(bool logSuccess = true);
+        public static void SetCaretPosition(int caretPosition);
+        public static void SetupHelpInteraction();
+        public static void Update();
+    }
+
+    public class CSAutoCompleter : UnityExplorer.UI.Widgets.AutoComplete.ISuggestionProvider
+    {
+        public bool AnchorToCaretPosition { get; }
+        public UniverseLib.UI.Models.InputFieldRef InputField { get; }
+        public CSAutoCompleter() {}
+        public void CheckAutocompletes();
+        public void OnSuggestionClicked(UnityExplorer.UI.Widgets.AutoComplete.Suggestion suggestion);
+    }
+
+    public class LexerBuilder
+    {
+        public readonly System.Collections.Generic.HashSet<char> IndentCloseChars;
+        public readonly System.Collections.Generic.HashSet<char> IndentOpenChars;
+        public const char WHITESPACE =  ;
+        public int CommittedIndex { get; }
+        public char Current { get; }
+        public int CurrentIndex { get; }
+        public bool EndOfInput { get; }
+        public bool EndOrNewLine { get; }
+        public char Previous { get; }
+        public LexerBuilder() {}
+        public string BuildHighlightedString(string input, int startIdx, int endIdx, int leadingLines, int caretIdx, out bool caretInStringOrComment);
+        public void Commit();
+        public System.Collections.Generic.IEnumerable<MatchInfo> GetMatches();
+        public string IndentCharacter(string input, ref int caretIndex);
+        public bool IsDelimiter(char character, bool orWhitespace = false, bool orLetterOrDigit = false);
+        public static bool IsNewLine(char c);
+        public char PeekNext(int amount = 1);
+        public void Rollback();
+        public void RollbackBy(int amount);
+    }
+
+    public struct MatchInfo
+    {
+        public int endIndex;
+        public string htmlColorTag;
+        public bool isStringOrComment;
+        public bool matchToEndOfLine;
+        public int startIndex;
+    }
+
+    public class ScriptEvaluator : Mono.CSharp.Evaluator, System.IDisposable
+    {
+        public ScriptEvaluator(System.IO.TextWriter tw) {}
+        public void Dispose();
+    }
+
+    public class ScriptInteraction : Mono.CSharp.InteractiveBase
+    {
+        public static object[] AllTargets { get; }
+        public static object CurrentTarget { get; }
+        public ScriptInteraction() {}
+        public static void Copy(object obj);
+        public static void GetClasses();
+        public static void GetUsing();
+        public static void GetVars();
+        public static void Inspect(object obj);
+        public static void Inspect(System.Type type);
+        public static void Log(object message);
+        public static object Paste();
+        public static UnityEngine.Coroutine Start(System.Collections.IEnumerator ienumerator);
+        public static void Stop(UnityEngine.Coroutine coro);
+    }
+}
+
+namespace UnityExplorer.CSConsole.Lexers
+{
+    public class CommentLexer : Lexer
+    {
+        protected override UnityEngine.Color HighlightColor { get; }
+        public CommentLexer() {}
+        public override bool TryMatchCurrent(LexerBuilder lexer);
+    }
+
+    public class KeywordLexer : Lexer
+    {
+        public static readonly System.Collections.Generic.HashSet<string> keywords;
+        protected override UnityEngine.Color HighlightColor { get; }
+        public KeywordLexer() {}
+        public override bool TryMatchCurrent(LexerBuilder lexer);
+    }
+
+    public abstract class Lexer
+    {
+        public string ColorTag { get; }
+        public virtual System.Collections.Generic.IEnumerable<char> Delimiters { get; }
+        protected abstract UnityEngine.Color HighlightColor { get; }
+        protected Lexer() {}
+        public abstract bool TryMatchCurrent(LexerBuilder lexer);
+    }
+
+    public class NumberLexer : Lexer
+    {
+        protected override UnityEngine.Color HighlightColor { get; }
+        public NumberLexer() {}
+        public override bool TryMatchCurrent(LexerBuilder lexer);
+    }
+
+    public class StringLexer : Lexer
+    {
+        public override System.Collections.Generic.IEnumerable<char> Delimiters { get; }
+        protected override UnityEngine.Color HighlightColor { get; }
+        public StringLexer() {}
+        public override bool TryMatchCurrent(LexerBuilder lexer);
+    }
+
+    public class SymbolLexer : Lexer
+    {
+        public static readonly System.Collections.Generic.HashSet<char> symbols;
+        public override System.Collections.Generic.IEnumerable<char> Delimiters { get; }
+        protected override UnityEngine.Color HighlightColor { get; }
+        public SymbolLexer() {}
+        public static bool IsSymbol(char c);
+        public override bool TryMatchCurrent(LexerBuilder lexer);
+    }
+}
+
+namespace UnityExplorer.Hooks
+{
+    public class AddHookCell : UniverseLib.UI.ObjectPool.IPooledObject, UniverseLib.UI.Widgets.ScrollView.ICell
+    {
+        public int CurrentDisplayedIndex;
+        public UniverseLib.UI.Models.ButtonRef HookButton;
+        public UnityEngine.UI.Text MethodNameLabel;
+        public float DefaultHeight { get; }
+        public bool Enabled { get; }
+        public UnityEngine.RectTransform Rect { get; set; }
+        public UnityEngine.GameObject UIRoot { get; set; }
+        public AddHookCell() {}
+        public UnityEngine.GameObject CreateContent(UnityEngine.GameObject parent);
+        public void Disable();
+        public void Enable();
+    }
+
+    public class HookCell : UniverseLib.UI.ObjectPool.IPooledObject, UniverseLib.UI.Widgets.ScrollView.ICell
+    {
+        public int CurrentDisplayedIndex;
+        public UniverseLib.UI.Models.ButtonRef DeleteButton;
+        public UniverseLib.UI.Models.ButtonRef EditPatchButton;
+        public UnityEngine.UI.Text MethodNameLabel;
+        public UniverseLib.UI.Models.ButtonRef ToggleActiveButton;
+        public float DefaultHeight { get; }
+        public bool Enabled { get; }
+        public UnityEngine.RectTransform Rect { get; set; }
+        public UnityEngine.GameObject UIRoot { get; set; }
+        public HookCell() {}
+        public UnityEngine.GameObject CreateContent(UnityEngine.GameObject parent);
+        public void Disable();
+        public void Enable();
+    }
+
+    public class HookCreator : UniverseLib.UI.Widgets.ScrollView.ICellPoolDataSource<AddHookCell>
+    {
+        public static UnityEngine.UI.Text EditingHookLabel { get; }
+        public static UnityEngine.UI.Text EditorHighlightText { get; }
+        public static UniverseLib.UI.Models.InputFieldRef EditorInput { get; }
+        public static UniverseLib.UI.Widgets.InputFieldScroller EditorInputScroller { get; }
+        public static UnityEngine.UI.Text EditorInputText { get; }
+        public static UnityEngine.GameObject EditorRoot { get; }
+        public int ItemCount { get; }
+        public static bool PendingGeneric { get; }
+        public HookCreator() {}
+        public static void AddHook(System.Reflection.MethodInfo method);
+        public static void AddHookClicked(int index);
+        public void ConstructEditor(UnityEngine.GameObject parent);
+        public void OnAddHookFilterInputChanged(string input);
+        public void OnCellBorrowed(AddHookCell cell);
+        public void OnClassSelectedForHooks(string typeFullName);
+        public void SetAddHooksLabelType(string typeText);
+        public void SetCell(AddHookCell cell, int index);
+    }
+
+    public class HookInstance
+    {
+        public bool Enabled;
+        public string PatchSourceCode;
+        public System.Reflection.MethodInfo TargetMethod;
+        public HookInstance(System.Reflection.MethodInfo targetMethod) {}
+        public bool CompileAndGenerateProcessor(string patchSource);
+        public void Patch();
+        public void TogglePatch();
+        public void Unpatch();
+    }
+
+    public class HookList : UniverseLib.UI.Widgets.ScrollView.ICellPoolDataSource<HookCell>
+    {
+        public int ItemCount { get; }
+        public HookList() {}
+        public static void DeleteHookClicked(int index);
+        public static void EditPatchClicked(int index);
+        public static void EnableOrDisableHookClicked(int index);
+        public void OnCellBorrowed(HookCell cell);
+        public void SetCell(HookCell cell, int index);
+    }
+}
+
+namespace UnityExplorer.Inspectors
+{
+    public class GameObjectInspector : InspectorBase
+    {
+        public UnityExplorer.UI.Widgets.ComponentList ComponentList;
+        public UnityEngine.GameObject Content;
+        public UnityExplorer.UI.Widgets.GameObjectControls Controls;
+        public UniverseLib.UI.Widgets.TransformTree TransformTree;
+        public UnityEngine.GameObject Target { get; }
+        public GameObjectInspector() {}
+        public override void CloseInspector();
+        public override UnityEngine.GameObject CreateContent(UnityEngine.GameObject parent);
+        public override void OnBorrowedFromPool(object target);
+        public override void OnReturnToPool();
+        public void OnTransformCellClicked(UnityEngine.GameObject newTarget);
+        public override void Update();
+        public void UpdateComponents();
+    }
+
+    public abstract class InspectorBase : UniverseLib.UI.ObjectPool.IPooledObject
+    {
+        public float DefaultHeight { get; }
+        public bool IsActive { get; }
+        public InspectorTab Tab { get; }
+        public object Target { get; set; }
+        public System.Type TargetType { get; protected set; }
+        public UnityEngine.GameObject UIRoot { get; set; }
+        protected InspectorBase() {}
+        public abstract void CloseInspector();
+        public abstract UnityEngine.GameObject CreateContent(UnityEngine.GameObject parent);
+        public virtual void OnBorrowedFromPool(object target);
+        public virtual void OnReturnToPool();
+        public virtual void OnSetActive();
+        public virtual void OnSetInactive();
+        public abstract void Update();
+    }
+
+    public class InspectorTab : UniverseLib.UI.ObjectPool.IPooledObject
+    {
+        public UniverseLib.UI.Models.ButtonRef CloseButton;
+        public UniverseLib.UI.Models.ButtonRef TabButton;
+        public UnityEngine.UI.Text TabText;
+        public float DefaultHeight { get; }
+        public UnityEngine.GameObject UIRoot { get; set; }
+        public InspectorTab() {}
+        public UnityEngine.GameObject CreateContent(UnityEngine.GameObject parent);
+        public void SetTabColor(bool active);
+    }
+
+    [System.Flags] public enum MemberFilter
+    {
+        All = 15,
+        Constructor = 4,
+        Field = 2,
+        Method = 8,
+        None = 0,
+        Property = 1,
+    }
+
+    public enum MouseInspectMode
+    {
+        UI = 1,
+        World = 0,
+    }
+
+    public class MouseInspector : UniverseLib.UI.Panels.PanelBase
+    {
+        public override bool CanDragAndResize { get; }
+        public MouseInspectors.MouseInspectorBase CurrentInspector { get; }
+        public override UnityEngine.Vector2 DefaultAnchorMax { get; }
+        public override UnityEngine.Vector2 DefaultAnchorMin { get; }
+        public static bool Inspecting { get; set; }
+        public static MouseInspector Instance { get; }
+        public override int MinHeight { get; }
+        public override int MinWidth { get; }
+        public static MouseInspectMode Mode { get; set; }
+        public override string Name { get; }
+        public MouseInspector(UniverseLib.UI.UIBase owner) {}
+        protected override void ConstructPanelContent();
+        public static void OnDropdownSelect(int index);
+        public override void SetDefaultSizeAndPosition();
+        public void StartInspect(MouseInspectMode mode);
+        public void StopInspect();
+        public bool TryUpdate();
+        public void UpdateInspect();
+    }
+
+    public class ReflectionInspector : InspectorBase, UnityExplorer.CacheObject.ICacheObjectController, UniverseLib.UI.Widgets.ScrollView.ICellPoolDataSource<UnityExplorer.CacheObject.Views.CacheMemberCell>
+    {
+        public bool AutoUpdateWanted { get; }
+        public bool CanWrite { get; }
+        public UnityEngine.GameObject ContentRoot { get; }
+        public int ItemCount { get; }
+        public UniverseLib.UI.Widgets.ScrollView.ScrollPool<UnityExplorer.CacheObject.Views.CacheMemberCell> MemberScrollPool { get; }
+        public UnityExplorer.CacheObject.CacheObjectBase ParentCacheObject { get; set; }
+        public bool StaticOnly { get; }
+        public string TabButtonText { get; set; }
+        public UnityExplorer.UI.Widgets.UnityObjectWidget UnityWidget { get; }
+        public ReflectionInspector() {}
+        public override void CloseInspector();
+        public override UnityEngine.GameObject CreateContent(UnityEngine.GameObject parent);
+        public override void OnBorrowedFromPool(object target);
+        public void OnCellBorrowed(UnityExplorer.CacheObject.Views.CacheMemberCell cell);
+        public override void OnReturnToPool();
+        public void OnSetFlags(System.Reflection.BindingFlags flags);
+        public void OnSetNameFilter(string name);
+        public void SetCell(UnityExplorer.CacheObject.Views.CacheMemberCell cell, int index);
+        public void SetFilter(string name, System.Reflection.BindingFlags flags);
+        public override void Update();
+    }
+}
+
+namespace UnityExplorer.Inspectors.MouseInspectors
+{
+    public abstract class MouseInspectorBase
+    {
+        protected MouseInspectorBase() {}
+        public abstract void ClearHitData();
+        public abstract void OnBeginMouseInspect();
+        public abstract void OnEndInspect();
+        public abstract void OnSelectMouseInspect();
+        public abstract void UpdateMouseInspect(UnityEngine.Vector2 mousePos);
+    }
+
+    public class UiInspector : MouseInspectorBase
+    {
+        public static readonly System.Collections.Generic.List<UnityEngine.GameObject> LastHitObjects;
+        public UiInspector() {}
+        public override void ClearHitData();
+        public override void OnBeginMouseInspect();
+        public override void OnEndInspect();
+        public override void OnSelectMouseInspect();
+        public override void UpdateMouseInspect(UnityEngine.Vector2 mousePos);
+    }
+
+    public class WorldInspector : MouseInspectorBase
+    {
+        public WorldInspector() {}
+        public override void ClearHitData();
+        public override void OnBeginMouseInspect();
+        public override void OnEndInspect();
+        public override void OnSelectMouseInspect();
+        public override void UpdateMouseInspect(UnityEngine.Vector2 mousePos);
+    }
+}
+
+namespace UnityExplorer.Loader.CoreKeeper
+{
+    public class Logger
+    {
+        public Logger(string tag) {}
+        public void LogDebug(string text);
+        public void LogError(string text);
+        public void LogInfo(string text);
+        public void LogWarning(string text);
+    }
+}
+
+namespace UnityExplorer.Loader.Standalone
+{
+    public class ExplorerEditorLoader : ExplorerStandalone
+    {
+        public string ExplorerFolderName { get; }
+        public ExplorerEditorLoader() {}
+        protected override void CheckExplorerFolder();
+        public static void Initialize();
+    }
+
+    public class StandaloneConfigHandler : UnityExplorer.Config.ConfigHandler
+    {
+        public StandaloneConfigHandler() {}
+        public override T GetConfigValue<T>(UnityExplorer.Config.ConfigElement<T> element);
+        public override void Init();
+        public override void LoadConfig();
+        public override void OnAnyConfigChanged();
+        public override void RegisterConfigElement<T>(UnityExplorer.Config.ConfigElement<T> element);
+        public override void SaveConfig();
+        public override void SetConfigValue<T>(UnityExplorer.Config.ConfigElement<T> element, T value);
+        public object StringToConfigValue(string value, System.Type elementType);
+        public bool TryLoadConfig();
+    }
+}
+
+namespace UnityExplorer.ObjectExplorer
+{
+    public enum ChildFilter
+    {
+        Any = 0,
+        HasParent = 2,
+        RootObject = 1,
+    }
+
+    public class ObjectSearch : UITabPanel
+    {
+        public UnityExplorer.UI.Widgets.AutoComplete.TypeCompleter allTypesCompleter;
+        public UniverseLib.UI.Widgets.ButtonList.ButtonListHandler<object, UniverseLib.UI.Widgets.ButtonList.ButtonCell> dataHandler;
+        public UnityExplorer.UI.Widgets.AutoComplete.TypeCompleter unityObjectTypeCompleter;
+        public override string Name { get; }
+        public UnityExplorer.UI.Panels.ObjectExplorerPanel Parent { get; }
+        public override UnityEngine.GameObject UIRoot { get; }
+        public ObjectSearch(UnityExplorer.UI.Panels.ObjectExplorerPanel parent) {}
+        public override void ConstructUI(UnityEngine.GameObject parent);
+        public void DoSearch();
+        public System.Collections.Generic.List<object> GetEntries();
+        public void SetCell(UniverseLib.UI.Widgets.ButtonList.ButtonCell cell, int index);
+        public override void Update();
+    }
+
+    public class SceneExplorer : UITabPanel
+    {
+        public bool AutoUpdate;
+        public UniverseLib.UI.Widgets.TransformTree Tree;
+        public override string Name { get; }
+        public UnityExplorer.UI.Panels.ObjectExplorerPanel Parent { get; }
+        public override UnityEngine.GameObject UIRoot { get; }
+        public SceneExplorer(UnityExplorer.UI.Panels.ObjectExplorerPanel parent) {}
+        public override void ConstructUI(UnityEngine.GameObject content);
+        public void JumpToTransform(UnityEngine.Transform transform);
+        public override void Update();
+        public void UpdateTree();
+    }
+
+    public enum SceneFilter
+    {
+        ActivelyLoaded = 1,
+        Any = 0,
+        DontDestroyOnLoad = 2,
+        HideAndDontSave = 3,
+    }
+
+    public static class SceneHandler
+    {
+        public static event System.Action<UnityEngine.SceneManagement.Scene> OnInspectedSceneChanged;
+        public static event System.Action<System.Collections.Generic.List<UnityEngine.SceneManagement.Scene>> OnLoadedScenesUpdated;
+        public static System.Collections.Generic.List<string> AllSceneNames { get; }
+        public static System.Collections.Generic.IEnumerable<UnityEngine.GameObject> CurrentRootObjects { get; }
+        public static bool DontDestroyExists { get; }
+        public static bool InspectingAssetScene { get; }
+        public static System.Collections.Generic.List<UnityEngine.SceneManagement.Scene> LoadedScenes { get; }
+        public static System.Nullable<UnityEngine.SceneManagement.Scene> SelectedScene { get; }
+        public static bool WasAbleToGetScenesInBuild { get; }
+    }
+
+    public enum SearchContext
+    {
+        Class = 2,
+        Singleton = 1,
+        UnityObject = 0,
+    }
+
+    public static class SearchProvider
+    {
+    }
+
+    public abstract class UITabPanel : UniverseLib.UI.Models.UIModel
+    {
+        public abstract string Name { get; }
+        protected UITabPanel() {}
+        public abstract void Update();
+    }
+}
+
+namespace UnityExplorer.Runtime
+{
+    public class MonoHelper : UERuntimeHelper
+    {
+        public MonoHelper() {}
+        public override void SetupEvents();
+    }
+
+    public abstract class UERuntimeHelper
+    {
+        public static UERuntimeHelper Instance;
+        public virtual string[] DefaultReflectionBlacklist { get; }
+        protected UERuntimeHelper() {}
+        public static void Init();
+        public static bool IsBlacklisted(System.Reflection.MemberInfo member);
+        public static void LoadBlacklistString(string blacklist);
+        public abstract void SetupEvents();
+    }
+}
+
+namespace UnityExplorer.UI
+{
+    public static class DisplayManager
+    {
+        public static UnityEngine.Display ActiveDisplay { get; }
+        public static int ActiveDisplayIndex { get; }
+        public static int Height { get; }
+        public static bool MouseInTargetDisplay { get; }
+        public static UnityEngine.Vector3 MousePosition { get; }
+        public static int Width { get; }
+        public static void SetDisplay(int display);
+    }
+
+    public static class Notification
+    {
+        public static void Init();
+        public static void ShowMessage(string message);
+        public static void Update();
+    }
+
+    public static class UE_UIManager
+    {
+        public static UE_UIManager.VerticalAnchor NavbarAnchor = UE_UIManager.VerticalAnchor.Top;
+        public static UnityEngine.RectTransform NavBarRect;
+        public static UnityEngine.GameObject NavbarTabButtonHolder;
+        public static event System.Action onInit;
+        public static bool Initializing { get; }
+        public static bool ShowMenu { get; set; }
+        public static UnityEngine.Canvas UICanvas { get; }
+        public static UnityEngine.GameObject UIRoot { get; }
+        public static UnityEngine.RectTransform UIRootRect { get; }
+        public static T GetPanel<T>(UE_UIManager.Panels panel) where T : Panels.UEPanel;
+        public static Panels.UEPanel GetPanel(UE_UIManager.Panels panel);
+        public static void SetNavBarAnchor();
+        public static void SetPanelActive(Panels.UEPanel panel, bool active);
+        public static void SetPanelActive(UE_UIManager.Panels panelType, bool active);
+        public static void TogglePanel(UE_UIManager.Panels panel);
+        public static void Update();
+        public enum Panels
+        {
+            AutoCompleter = 5,
+            Clipboard = 8,
+            ConsoleLog = 4,
+            CSConsole = 2,
+            Freecam = 9,
+            HookManager = 7,
+            Inspector = 1,
+            ObjectExplorer = 0,
+            Options = 3,
+            UIInspectorResults = 6,
+        }
+        public enum VerticalAnchor
+        {
+            Bottom = 1,
+            Top = 0,
+        }
+    }
+
+    public class UEPanelManager : UniverseLib.UI.Panels.PanelManager
+    {
+        protected override bool MouseInTargetDisplay { get; }
+        protected override UnityEngine.Vector3 MousePosition { get; }
+        protected override UnityEngine.Vector2 ScreenDimensions { get; }
+        public UEPanelManager(UniverseLib.UI.UIBase owner) {}
+        protected override void SortDraggerHeirarchy();
+    }
+}
+
+namespace UnityExplorer.UI.Panels
+{
+    public class AutoCompleteModal : UEPanel
+    {
+        public static UniverseLib.UI.Widgets.ButtonList.ButtonListHandler<UnityExplorer.UI.Widgets.AutoComplete.Suggestion, UniverseLib.UI.Widgets.ButtonList.ButtonCell> buttonListDataHandler;
+        public static UniverseLib.UI.Widgets.ScrollView.ScrollPool<UniverseLib.UI.Widgets.ButtonList.ButtonCell> scrollPool;
+        public override bool CanDragAndResize { get; }
+        public static UnityExplorer.UI.Widgets.AutoComplete.ISuggestionProvider CurrentHandler { get; }
+        public override UnityEngine.Vector2 DefaultAnchorMax { get; }
+        public override UnityEngine.Vector2 DefaultAnchorMin { get; }
+        public static AutoCompleteModal Instance { get; }
+        public override int MinHeight { get; }
+        public override int MinWidth { get; }
+        public override string Name { get; }
+        public override bool NavButtonWanted { get; }
+        public override UE_UIManager.Panels PanelType { get; }
+        public static UnityExplorer.UI.Widgets.AutoComplete.Suggestion SelectedSuggestion { get; }
+        public override bool ShouldSaveActiveState { get; }
+        public AutoCompleteModal(UniverseLib.UI.UIBase owner) {}
+        public static bool CheckEnter(UnityExplorer.UI.Widgets.AutoComplete.ISuggestionProvider handler);
+        public static bool CheckEscape(UnityExplorer.UI.Widgets.AutoComplete.ISuggestionProvider handler);
+        public static bool CheckNavigation(UnityExplorer.UI.Widgets.AutoComplete.ISuggestionProvider handler);
+        protected override void ConstructPanelContent();
+        public override void OnFinishResize();
+        public void ReleaseOwnership(UnityExplorer.UI.Widgets.AutoComplete.ISuggestionProvider provider);
+        public void SetSuggestions(System.Collections.Generic.List<UnityExplorer.UI.Widgets.AutoComplete.Suggestion> suggestions, bool jumpToTop = true);
+        public static bool Suggesting(UnityExplorer.UI.Widgets.AutoComplete.ISuggestionProvider handler);
+        public static void TakeOwnership(UnityExplorer.UI.Widgets.AutoComplete.ISuggestionProvider provider);
+        public override void Update();
+    }
+
+    public class ClipboardPanel : UEPanel
+    {
+        public override bool CanDragAndResize { get; }
+        public static object Current { get; }
+        public override UnityEngine.Vector2 DefaultAnchorMax { get; }
+        public override UnityEngine.Vector2 DefaultAnchorMin { get; }
+        public override int MinHeight { get; }
+        public override int MinWidth { get; }
+        public override string Name { get; }
+        public override bool NavButtonWanted { get; }
+        public override UE_UIManager.Panels PanelType { get; }
+        public override bool ShouldSaveActiveState { get; }
+        public override bool ShowByDefault { get; }
+        public ClipboardPanel(UniverseLib.UI.UIBase owner) {}
+        public static void ClearClipboard();
+        protected override void ConstructPanelContent();
+        public static void Copy(object obj);
+        public override void SetDefaultSizeAndPosition();
+        public static bool TryPaste(System.Type targetType, out object paste);
+    }
+
+    public class ConsoleLogCell : UniverseLib.UI.ObjectPool.IPooledObject, UniverseLib.UI.Widgets.ScrollView.ICell
+    {
+        public UnityEngine.UI.Text IndexLabel;
+        public UniverseLib.UI.Models.InputFieldRef Input;
+        public float DefaultHeight { get; }
+        public bool Enabled { get; }
+        public UnityEngine.RectTransform Rect { get; set; }
+        public UnityEngine.GameObject UIRoot { get; set; }
+        public ConsoleLogCell() {}
+        public UnityEngine.GameObject CreateContent(UnityEngine.GameObject parent);
+        public void Disable();
+        public void Enable();
+    }
+
+    public class CSConsolePanel : UEPanel
+    {
+        public System.Action<bool> OnAutoIndentToggled;
+        public System.Action OnCompileClicked;
+        public System.Action<bool> OnCtrlRToggled;
+        public System.Action<int> OnHelpDropdownChanged;
+        public System.Action<string> OnInputChanged;
+        public System.Action OnPanelResized;
+        public System.Action OnResetClicked;
+        public System.Action<bool> OnSuggestionsToggled;
+        public override UnityEngine.Vector2 DefaultAnchorMax { get; }
+        public override UnityEngine.Vector2 DefaultAnchorMin { get; }
+        public UnityEngine.UI.Dropdown HelpDropdown { get; }
+        public UnityEngine.UI.Text HighlightText { get; }
+        public UniverseLib.UI.Models.InputFieldRef Input { get; }
+        public UniverseLib.UI.Widgets.InputFieldScroller InputScroller { get; }
+        public UnityEngine.UI.Text InputText { get; }
+        public UnityEngine.UI.Text LineNumberText { get; }
+        public override int MinHeight { get; }
+        public override int MinWidth { get; }
+        public override string Name { get; }
+        public override UE_UIManager.Panels PanelType { get; }
+        public CSConsolePanel(UniverseLib.UI.UIBase owner) {}
+        protected override void ConstructPanelContent();
+        public override void OnFinishResize();
+        public void SetInputLayout();
+        public override void Update();
+    }
+
+    public class HookManagerPanel : UEPanel
+    {
+        public static UnityExplorer.UI.Widgets.GenericConstructorWidget genericArgsHandler;
+        public static UnityExplorer.Hooks.HookCreator hookCreator;
+        public static UnityExplorer.Hooks.HookList hookList;
+        public HookManagerPanel.Pages CurrentPage { get; }
+        public override UnityEngine.Vector2 DefaultAnchorMax { get; }
+        public override UnityEngine.Vector2 DefaultAnchorMin { get; }
+        public static HookManagerPanel Instance { get; }
+        public override int MinHeight { get; }
+        public override int MinWidth { get; }
+        public override string Name { get; }
+        public override UE_UIManager.Panels PanelType { get; }
+        public override bool ShowByDefault { get; }
+        public HookManagerPanel(UniverseLib.UI.UIBase owner) {}
+        protected override void ConstructPanelContent();
+        public override void SetDefaultSizeAndPosition();
+        public void SetPage(HookManagerPanel.Pages page);
+        public enum Pages
+        {
+            ClassMethodSelector = 0,
+            GenericArgsSelector = 2,
+            HookSourceEditor = 1,
+        }
+    }
+
+    public class InspectorPanel : UEPanel
+    {
+        public UnityEngine.GameObject ContentHolder;
+        public UnityEngine.RectTransform ContentRect;
+        public UnityEngine.UI.Dropdown MouseInspectDropdown;
+        public UnityEngine.GameObject NavbarHolder;
+        public static float CurrentPanelHeight { get; }
+        public static float CurrentPanelWidth { get; }
+        public override UnityEngine.Vector2 DefaultAnchorMax { get; }
+        public override UnityEngine.Vector2 DefaultAnchorMin { get; }
+        public static InspectorPanel Instance { get; }
+        public override int MinHeight { get; }
+        public override int MinWidth { get; }
+        public override string Name { get; }
+        public override UE_UIManager.Panels PanelType { get; }
+        public override bool ShouldSaveActiveState { get; }
+        public InspectorPanel(UniverseLib.UI.UIBase owner) {}
+        protected override void ConstructPanelContent();
+        public override void OnFinishResize();
+        public override void Update();
+    }
+
+    public class LogPanel : UEPanel, UniverseLib.UI.Widgets.ScrollView.ICellPoolDataSource<ConsoleLogCell>
+    {
+        public override UnityEngine.Vector2 DefaultAnchorMax { get; }
+        public override UnityEngine.Vector2 DefaultAnchorMin { get; }
+        public int ItemCount { get; }
+        public override int MinHeight { get; }
+        public override int MinWidth { get; }
+        public override string Name { get; }
+        public override UE_UIManager.Panels PanelType { get; }
+        public override bool ShouldSaveActiveState { get; }
+        public override bool ShowByDefault { get; }
+        public LogPanel(UniverseLib.UI.UIBase owner) {}
+        protected override void ConstructPanelContent();
+        public static void Log(string message, UnityEngine.LogType type);
+        public void OnCellBorrowed(ConsoleLogCell cell);
+        public override void SetActive(bool active);
+        public void SetCell(ConsoleLogCell cell, int index);
+        public struct LogInfo
+        {
+            public string message;
+            public UnityEngine.LogType type;
+            public LogInfo(string message, UnityEngine.LogType type) {}
+        }
+    }
+
+    public class MouseInspectorResultsPanel : UEPanel
+    {
+        public override bool CanDragAndResize { get; }
+        public override UnityEngine.Vector2 DefaultAnchorMax { get; }
+        public override UnityEngine.Vector2 DefaultAnchorMin { get; }
+        public override int MinHeight { get; }
+        public override int MinWidth { get; }
+        public override string Name { get; }
+        public override bool NavButtonWanted { get; }
+        public override UE_UIManager.Panels PanelType { get; }
+        public override bool ShouldSaveActiveState { get; }
+        public override bool ShowByDefault { get; }
+        public MouseInspectorResultsPanel(UniverseLib.UI.UIBase owner) {}
+        protected override void ConstructPanelContent();
+        public override void SetDefaultSizeAndPosition();
+        public void ShowResults();
+    }
+
+    public class ObjectExplorerPanel : UEPanel
+    {
+        public int SelectedTab;
+        public override UnityEngine.Vector2 DefaultAnchorMax { get; }
+        public override UnityEngine.Vector2 DefaultAnchorMin { get; }
+        public override int MinHeight { get; }
+        public override int MinWidth { get; }
+        public override string Name { get; }
+        public override UE_UIManager.Panels PanelType { get; }
+        public UnityExplorer.ObjectExplorer.SceneExplorer SceneExplorer { get; }
+        public override bool ShouldSaveActiveState { get; }
+        public override bool ShowByDefault { get; }
+        public ObjectExplorerPanel(UniverseLib.UI.UIBase owner) {}
+        public void AddTab(UnityExplorer.ObjectExplorer.UITabPanel tab);
+        protected override void ApplySaveData(string data);
+        protected override void ConstructPanelContent();
+        public void SetTab(int tabIndex);
+        public override string ToSaveData();
+        public override void Update();
+    }
+
+    public class OptionsPanel : UEPanel, UnityExplorer.CacheObject.ICacheObjectController, UniverseLib.UI.Widgets.ScrollView.ICellPoolDataSource<UnityExplorer.CacheObject.Views.ConfigEntryCell>
+    {
+        public bool CanWrite { get; }
+        public override UnityEngine.Vector2 DefaultAnchorMax { get; }
+        public override UnityEngine.Vector2 DefaultAnchorMin { get; }
+        public int ItemCount { get; }
+        public override int MinHeight { get; }
+        public override int MinWidth { get; }
+        public override string Name { get; }
+        public override UE_UIManager.Panels PanelType { get; }
+        public UnityExplorer.CacheObject.CacheObjectBase ParentCacheObject { get; }
+        public override bool ShouldSaveActiveState { get; }
+        public override bool ShowByDefault { get; }
+        public object Target { get; }
+        public System.Type TargetType { get; }
+        public OptionsPanel(UniverseLib.UI.UIBase owner) {}
+        protected override void ConstructPanelContent();
+        public void OnCellBorrowed(UnityExplorer.CacheObject.Views.ConfigEntryCell cell);
+        public void SetCell(UnityExplorer.CacheObject.Views.ConfigEntryCell cell, int index);
+        public override void SetDefaultSizeAndPosition();
+    }
+
+    public static class RectSaveExtensions
+    {
+    }
+
+    public abstract class UEPanel : UniverseLib.UI.Panels.PanelBase
+    {
+        public bool ApplyingSaveData { get; set; }
+        public UniverseLib.UI.Models.ButtonRef NavButton { get; }
+        public virtual bool NavButtonWanted { get; }
+        public abstract UE_UIManager.Panels PanelType { get; }
+        public virtual bool ShouldSaveActiveState { get; }
+        public virtual bool ShowByDefault { get; }
+        protected UEPanel(UniverseLib.UI.UIBase owner) {}
+        public virtual void ApplySaveData();
+        protected virtual void ApplySaveData(string data);
+        public override void ConstructUI();
+        protected override UniverseLib.UI.Panels.PanelDragger CreatePanelDragger();
+        protected override void LateConstructUI();
+        public override void OnFinishDrag();
+        public override void OnFinishResize();
+        public void SaveInternalData();
+        public override void SetActive(bool active);
+        public override void SetDefaultSizeAndPosition();
+        public virtual string ToSaveData();
+    }
+
+    public class UEPanelDragger : UniverseLib.UI.Panels.PanelDragger
+    {
+        public UEPanelDragger(UniverseLib.UI.Panels.PanelBase uiPanel) {}
+        protected override bool MouseInResizeArea(UnityEngine.Vector2 mousePos);
+    }
+}
+
+namespace UnityExplorer.UI.Widgets
+{
+    public class AudioClipWidget : UnityObjectWidget
+    {
+        public UnityEngine.AudioClip audioClip;
+        public AudioClipWidget() {}
+        public override UnityEngine.GameObject CreateContent(UnityEngine.GameObject uiRoot);
+        public override void OnBorrowed(object target, System.Type targetType, UnityExplorer.Inspectors.ReflectionInspector inspector);
+        public override void OnReturnToPool();
+        public void OnSaveClipClicked();
+    }
+
+    public class AxisControl
+    {
+        public readonly int axis;
+        public readonly Vector3Control parent;
+        public readonly UnityEngine.UI.Slider slider;
+        public AxisControl(int axis, UnityEngine.UI.Slider slider, Vector3Control parentControl) {}
+        public static AxisControl Create(UnityEngine.GameObject parent, string title, int axis, Vector3Control owner);
+    }
+
+    public abstract class BaseArgumentHandler : UniverseLib.UI.ObjectPool.IPooledObject
+    {
+        public float DefaultHeight { get; }
+        public UnityEngine.GameObject UIRoot { get; set; }
+        protected BaseArgumentHandler() {}
+        public UnityEngine.GameObject CreateContent(UnityEngine.GameObject parent);
+        public abstract void CreateSpecialContent();
+    }
+
+    public class ComponentCell : UniverseLib.UI.Widgets.ButtonList.ButtonCell
+    {
+        public UnityEngine.UI.Toggle BehaviourToggle;
+        public UniverseLib.UI.Models.ButtonRef DestroyButton;
+        public System.Action<bool, int> OnBehaviourToggled;
+        public System.Action<int> OnDestroyClicked;
+        public ComponentCell() {}
+        public override UnityEngine.GameObject CreateContent(UnityEngine.GameObject parent);
+    }
+
+    public class ComponentList : UniverseLib.UI.Widgets.ButtonList.ButtonListHandler<UnityEngine.Component, ComponentCell>
+    {
+        public UnityExplorer.Inspectors.GameObjectInspector Parent;
+        public ComponentList(UniverseLib.UI.Widgets.ScrollView.ScrollPool<ComponentCell> scrollPool, System.Func<System.Collections.Generic.List<UnityEngine.Component>> getEntriesMethod) {}
+        public void Clear();
+        public override void OnCellBorrowed(ComponentCell cell);
+        public override void SetCell(ComponentCell cell, int index);
+    }
+
+    public class EvaluateWidget : UniverseLib.UI.ObjectPool.IPooledObject
+    {
+        public float DefaultHeight { get; }
+        public UnityExplorer.CacheObject.CacheMember Owner { get; set; }
+        public UnityEngine.GameObject UIRoot { get; set; }
+        public EvaluateWidget() {}
+        public UnityEngine.GameObject CreateContent(UnityEngine.GameObject parent);
+        public void OnBorrowedFromPool(UnityExplorer.CacheObject.CacheMember owner);
+        public void OnReturnToPool();
+        public object[] TryParseArguments();
+        public System.Type[] TryParseGenericArguments();
+    }
+
+    public class GameObjectControls
+    {
+        public GameObjectInfoPanel GameObjectInfo { get; }
+        public UnityExplorer.Inspectors.GameObjectInspector Parent { get; }
+        public UnityEngine.GameObject Target { get; }
+        public TransformControls TransformControl { get; }
+        public GameObjectControls(UnityExplorer.Inspectors.GameObjectInspector parent) {}
+        public void UpdateGameObjectInfo(bool firstUpdate, bool force);
+        public void UpdateVectorSlider();
+    }
+
+    public class GameObjectInfoPanel
+    {
+        public GameObjectControls Owner { get; }
+        public GameObjectInfoPanel(GameObjectControls owner) {}
+        public void Create();
+        public void UpdateGameObjectInfo(bool firstUpdate, bool force);
+    }
+
+    public class GenericArgumentHandler : BaseArgumentHandler
+    {
+        public GenericArgumentHandler() {}
+        public override void CreateSpecialContent();
+        public System.Type Evaluate();
+        public void OnBorrowed(System.Type genericArgument);
+        public void OnReturned();
+    }
+
+    public class GenericConstructorWidget
+    {
+        public UnityEngine.GameObject UIRoot;
+        public GenericConstructorWidget() {}
+        public void Cancel();
+        public void Show(System.Action<System.Type[]> onSubmit, System.Action onCancel, System.Reflection.MethodInfo genericMethodDefinition);
+        public void Show(System.Action<System.Type[]> onSubmit, System.Action onCancel, System.Type genericTypeDefinition);
+        public void TrySubmit();
+    }
+
+    public class MaterialWidget : UnityObjectWidget
+    {
+        public MaterialWidget() {}
+        public override UnityEngine.GameObject CreateContent(UnityEngine.GameObject uiRoot);
+        public override void OnBorrowed(object target, System.Type targetType, UnityExplorer.Inspectors.ReflectionInspector inspector);
+        public override void OnReturnToPool();
+    }
+
+    public class ParameterHandler : BaseArgumentHandler
+    {
+        public ParameterHandler() {}
+        public override void CreateSpecialContent();
+        public object Evaluate();
+        public void OnBorrowed(System.Reflection.ParameterInfo paramInfo);
+        public void OnReturned();
+    }
+
+    public static class SavWav
+    {
+        public const int HEADER_SIZE = 44;
+        public const float RESCALE_FACTOR = 32767f;
+        public static void Save(UnityEngine.AudioClip clip, string filepath);
+    }
+
+    public class Texture2DWidget : UnityObjectWidget
+    {
+        public Texture2DWidget() {}
+        public override UnityEngine.GameObject CreateContent(UnityEngine.GameObject uiRoot);
+        public override void OnBorrowed(object target, System.Type targetType, UnityExplorer.Inspectors.ReflectionInspector inspector);
+        public override void OnReturnToPool();
+    }
+
+    public class TransformControls
+    {
+        public AxisControl CurrentSlidingAxisControl { get; set; }
+        public GameObjectControls Owner { get; }
+        public TransformControls(GameObjectControls owner) {}
+        public void AxisControlOperation(float value, Vector3Control parent, int axis);
+        public void Create();
+        public void UpdateTransformControlValues(bool force);
+        public void UpdateVectorSlider();
+    }
+
+    public enum TransformType
+    {
+        LocalPosition = 1,
+        Position = 0,
+        Rotation = 2,
+        Scale = 3,
+    }
+
+    public class UnityObjectWidget : UniverseLib.UI.ObjectPool.IPooledObject
+    {
+        public UnityEngine.Component component;
+        protected UniverseLib.UI.Models.ButtonRef gameObjectButton;
+        protected UniverseLib.UI.Models.InputFieldRef instanceIdInput;
+        protected UniverseLib.UI.Models.InputFieldRef nameInput;
+        public UnityExplorer.Inspectors.ReflectionInspector owner;
+        public UnityEngine.Object unityObject;
+        public float DefaultHeight { get; }
+        public UnityEngine.GameObject UIRoot { get; set; }
+        public UnityObjectWidget() {}
+        public virtual UnityEngine.GameObject CreateContent(UnityEngine.GameObject uiRoot);
+        public static UnityObjectWidget GetUnityWidget(object target, System.Type targetType, UnityExplorer.Inspectors.ReflectionInspector inspector);
+        public virtual void OnBorrowed(object target, System.Type targetType, UnityExplorer.Inspectors.ReflectionInspector inspector);
+        public virtual void OnReturnToPool();
+        public virtual void Update();
+    }
+
+    public class Vector3Control
+    {
+        public AxisControl[] AxisControls { get; }
+        public float Increment { get; set; }
+        public UniverseLib.UI.Models.InputFieldRef IncrementInput { get; set; }
+        public UniverseLib.UI.Models.InputFieldRef MainInput { get; }
+        public TransformControls Owner { get; }
+        public UnityEngine.GameObject Target { get; }
+        public UnityEngine.Transform Transform { get; }
+        public TransformType Type { get; }
+        public Vector3Control(TransformControls owner, TransformType type, UniverseLib.UI.Models.InputFieldRef input) {}
+        public static Vector3Control Create(TransformControls owner, UnityEngine.GameObject transformGroup, string title, TransformType type);
+        public void Update(bool force);
+    }
+}
+
+namespace UnityExplorer.UI.Widgets.AutoComplete
+{
+    public class EnumCompleter : ISuggestionProvider
+    {
+        public event System.Action<Suggestion> SuggestionClicked;
+        public bool AnchorToCaretPosition { get; }
+        public bool Enabled { get; set; }
+        public System.Type EnumType { get; set; }
+        public UniverseLib.UI.Models.InputFieldRef InputField { get; }
+        public EnumCompleter(System.Type enumType, UniverseLib.UI.Models.InputFieldRef inputField) {}
+        public void CacheEnumValues();
+        public void HelperButtonClicked();
+        public void OnSuggestionClicked(Suggestion suggestion);
+    }
+
+    public interface ISuggestionProvider
+    {
+        public bool AllowNavigation { get; }
+        public bool AnchorToCaretPosition { get; }
+        public UniverseLib.UI.Models.InputFieldRef InputField { get; }
+        public void OnSuggestionClicked(Suggestion suggestion);
+    }
+
+    public struct Suggestion
+    {
+        public readonly string DisplayText;
+        public readonly string UnderlyingValue;
+        public Suggestion(string displayText, string underlyingValue) {}
+    }
+
+    public class TypeCompleter : ISuggestionProvider
+    {
+        public event System.Action<Suggestion> SuggestionClicked;
+        public bool AnchorToCaretPosition { get; }
+        public System.Type BaseType { get; set; }
+        public bool Enabled { get; set; }
+        public UniverseLib.UI.Models.InputFieldRef InputField { get; }
+        public TypeCompleter(System.Type baseType, UniverseLib.UI.Models.InputFieldRef inputField) {}
+        public TypeCompleter(System.Type baseType, UniverseLib.UI.Models.InputFieldRef inputField, bool allowAbstract, bool allowEnum, bool allowGeneric) {}
+        public void CacheTypes();
+        public void OnSuggestionClicked(Suggestion suggestion);
+    }
+}
+
+namespace UniverseLib.Runtime
+{
+    public static class ECSHelper
+    {
+        public static System.Action<Unity.Entities.World> WorldCreated;
+        public static System.Action<Unity.Entities.World> WorldDestroyed;
+        public static string GetNameSafe(this Unity.Entities.EntityManager entityManager, Unity.Entities.Entity entity);
+    }
+}

@@ -1,0 +1,400 @@
+// This file is generated. Do not modify by hand.
+// XML documentation file not found. To check if public methods have XML comments,
+// make sure the XML doc file is present and located next to the scraped dll
+namespace Unity.Physics.Authoring
+{
+    public class AngularVelocityMotor : BaseJoint
+    {
+        [UnityEngine.Tooltip(@"The axis of rotation of the motor. Value will be normalized")] public Unity.Mathematics.float3 AxisOfRotation;
+        [UnityEngine.Tooltip(@"The magnitude of the maximum impulse the motor can exert in a single step. Applies only to the motor constraint.")] public float MaxImpulseAppliedByMotor = System.Single.PositiveInfinity;
+        [UnityEngine.Tooltip(@"An offset from center of entity with motor. Representing the anchor/pivot point of rotation")] public Unity.Mathematics.float3 PivotPosition;
+        [UnityEngine.Tooltip(@"Target speed for the motor to maintain, in degrees/s")] public float TargetSpeed;
+        public AngularVelocityMotor() {}
+    }
+
+    public class BallAndSocketJoint : BaseJoint
+    {
+        [UnityEngine.Tooltip(@"If checked, PositionLocal will snap to match PositionInConnectedEntity")] public bool AutoSetConnected = true;
+        [UnityEngine.HideInInspector] public bool EditPivots;
+        public Unity.Mathematics.float3 PositionInConnectedEntity;
+        public Unity.Mathematics.float3 PositionLocal;
+        public BallAndSocketJoint() {}
+        public virtual void UpdateAuto();
+    }
+
+    [UnityEngine.RequireComponent(typeof(PhysicsBodyAuthoring))] public abstract class BaseBodyPairConnector : UnityEngine.MonoBehaviour
+    {
+        public PhysicsBodyAuthoring ConnectedBody;
+        public Unity.Entities.Entity EntityA { get; set; }
+        public Unity.Entities.Entity EntityB { get; set; }
+        public PhysicsBodyAuthoring LocalBody { get; }
+        public Unity.Mathematics.RigidTransform worldFromA { get; }
+        public Unity.Mathematics.RigidTransform worldFromB { get; }
+        protected BaseBodyPairConnector() {}
+    }
+
+    public abstract class BaseJoint : BaseBodyPairConnector
+    {
+        public bool EnableCollision;
+        public Unity.Mathematics.float3 MaxImpulse;
+        protected BaseJoint() {}
+    }
+
+    public struct CapsuleGeometryAuthoring : System.IEquatable<CapsuleGeometryAuthoring>
+    {
+        public Unity.Mathematics.float3 Center { get; set; }
+        public float Height { get; set; }
+        public Unity.Mathematics.quaternion Orientation { get; set; }
+        public float Radius { get; set; }
+        public bool Equals(CapsuleGeometryAuthoring other);
+        public override int GetHashCode();
+    }
+
+    public static class CapsuleGeometryAuthoringExtensions
+    {
+        public static CapsuleGeometryAuthoring ToAuthoring(this CapsuleGeometry input);
+        public static CapsuleGeometry ToRuntime(this CapsuleGeometryAuthoring input);
+    }
+
+    public static class ConvexHullGenerationParametersExtensions
+    {
+        public static ConvexHullGenerationParameters ToAuthoring(this ConvexHullGenerationParameters generationParameters);
+        public static ConvexHullGenerationParameters ToRunTime(this ConvexHullGenerationParameters generationParameters);
+    }
+
+    [UnityEngine.CreateAssetMenu(fileName = @"Custom Material Tag Names", menuName = @"Unity Physics/Custom Physics Material Tag Names", order = 506)] public sealed class CustomPhysicsMaterialTagNames : UnityEngine.ScriptableObject
+    {
+        public System.Collections.Generic.IReadOnlyList<string> TagNames { get; }
+    }
+
+    public struct CustomPhysicsMaterialTags : System.IEquatable<CustomPhysicsMaterialTags>
+    {
+        public bool Tag00;
+        public bool Tag01;
+        public bool Tag02;
+        public bool Tag03;
+        public bool Tag04;
+        public bool Tag05;
+        public bool Tag06;
+        public bool Tag07;
+        public static CustomPhysicsMaterialTags Everything { get; }
+        public static CustomPhysicsMaterialTags Nothing { get; }
+        public byte Value { get; set; }
+        public override bool Equals(object obj);
+        public bool Equals(CustomPhysicsMaterialTags other);
+        public override int GetHashCode();
+    }
+
+    public class FreeHingeJoint : BallAndSocketJoint
+    {
+        [UnityEngine.HideInInspector] public bool EditAxes;
+        public Unity.Mathematics.float3 HingeAxisInConnectedEntity;
+        public Unity.Mathematics.float3 HingeAxisLocal;
+        public FreeHingeJoint() {}
+        public override void UpdateAuto();
+    }
+
+    public struct GetActiveChildrenScope<T> : System.IDisposable where T : UnityEngine.Component
+    {
+        public System.Collections.Generic.List<T> Buffer { get; }
+        public GetActiveChildrenScope(PhysicsShapeAuthoring shape, UnityEngine.Transform root) {}
+        public void Dispose();
+        public bool IsChildActiveAndBelongsToShape(T child, bool filterOutInvalid = true);
+    }
+
+    public abstract class JointBaker<T> : Unity.Entities.Baker<T> where T : BaseJoint
+    {
+        protected JointBaker() {}
+        public void CreateJointEntities(System.UInt32 worldIndex, PhysicsConstrainedBodyPair constrainedBodyPair, Unity.Collections.NativeArray<PhysicsJoint> joints, Unity.Collections.NativeList<Unity.Entities.Entity> newJointEntities);
+        public Unity.Entities.Entity CreateJointEntity(System.UInt32 worldIndex, PhysicsConstrainedBodyPair constrainedBodyPair, PhysicsJoint joint);
+        protected PhysicsConstrainedBodyPair GetConstrainedBodyPair(BaseJoint authoring);
+        public System.UInt32 GetWorldIndex(UnityEngine.Component c);
+        public System.UInt32 GetWorldIndexFromBaseJoint(BaseJoint authoring);
+    }
+
+    [Unity.Entities.BakingType] public struct JointEntityBaking : Unity.Entities.IComponentData, Unity.Entities.IQueryTypeParameter
+    {
+        public Unity.Entities.Entity Entity;
+    }
+
+    public class LimitDOFJoint : BaseJoint
+    {
+        public Unity.Mathematics.bool3 LockAngularAxes;
+        public Unity.Mathematics.bool3 LockLinearAxes;
+        public LimitDOFJoint() {}
+        public PhysicsJoint CreateLimitDOFJoint(Unity.Mathematics.RigidTransform offset);
+    }
+
+    public class LimitedDistanceJoint : BallAndSocketJoint
+    {
+        public float MaxDistance;
+        public float MinDistance;
+        public LimitedDistanceJoint() {}
+    }
+
+    public class LimitedHingeJoint : FreeHingeJoint
+    {
+        [UnityEngine.HideInInspector] public bool EditLimits;
+        public float MaxAngle;
+        public float MinAngle;
+        public Unity.Mathematics.float3 PerpendicularAxisInConnectedEntity;
+        public Unity.Mathematics.float3 PerpendicularAxisLocal;
+        public LimitedHingeJoint() {}
+        public override void UpdateAuto();
+    }
+
+    public class LinearVelocityMotor : BaseJoint
+    {
+        [UnityEngine.Tooltip(@"An offset from the center of the body with the motor (bodyA), representing the anchor point of translation.")] public Unity.Mathematics.float3 AnchorPosition;
+        [UnityEngine.Tooltip(@"The direction of the motor, relative to the orientation of the Connected Body (bodyB). Value will be normalized")] public Unity.Mathematics.float3 DirectionOfMovement;
+        [UnityEngine.Tooltip(@"The magnitude of the maximum impulse the motor can exert in a single step. Applies only to the motor constraint.")] public float MaxImpulseAppliedByMotor = System.Single.PositiveInfinity;
+        [UnityEngine.Tooltip(@"Motor will drive at this speed from the initial position of bodyA, along the Direction of Movement, in m/s.")] public float TargetSpeed;
+        public LinearVelocityMotor() {}
+    }
+
+    public class ModifyJointLimitsAuthoring : UnityEngine.MonoBehaviour
+    {
+        public UnityEngine.ParticleSystem.MinMaxCurve AngularRangeScalar;
+        public UnityEngine.ParticleSystem.MinMaxCurve LinearRangeScalar;
+        public ModifyJointLimitsAuthoring() {}
+    }
+
+    [Unity.Entities.BakingType] public class ModifyJointLimitsBakingData : Unity.Entities.IComponentData, Unity.Entities.IQueryTypeParameter
+    {
+        public UnityEngine.ParticleSystem.MinMaxCurve AngularRangeScalar;
+        public UnityEngine.ParticleSystem.MinMaxCurve LinearRangeScalar;
+        [UnityEngine.Scripting.Preserve] public ModifyJointLimitsBakingData() {}
+    }
+
+    [UnityEngine.AddComponentMenu(@"Entities/Physics/Physics Body")] [UnityEngine.DisallowMultipleComponent] public sealed class PhysicsBodyAuthoring : UnityEngine.MonoBehaviour
+    {
+        public float AngularDamping { get; set; }
+        public MassDistribution CustomMassDistribution { get; set; }
+        public CustomPhysicsBodyTags CustomTags { get; set; }
+        public float GravityFactor { get; set; }
+        public Unity.Mathematics.float3 InitialAngularVelocity { get; set; }
+        public Unity.Mathematics.float3 InitialLinearVelocity { get; set; }
+        public float LinearDamping { get; set; }
+        public float Mass { get; set; }
+        public BodyMotionType MotionType { get; set; }
+        public bool OverrideDefaultMassDistribution { get; set; }
+        public BodySmoothing Smoothing { get; set; }
+        public System.UInt32 WorldIndex { get; set; }
+    }
+
+    [Unity.Entities.TemporaryBakingType] public struct PhysicsBodyAuthoringData : Unity.Entities.IComponentData, Unity.Entities.IQueryTypeParameter
+    {
+        public MassDistribution CustomMassDistribution;
+        public bool IsDynamic;
+        public float Mass;
+        public bool OverrideDefaultMassDistribution;
+    }
+
+    [Unity.Entities.RequireMatchingQueriesForUpdate] [Unity.Entities.UpdateAfter(typeof(EndColliderBakingSystem))] [Unity.Entities.WorldSystemFilter(Unity.Entities.WorldSystemFilterFlags.BakingSystem, Unity.Entities.WorldSystemFilterFlags.Default)] public class PhysicsBodyBakingSystem : Unity.Entities.SystemBase
+    {
+        [UnityEngine.Scripting.Preserve] public PhysicsBodyBakingSystem() {}
+        protected override void OnCreateForCompiler();
+        [UnityEngine.Scripting.Preserve] protected override void OnUpdate();
+    }
+
+    [UnityEngine.CreateAssetMenu(fileName = @"Physics Category Names", menuName = @"Unity Physics/Physics Category Names", order = 507)] public sealed class PhysicsCategoryNames : UnityEngine.ScriptableObject
+    {
+        public System.Collections.Generic.IReadOnlyList<string> CategoryNames { get; }
+    }
+
+    public struct PhysicsCategoryTags : System.IEquatable<PhysicsCategoryTags>
+    {
+        public bool Category00;
+        public bool Category01;
+        public bool Category02;
+        public bool Category03;
+        public bool Category04;
+        public bool Category05;
+        public bool Category06;
+        public bool Category07;
+        public bool Category08;
+        public bool Category09;
+        public bool Category10;
+        public bool Category11;
+        public bool Category12;
+        public bool Category13;
+        public bool Category14;
+        public bool Category15;
+        public bool Category16;
+        public bool Category17;
+        public bool Category18;
+        public bool Category19;
+        public bool Category20;
+        public bool Category21;
+        public bool Category22;
+        public bool Category23;
+        public bool Category24;
+        public bool Category25;
+        public bool Category26;
+        public bool Category27;
+        public bool Category28;
+        public bool Category29;
+        public bool Category30;
+        public bool Category31;
+        public static PhysicsCategoryTags Everything { get; }
+        public static PhysicsCategoryTags Nothing { get; }
+        public System.UInt32 Value { get; set; }
+        public override bool Equals(object obj);
+        public bool Equals(PhysicsCategoryTags other);
+        public override int GetHashCode();
+    }
+
+    public struct PhysicsMaterialCoefficient
+    {
+        public Material.CombinePolicy CombineMode;
+        public float Value;
+    }
+
+    [UnityEngine.CreateAssetMenu(fileName = @"Physics Material Template", menuName = @"Unity Physics/Physics Material Template", order = 508)] public sealed class PhysicsMaterialTemplate : UnityEngine.ScriptableObject
+    {
+        public PhysicsCategoryTags BelongsTo { get; set; }
+        public PhysicsCategoryTags CollidesWith { get; set; }
+        public CollisionResponsePolicy CollisionResponse { get; set; }
+        public CustomPhysicsMaterialTags CustomTags { get; set; }
+        public PhysicsMaterialCoefficient Friction { get; set; }
+        public PhysicsMaterialCoefficient Restitution { get; set; }
+    }
+
+    [UnityEngine.AddComponentMenu(@"Entities/Physics/Physics Render Entity")] [UnityEngine.DisallowMultipleComponent] public sealed class PhysicsRenderEntityAuthoring : UnityEngine.MonoBehaviour
+    {
+        [UnityEngine.Tooltip(@"Specifies an Entity in a different branch of the hierarchy that holds the graphical representation of this PhysicsShape.")] public UnityEngine.GameObject RenderEntity;
+        public PhysicsRenderEntityAuthoring() {}
+    }
+
+    [UnityEngine.AddComponentMenu(@"Entities/Physics/Physics Shape")] public sealed class PhysicsShapeAuthoring : UnityEngine.MonoBehaviour, UnityEngine.ISerializationCallbackReceiver
+    {
+        public PhysicsCategoryTags BelongsTo { get; set; }
+        public PhysicsCategoryTags CollidesWith { get; set; }
+        public CollisionResponsePolicy CollisionResponse { get; set; }
+        public ConvexHullGenerationParameters ConvexHullGenerationParameters { get; }
+        public CustomPhysicsMaterialTags CustomTags { get; set; }
+        public bool ForceUnique { get; set; }
+        public PhysicsMaterialCoefficient Friction { get; set; }
+        public PhysicsMaterialTemplate MaterialTemplate { get; set; }
+        public bool OverrideBelongsTo { get; set; }
+        public bool OverrideCollidesWith { get; set; }
+        public bool OverrideCollisionResponse { get; set; }
+        public bool OverrideCustomTags { get; set; }
+        public bool OverrideFriction { get; set; }
+        public bool OverrideRestitution { get; set; }
+        public PhysicsMaterialCoefficient Restitution { get; set; }
+        public ShapeType ShapeType { get; }
+        public void FitToEnabledRenderMeshes(float minimumSkinnedVertexWeight = 0f);
+        public BoxGeometry GetBoxProperties();
+        public CapsuleGeometryAuthoring GetCapsuleProperties();
+        public void GetConvexHullProperties(Unity.Collections.NativeList<Unity.Mathematics.float3> pointCloud);
+        public CylinderGeometry GetCylinderProperties();
+        public void GetMeshProperties(Unity.Collections.NativeList<Unity.Mathematics.float3> vertices, Unity.Collections.NativeList<Unity.Mathematics.int3> triangles);
+        public void GetPlaneProperties(out Unity.Mathematics.float3 center, out Unity.Mathematics.float2 size, out Unity.Mathematics.quaternion orientation);
+        public Unity.Mathematics.float4x4 GetShapeToWorldMatrix();
+        public SphereGeometry GetSphereProperties(out Unity.Mathematics.quaternion orientation);
+        public void InitializeConvexHullGenerationParameters();
+        public void SetBox(BoxGeometry geometry);
+        public void SetCapsule(CapsuleGeometryAuthoring geometry);
+        public void SetConvexHull(ConvexHullGenerationParameters hullGenerationParameters, float minimumSkinnedVertexWeight);
+        public void SetConvexHull(ConvexHullGenerationParameters hullGenerationParameters, UnityEngine.Mesh customMesh = default(UnityEngine.Mesh));
+        public void SetCylinder(CylinderGeometry geometry);
+        public void SetMesh(UnityEngine.Mesh mesh = default(UnityEngine.Mesh));
+        public void SetPlane(Unity.Mathematics.float3 center, Unity.Mathematics.float2 size, Unity.Mathematics.quaternion orientation);
+        public void SetSphere(SphereGeometry geometry, Unity.Mathematics.quaternion orientation);
+    }
+
+    public static class PhysicsShapeExtensions
+    {
+        public static readonly Unity.Mathematics.int3 k_DefaultAxisPriority;
+        public const float kMinimumChange = 0.001f;
+        public static UnityEngine.GameObject FindTopmostEnabledAncestor<T>(UnityEngine.GameObject shape, System.Collections.Generic.List<T> buffer) where T : UnityEngine.Component;
+        public static BoxGeometry GetBakedBoxProperties(this PhysicsShapeAuthoring shape);
+        public static void GetBakedConvexProperties(this PhysicsShapeAuthoring shape, Unity.Collections.NativeList<Unity.Mathematics.float3> pointCloud);
+        public static CylinderGeometry GetBakedCylinderProperties(this PhysicsShapeAuthoring shape);
+        public static void GetBakedMeshProperties(this PhysicsShapeAuthoring shape, Unity.Collections.NativeList<Unity.Mathematics.float3> vertices, Unity.Collections.NativeList<Unity.Mathematics.int3> triangles, System.Collections.Generic.HashSet<UnityEngine.Mesh> meshAssets = default(System.Collections.Generic.HashSet<UnityEngine.Mesh>));
+        public static Unity.Mathematics.int3 GetBasisAxisPriority(Unity.Mathematics.float4x4 basisToWorld);
+        public static Unity.Mathematics.float4x4 GetBasisToWorldMatrix(Unity.Mathematics.float4x4 localToWorld, Unity.Mathematics.float3 center, Unity.Mathematics.quaternion orientation, Unity.Mathematics.float3 size);
+        public static int GetDeviantAxis(this Unity.Mathematics.float3 v);
+        public static int GetMaxAxis(this Unity.Mathematics.float3 v);
+        public static UnityEngine.GameObject GetPrimaryBody(this PhysicsShapeAuthoring shape);
+        public static UnityEngine.GameObject GetPrimaryBody(UnityEngine.GameObject shape);
+        public static System.UInt32 GetStableHash(this Unity.Collections.NativeList<Unity.Mathematics.float3> points, Unity.Collections.NativeArray<Unity.Mathematics.float3> hashedPoints, float tolerance = 0.01f);
+        public static System.UInt32 GetStableHash(this ConvexHullGenerationParameters generationParameters, ConvexHullGenerationParameters hashedParameters, float tolerance = 0.01f);
+        public static bool HasNonUniformScale(this Unity.Mathematics.float4x4 m);
+        public static void SetBakedBoxSize(this PhysicsShapeAuthoring shape, Unity.Mathematics.float3 size, float bevelRadius);
+        public static void SetBakedCapsuleSize(this PhysicsShapeAuthoring shape, float height, float radius);
+        public static void SetBakedCylinderSize(this PhysicsShapeAuthoring shape, float height, float radius, float bevelRadius);
+        public static void SetBakedPlaneSize(this PhysicsShapeAuthoring shape, Unity.Mathematics.float2 size);
+        public static void SetBakedSphereRadius(this PhysicsShapeAuthoring shape, float radius);
+        public static class BakeBoxJobExtension
+        {
+        }
+        public static class BakeCapsuleJobExtension
+        {
+        }
+        public static class BakeCylinderJobExtension
+        {
+        }
+    }
+
+    public class PositionMotor : BaseJoint
+    {
+        [UnityEngine.Tooltip(@"An offset from the center of the body with the motor, representing the anchor point of translation.")] public Unity.Mathematics.float3 AnchorPosition;
+        [UnityEngine.Tooltip(@"The direction of the motor, relative to the orientation of the Connected Body (bodyB). Value will be normalized")] public Unity.Mathematics.float3 DirectionOfMovement;
+        [UnityEngine.Tooltip(@"The magnitude of the maximum impulse the motor can exert in a single step. Applies only to the motor constraint.")] public float MaxImpulseAppliedByMotor = System.Single.PositiveInfinity;
+        [UnityEngine.Tooltip(@"Motor will drive this length away from the anchor position of bodyA.")] public float TargetDistance;
+        public PositionMotor() {}
+    }
+
+    public class PrismaticJoint : BallAndSocketJoint
+    {
+        public Unity.Mathematics.float3 AxisInConnectedEntity;
+        public Unity.Mathematics.float3 AxisLocal;
+        public float MaxDistanceOnAxis;
+        public float MinDistanceOnAxis;
+        public Unity.Mathematics.float3 PerpendicularAxisInConnectedEntity;
+        public Unity.Mathematics.float3 PerpendicularAxisLocal;
+        public PrismaticJoint() {}
+        public override void UpdateAuto();
+    }
+
+    public class RagdollJoint : BallAndSocketJoint
+    {
+        [UnityEngine.HideInInspector] public bool EditAxes;
+        [UnityEngine.HideInInspector] public bool EditLimits;
+        public float MaxConeAngle;
+        public float MaxPerpendicularAngle;
+        public float MaxTwistAngle;
+        public float MinPerpendicularAngle;
+        public float MinTwistAngle;
+        public Unity.Mathematics.float3 PerpendicularAxisInConnectedEntity;
+        public Unity.Mathematics.float3 PerpendicularAxisLocal;
+        public Unity.Mathematics.float3 TwistAxisInConnectedEntity;
+        public Unity.Mathematics.float3 TwistAxisLocal;
+        public RagdollJoint() {}
+        public override void UpdateAuto();
+    }
+
+    public class RigidJoint : BallAndSocketJoint
+    {
+        public Unity.Mathematics.quaternion OrientationInConnectedEntity;
+        public Unity.Mathematics.quaternion OrientationLocal;
+        public RigidJoint() {}
+        public override void UpdateAuto();
+    }
+
+    public class RotationalMotor : BaseJoint
+    {
+        [UnityEngine.Tooltip(@"The axis of rotation of the motor. Value will be normalized")] public Unity.Mathematics.float3 AxisOfRotation;
+        [UnityEngine.Tooltip(@"The magnitude of the maximum impulse the motor can exert in one step. Applies only to the motor constraint.")] public float MaxImpulseAppliedByMotor = System.Single.PositiveInfinity;
+        [UnityEngine.Tooltip(@"An offset from center of entity with motor. Representing the anchor/pivot point of rotation")] public Unity.Mathematics.float3 PivotPosition;
+        [UnityEngine.Tooltip(@"Motor will maintain this target angle around the AxisOfRotation, in degrees")] public float TargetAngle;
+        public RotationalMotor() {}
+    }
+
+    public sealed class UnimplementedShapeException : System.NotImplementedException
+    {
+        public UnimplementedShapeException(ShapeType shapeType) {}
+    }
+}

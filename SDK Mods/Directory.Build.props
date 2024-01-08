@@ -1,0 +1,67 @@
+<Project InitialTargets="Soup;Compile" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- Set the repository root into a variable -->
+  <PropertyGroup>
+    <SourceRoot>$(MSBuildThisFileDirectory)</SourceRoot>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(MsBuildProjectName)' == 'MoreCommandsMod'">
+    <None Include="$(SourceRoot)Assets\Mods\MoreCommands\.editorconfig" Link="Assets\Mods\MoreCommands\.editorconfig"/>
+    <EditorConfig Include="$(SolutionDir)Assets\Mods\MoreCommands\.editorconfig"/>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(MsBuildProjectName)' == 'UnityExplorer'">
+    <None Include="$(SourceRoot)Assets\Mods\UnityExplorer\.editorconfig" Link="Assets\Mods\UnityExplorer\.editorconfig"/>
+    <EditorConfig Include="$(SourceRoot)Assets\Mods\UnityExplorer\.editorconfig"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <LibraryProjects Include="Assembly-CSharp-Editor-firstpass"/>
+    <LibraryProjects Include="CoreLib"/>
+    <LibraryProjects Include="CoreLib.Audio"/>
+    <LibraryProjects Include="CoreLib.Commands"/>
+    <LibraryProjects Include="CoreLib.Drops"/>
+    <LibraryProjects Include="CoreLib.Editor"/>
+    <LibraryProjects Include="CoreLib.Entity"/>
+    <LibraryProjects Include="CoreLib.Equipment"/>
+    <LibraryProjects Include="CoreLib.JsonLoader"/>
+    <LibraryProjects Include="CoreLib.Localization"/>
+    <LibraryProjects Include="CoreLib.ModderTools"/>
+    <LibraryProjects Include="CoreLib.Resources"/>
+    <LibraryProjects Include="CoreLib.RewiredExtension"/>
+    <LibraryProjects Include="CoreLib.Tilesets"/>
+    <LibraryProjects Include="CoreLib.UserInterface"/>
+    <LibraryProjects Include="Mischief.MDV.Editor"/>
+    <LibraryProjects Include="ModSDK.Editor"/>
+    <LibraryProjects Include="PPv2URPConverters"/>
+    <LibraryProjects Include="PugMod.Importer"/>
+    <LibraryProjects Include="PugMod.SDK"/>
+    <LibraryProjects Include="SDKExtensions"/>
+    <LibraryProjects Include="Unity.2D.Sprite.Editor"/>
+    <LibraryProjects Include="Unity.Physics.Custom"/>
+    <LibraryProjects Include="Unity.Physics.Custom.Editor"/>
+    <LibraryProjects Include="Unity.RenderPipeline.Universal.ShaderLibrary"/>
+    <LibraryProjects Include="Unity.RenderPipelines.Core.Editor"/>
+    <LibraryProjects Include="Unity.RenderPipelines.Core.Runtime"/>
+    <LibraryProjects Include="Unity.RenderPipelines.Core.ShaderLibrary"/>
+    <LibraryProjects Include="Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary"/>
+    <LibraryProjects Include="Unity.RenderPipelines.Universal.Editor"/>
+    <LibraryProjects Include="Unity.RenderPipelines.Universal.Runtime"/>
+    <LibraryProjects Include="Unity.RenderPipelines.Universal.Shaders"/>
+    <LibraryProjects Include="Unity.ShaderGraph.Editor"/>
+    <LibraryProjects Include="Unity.ShaderGraph.Utilities"/>
+    <LibraryProjects Include="UnityEditor.UI"/>
+    <LibraryProjects Include="UnityEngine.UI"/>
+  </ItemGroup>
+
+  <Target Name="Soup">
+    <Message Text="@(LibraryProjects->'%(Identity)')" Importance="High" />
+    <Message Text="%(LibraryProjects.Identity)" Importance="High" />
+    <Message Text="@(LibraryProjects)" Importance="High" />
+    <Message Text="$(MSBuildProjectName)" Importance="High" />
+  </Target>
+
+  <ItemGroup Condition="'@(LibraryProjects->'%(Identity)')' == '$(MSBuildProjectName)'">
+    <None Include="$(SourceRoot)Library\.editorconfig" Link=".editorconfig"/>
+    <EditorConfig Include="$(SourceRoot)Library\.editorconfig"/>
+  </ItemGroup>
+</Project>

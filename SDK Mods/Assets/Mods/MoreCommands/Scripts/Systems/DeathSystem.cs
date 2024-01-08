@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 using Unity.Entities;
@@ -14,6 +15,7 @@ namespace MoreCommands.Systems {
     [JsonPropertyOrder(1)]
     [JsonRequired()]
     public Vector3 Position { get; set; } = PlayerController.PLAYER_SPAWN_POSITION;
+
     [JsonPropertyName("direction")]
     [JsonPropertyOrder(2)]
     [JsonRequired()]
@@ -29,6 +31,11 @@ namespace MoreCommands.Systems {
       Position = position;
       Direction = direction;
     }
+
+    [JsonConstructor()]
+    public DeathEntry() { }
+
+    public override string ToString() => JsonSerializer.Serialize(this);
 
     public static bool Equals(DeathEntry x, DeathEntry y) {
       return x.Position == y.Position && x.Direction == y.Direction;
@@ -61,26 +68,41 @@ namespace MoreCommands.Systems {
     [JsonPropertyOrder(1)]
     [JsonRequired()]
     public string PlayerUuid { get; set; }
+
     [JsonPropertyName("player_name")]
     [JsonPropertyOrder(2)]
     [JsonRequired()]
     public string PlayerName { get; set; }
+
     [JsonPropertyName("death_positions")]
     [JsonPropertyOrder(3)]
     [JsonRequired()]
-    public List<DeathEntry> DeathPositions { get; } = new();
+    public List<DeathEntry> DeathPositions { get; set; } = new();
 
-    [JsonConstructor()]
     public DeathPlayerEntry(string player_uuid, string player_name, List<DeathEntry> death_positions) {
       this.PlayerUuid = player_uuid;
       this.PlayerName = player_name;
 
-      this.DeathPositions = death_positions == null ? new() : death_positions;
+      if (death_positions == null) {
+        this.DeathPositions = new();
+      } else {
+        this.DeathPositions = death_positions;
+      }
     }
 
     public DeathPlayerEntry(PlayerController player) {
       PlayerName = player.playerName;
+      PlayerUuid = "";
+      if (this.DeathPositions == null) {
+        this.DeathPositions = new();
+      }
+      this.DeathPositions.AddDeathEntry(player);
     }
+
+    [JsonConstructor()]
+    public DeathPlayerEntry() { }
+
+    public override string ToString() => JsonSerializer.Serialize(this);
 
     public static bool Equals(DeathPlayerEntry x, DeathPlayerEntry y) {
       return x.PlayerName == y.PlayerName;
@@ -108,18 +130,29 @@ namespace MoreCommands.Systems {
   }
 
   [Serializable()]
-  public class DeathSystem {
+  public class DeathWorldEntry {
+    [JsonPropertyName("world_name")]
+    [JsonPropertyOrder(1)]
+    [JsonRequired()]
+    public string WorldName { get; set; }
+
     [JsonPropertyName("player_entries")]
     [JsonPropertyOrder(1)]
     [JsonRequired()]
-    public List<DeathPlayerEntry> PlayerEntries { get; } = new();
-
-    [JsonConstructor()]
-    public DeathSystem(List<DeathPlayerEntry> player_entries) {
-      this.PlayerEntries = player_entries == null ? new() : player_entries;
+    public List<DeathPlayerEntry> PlayerEntries { get; set; } = new();
+    public DeathWorldEntry(string world_name, List<DeathPlayerEntry> player_entries) {
+      this.WorldName = world_name;
+      if (player_entries == null) {
+        this.PlayerEntries = new();
+      } else {
+        this.PlayerEntries = player_entries;
+      }
     }
 
-    public DeathSystem() { }
+    [JsonConstructor()]
+    public DeathWorldEntry() { }
+
+    public override string ToString() => JsonSerializer.Serialize(this);
 
     internal DeathPlayerEntry AddEntry(PlayerController pc) {
       if (PlayerEntries.Any(x => x.PlayerName == pc.playerName)) {
@@ -136,12 +169,21 @@ namespace MoreCommands.Systems {
           return true;
         }
       }
+
       deathPlayerEntry = null;
       return false;
     }
   }
 
   public static class DeathSystemExtensions {
+    public static void Init(this List<DeathWorldEntry> list) {
+      foreach (var (key, value) in list.Select((value, index) => (index, value))) {
+        if (value == null) {
+          list[key] = new();
+        }
+      }
+    }
+
     public static DeathEntry AddDeathEntry(this List<DeathEntry> entries, PlayerController player) {
       var deathEntry = new DeathEntry(player.SmoothWorldPosition, player.facingDirection, entries);
 
@@ -156,25 +198,16 @@ namespace MoreCommands.Systems {
       return playerEntry;
     }
 
-    public static void Init(this Dictionary<string, DeathSystem> dictionary) {
-      foreach (var (key, value) in dictionary) {
-        if (value == null) {
-          dictionary[key] = new();
-        }
-      }
-    }
-
-    public static DeathSystem GetDeathSystem(this Dictionary<string, DeathSystem> dictionary, World world) {
-      if (dictionary.TryGetValue(world.Name, out var deathSystem)) {
+    public static DeathWorldEntry GetWorldEntry(this List<DeathWorldEntry> list, string worldName) {
+      if (list.TryGetWorldEntry(worldName, out var deathSystem)) {
         return deathSystem;
       }
 
-      dictionary.Add(world.Name, new DeathSystem());
-      return dictionary[world.Name];
+      return list.AddEntry(worldName);
     }
 
-    public static DeathPlayerEntry GetDeathPlayerEntry(this Dictionary<string, DeathSystem> dictionary, World world, PlayerController pc) {
-      var deathSystem = dictionary.GetDeathSystem(world);
+    public static DeathPlayerEntry GetPlayerEntry(this List<DeathWorldEntry> list, string worldName, PlayerController pc) {
+      var deathSystem = list.GetWorldEntry(worldName);
 
       if (deathSystem.TryGetPlayerEntry(pc.playerName, out var deathPlayerEntry)) {
         return deathPlayerEntry;
@@ -183,8 +216,29 @@ namespace MoreCommands.Systems {
       return deathSystem.AddEntry(pc);
     }
 
-    public static void AddEntry(this Dictionary<string, DeathSystem> dictionary, PlayerController pc) {
-      dictionary.GetDeathSystem(pc.world).PlayerEntries.AddEntry(pc);
+    public static bool TryGetWorldEntry(this List<DeathWorldEntry> list, string worldName, out DeathWorldEntry deathWorldEntry) {
+      foreach (var entry in list) {
+        if (entry.WorldName == worldName) {
+          deathWorldEntry = entry;
+          return true;
+        }
+      }
+
+      deathWorldEntry = null;
+      return false;
+    }
+
+    public static DeathWorldEntry AddEntry(this List<DeathWorldEntry> list, string worldName) {
+      if (list.TryGetWorldEntry(worldName, out var deathWorldEntry)) {
+        return deathWorldEntry;
+      }
+      var temp = new DeathWorldEntry(worldName, new());
+      list.Add(temp);
+      return list.AddEntry(worldName);
+    }
+
+    public static DeathPlayerEntry AddPlayerEntry(this List<DeathWorldEntry> list, PlayerController pc) {
+      return list.GetWorldEntry(pc.world.Name).PlayerEntries.AddEntry(pc);
     }
   }
 }

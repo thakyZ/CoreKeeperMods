@@ -1,0 +1,228 @@
+// This file is generated. Do not modify by hand.
+// XML documentation file not found. To check if public methods have XML comments,
+// make sure the XML doc file is present and located next to the scraped dll
+namespace MoreCommands
+{
+    public class MoreCommandsMod : PugMod.IMod
+    {
+        public static CoreLib.Util.Logger Log;
+        public const string NAME = @"More Commands";
+        public const string VERSION = @"1.0.0";
+        public static MoreCommands.Data.Configuration.JsonConfigFile<Data.Configuration.Configuration> Config { get; }
+        public MoreCommandsMod() {}
+        public void EarlyInit();
+        public static PugMod.LoadedMod GetModInfo(PugMod.IMod mod);
+        public void Init();
+        public void ModObjectLoaded(UnityEngine.Object obj);
+        public void Shutdown();
+        public void Update();
+    }
+}
+
+namespace MoreCommands.Chat.Commands
+{
+    public class BackCommand : CoreLib.Commands.ICommandInfo, CoreLib.Commands.IServerCommandHandler
+    {
+        public BackCommand() {}
+        public CoreLib.Commands.CommandOutput Execute(string[] parameters, Unity.Entities.Entity sender);
+        public string GetDescription();
+        public string[] GetTriggerNames();
+    }
+
+    public class HomeCommand : CoreLib.Commands.ICommandInfo, CoreLib.Commands.IServerCommandHandler
+    {
+        public HomeCommand() {}
+        public CoreLib.Commands.CommandOutput Execute(string[] parameters, Unity.Entities.Entity sender);
+        public string GetDescription();
+        public string[] GetTriggerNames();
+    }
+}
+
+namespace MoreCommands.Data.Configuration
+{
+    public class CommandsEnabled
+    {
+        [System.Text.Json.Serialization.JsonPropertyName(@"back")] [System.Text.Json.Serialization.JsonPropertyOrder(2)] [System.Text.Json.Serialization.JsonRequired] public bool Back { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName(@"home")] [System.Text.Json.Serialization.JsonPropertyOrder(1)] [System.Text.Json.Serialization.JsonRequired] public bool Home { get; set; }
+        [System.Text.Json.Serialization.JsonConstructor] public CommandsEnabled() {}
+        public CommandsEnabled(bool home, bool back) {}
+        public override string ToString();
+    }
+
+    public class Configuration : IConfiguration
+    {
+        [System.Text.Json.Serialization.JsonPropertyName(@"commands_enabled")] [System.Text.Json.Serialization.JsonPropertyOrder(1)] [System.Text.Json.Serialization.JsonRequired] public CommandsEnabled CommandsEnabled { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName(@"death_system")] [System.Text.Json.Serialization.JsonPropertyOrder(3)] [System.Text.Json.Serialization.JsonRequired] public System.Collections.Generic.List<MoreCommands.Systems.DeathWorldEntry> DeathSystem { get; set; }
+        [System.Text.Json.Serialization.JsonIgnore] public static Configuration Default { get; }
+        [System.Text.Json.Serialization.JsonPropertyName(@"housing_system")] [System.Text.Json.Serialization.JsonPropertyOrder(2)] [System.Text.Json.Serialization.JsonRequired] public System.Collections.Generic.List<MoreCommands.Systems.HomeListWorldEntry> HomeListSystem { get; set; }
+        [System.Text.Json.Serialization.JsonConstructor] public Configuration() {}
+        public Configuration(CommandsEnabled commands_enabled, System.Collections.Generic.List<MoreCommands.Systems.HomeListWorldEntry> housing_system, System.Collections.Generic.List<MoreCommands.Systems.DeathWorldEntry> death_system) {}
+        public override string ToString();
+    }
+
+    public interface IConfiguration
+    {
+    }
+
+    [System.AttributeUsage(System.AttributeTargets.Class|System.AttributeTargets.Field|System.AttributeTargets.Interface|System.AttributeTargets.Parameter|System.AttributeTargets.Property|System.AttributeTargets.Struct, AllowMultiple = true)] public class JsonCommentAttribute : System.Attribute
+    {
+        public string Comment { get; set; }
+        public JsonCommentAttribute(string comment) {}
+    }
+
+    public class JsonCommentConverter : System.Text.Json.Serialization.JsonConverter<string>
+    {
+        public JsonCommentConverter(string comment) {}
+        public override string Read(ref System.Text.Json.Utf8JsonReader reader, System.Type typeToConvert, System.Text.Json.JsonSerializerOptions options);
+        public override void Write(System.Text.Json.Utf8JsonWriter writer, string value, System.Text.Json.JsonSerializerOptions options);
+    }
+
+    public class JsonConfigFile<T> where T : IConfiguration
+    {
+        public event System.EventHandler ConfigReloaded;
+        public event System.EventHandler<CoreLib.Data.Configuration.SettingChangedEventArgs> SettingChanged;
+        public string ConfigFilePath { get; }
+        public T Context { get; }
+        public bool GenerateSettingDescriptions { get; set; }
+        public bool SaveOnConfigSet { get; set; }
+        public JsonConfigFile(string configPath, bool saveOnInit) {}
+        public JsonConfigFile(string configPath, bool saveOnInit, PugMod.LoadedMod ownerMetadata) {}
+        public static string GetDirectoryName(string path);
+        public void Reload();
+        public void Save();
+    }
+}
+
+namespace MoreCommands.Patches
+{
+    [HarmonyLib.HarmonyPatch] public static class Death_Patch
+    {
+        [HarmonyLib.HarmonyPatch(typeof(PlayerState.Death), @"RespawnPlayer")] [HarmonyLib.HarmonyPrefix] public static bool RespawnPlayer_Prefix(PlayerState.Death __instance);
+    }
+}
+
+namespace MoreCommands.Systems
+{
+    public class DeathEntry
+    {
+        [System.Text.Json.Serialization.JsonPropertyName(@"direction")] [System.Text.Json.Serialization.JsonPropertyOrder(2)] [System.Text.Json.Serialization.JsonRequired] public Direction Direction { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName(@"position")] [System.Text.Json.Serialization.JsonPropertyOrder(1)] [System.Text.Json.Serialization.JsonRequired] public UnityEngine.Vector3 Position { get; set; }
+        [System.Text.Json.Serialization.JsonConstructor] public DeathEntry() {}
+        [System.Text.Json.Serialization.JsonConstructor] public DeathEntry(UnityEngine.Vector3 position, Direction direction) {}
+        public DeathEntry(UnityEngine.Vector3 position, Direction direction, System.Collections.Generic.List<DeathEntry> parent) {}
+        public bool Equals(DeathEntry obj);
+        public bool Equals(object obj);
+        public static bool Equals(DeathEntry x, DeathEntry y);
+        public int GetHashCode();
+        public static int GetHashCode(DeathEntry obj);
+        public override string ToString();
+    }
+
+    public class DeathPlayerEntry
+    {
+        [System.Text.Json.Serialization.JsonPropertyName(@"death_positions")] [System.Text.Json.Serialization.JsonPropertyOrder(3)] [System.Text.Json.Serialization.JsonRequired] public System.Collections.Generic.List<DeathEntry> DeathPositions { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName(@"player_name")] [System.Text.Json.Serialization.JsonPropertyOrder(2)] [System.Text.Json.Serialization.JsonRequired] public string PlayerName { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName(@"player_uuid")] [System.Text.Json.Serialization.JsonPropertyOrder(1)] [System.Text.Json.Serialization.JsonRequired] public string PlayerUuid { get; set; }
+        [System.Text.Json.Serialization.JsonConstructor] public DeathPlayerEntry() {}
+        public DeathPlayerEntry(PlayerController player) {}
+        public DeathPlayerEntry(string player_uuid, string player_name, System.Collections.Generic.List<DeathEntry> death_positions) {}
+        public bool Equals(DeathPlayerEntry obj);
+        public bool Equals(object obj);
+        public static bool Equals(DeathPlayerEntry x, DeathPlayerEntry y);
+        public int GetHashCode();
+        public static int GetHashCode(DeathPlayerEntry obj);
+        public override string ToString();
+    }
+
+    public static class DeathSystemExtensions
+    {
+        public static DeathEntry AddDeathEntry(this System.Collections.Generic.List<DeathEntry> entries, PlayerController player);
+        public static DeathPlayerEntry AddEntry(this System.Collections.Generic.List<DeathPlayerEntry> entries, PlayerController player);
+        public static DeathWorldEntry AddEntry(this System.Collections.Generic.List<DeathWorldEntry> list, string worldName);
+        public static DeathPlayerEntry AddPlayerEntry(this System.Collections.Generic.List<DeathWorldEntry> list, PlayerController pc);
+        public static DeathPlayerEntry GetPlayerEntry(this System.Collections.Generic.List<DeathWorldEntry> list, string worldName, PlayerController pc);
+        public static DeathWorldEntry GetWorldEntry(this System.Collections.Generic.List<DeathWorldEntry> list, string worldName);
+        public static void Init(this System.Collections.Generic.List<DeathWorldEntry> list);
+        public static bool TryGetWorldEntry(this System.Collections.Generic.List<DeathWorldEntry> list, string worldName, out DeathWorldEntry deathWorldEntry);
+    }
+
+    public class DeathWorldEntry
+    {
+        [System.Text.Json.Serialization.JsonPropertyName(@"player_entries")] [System.Text.Json.Serialization.JsonPropertyOrder(1)] [System.Text.Json.Serialization.JsonRequired] public System.Collections.Generic.List<DeathPlayerEntry> PlayerEntries { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName(@"world_name")] [System.Text.Json.Serialization.JsonPropertyOrder(1)] [System.Text.Json.Serialization.JsonRequired] public string WorldName { get; set; }
+        [System.Text.Json.Serialization.JsonConstructor] public DeathWorldEntry() {}
+        public DeathWorldEntry(string world_name, System.Collections.Generic.List<DeathPlayerEntry> player_entries) {}
+        public override string ToString();
+        public bool TryGetPlayerEntry(string playerName, out DeathPlayerEntry deathPlayerEntry);
+    }
+
+    public class HomeListEntry
+    {
+        [System.Text.Json.Serialization.JsonPropertyName(@"direction")] [System.Text.Json.Serialization.JsonPropertyOrder(3)] [System.Text.Json.Serialization.JsonRequired] public Direction Direction { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName(@"label")] [System.Text.Json.Serialization.JsonPropertyOrder(1)] [System.Text.Json.Serialization.JsonRequired] public string Label { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName(@"position")] [System.Text.Json.Serialization.JsonPropertyOrder(2)] [System.Text.Json.Serialization.JsonRequired] public UnityEngine.Vector3 Position { get; set; }
+        [System.Text.Json.Serialization.JsonConstructor] public HomeListEntry() {}
+        public HomeListEntry(string label) {}
+        public HomeListEntry(string label, UnityEngine.Vector3 position, Direction direction) {}
+        public bool Equals(HomeListEntry obj);
+        public bool Equals(object obj);
+        public static bool Equals(HomeListEntry x, HomeListEntry y);
+        public int GetHashCode();
+        public static int GetHashCode(HomeListEntry obj);
+        public override string ToString();
+    }
+
+    public class HomeListPlayerEntry
+    {
+        [System.Text.Json.Serialization.JsonPropertyName(@"list_of_houses")] [System.Text.Json.Serialization.JsonPropertyOrder(3)] [System.Text.Json.Serialization.JsonRequired] public System.Collections.Generic.List<HomeListEntry> ListOfHouses { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName(@"player_name")] [System.Text.Json.Serialization.JsonPropertyOrder(2)] [System.Text.Json.Serialization.JsonRequired] public string PlayerName { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName(@"player_uuid")] [System.Text.Json.Serialization.JsonPropertyOrder(1)] [System.Text.Json.Serialization.JsonRequired] public string PlayerUuid { get; set; }
+        [System.Text.Json.Serialization.JsonConstructor] public HomeListPlayerEntry() {}
+        public HomeListPlayerEntry(PlayerController player) {}
+        public HomeListPlayerEntry(string player_uuid, string player_name, System.Collections.Generic.List<HomeListEntry> list_of_houses) {}
+        public bool Equals(HomeListPlayerEntry obj);
+        public bool Equals(object obj);
+        public static bool Equals(HomeListPlayerEntry x, HomeListPlayerEntry y);
+        public int GetHashCode();
+        public static int GetHashCode(HomeListPlayerEntry obj);
+        public void RemoveHouse(HomeListEntry HomeListEntry);
+        public void RemoveHouse(string label);
+        public override string ToString();
+    }
+
+    public static class HomeListSystemExtensions
+    {
+        public static HomeListEntry AddDefaultEntry(this System.Collections.Generic.List<HomeListEntry> entries, PlayerController player);
+        public static HomeListWorldEntry AddEntry(this System.Collections.Generic.List<HomeListWorldEntry> list, string worldName);
+        public static HomeListPlayerEntry AddEntry(this System.Collections.Generic.List<HomeListPlayerEntry> entries, string label, PlayerController player);
+        public static HomeListEntry AddHomeListEntry(this System.Collections.Generic.List<HomeListEntry> entries, string label, PlayerController player);
+        public static HomeListPlayerEntry AddPlayerEntry(this System.Collections.Generic.List<HomeListWorldEntry> list, string label, PlayerController pc);
+        public static HomeListPlayerEntry GetPlayerEntry(this System.Collections.Generic.List<HomeListWorldEntry> list, string label, string worldName, PlayerController pc);
+        public static HomeListWorldEntry GetWorldEntry(this System.Collections.Generic.List<HomeListWorldEntry> list, string worldName);
+        public static void Init(this System.Collections.Generic.List<HomeListWorldEntry> list);
+        public static bool TryGetWorldEntry(this System.Collections.Generic.List<HomeListWorldEntry> list, string worldName, out HomeListWorldEntry homeWorldEntry);
+    }
+
+    public class HomeListWorldEntry
+    {
+        [System.Text.Json.Serialization.JsonPropertyName(@"player_entries")] [System.Text.Json.Serialization.JsonPropertyOrder(1)] [System.Text.Json.Serialization.JsonRequired] public System.Collections.Generic.List<HomeListPlayerEntry> PlayerEntries { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName(@"world_name")] [System.Text.Json.Serialization.JsonPropertyOrder(1)] [System.Text.Json.Serialization.JsonRequired] public string WorldName { get; set; }
+        [System.Text.Json.Serialization.JsonConstructor] public HomeListWorldEntry() {}
+        public HomeListWorldEntry(string world_name, System.Collections.Generic.List<HomeListPlayerEntry> player_entries) {}
+        public override string ToString();
+        public bool TryGetPlayerEntry(string playerName, out HomeListPlayerEntry housingPlayerEntry);
+    }
+}
+
+namespace MoreCommands.Util
+{
+    public static class Extensions
+    {
+        public static bool IsAdmin(this Unity.Entities.Entity playerEntity);
+        public static Direction ToDirection(this int value);
+        public static string ToMathString(this UnityEngine.Vector3 value);
+        public static System.Numerics.Vector3 ToVector3(this Unity.Mathematics.float3 float3);
+        public static Unity.Mathematics.float3 ToVector3(this System.Numerics.Vector3 vector3);
+        public static string TrimQuotes(this string input, out System.Nullable<CoreLib.Commands.CommandOutput> failedCommand);
+    }
+}

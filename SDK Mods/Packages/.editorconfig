@@ -1,4 +1,4 @@
-[{**/*,**,*}]
+[**]
 generated_code = true
 dotnet_analyzer_diagnostic.severity = none
 dotnet_diagnostic.CS8669.severity = none

@@ -11,14 +11,14 @@ using PugMod;
 
 namespace MoreCommands.Data.Configuration {
   public class JsonConfigFile<T> where T : IConfiguration {
-    private readonly LoadedMod _ownerMetadata;
+    private readonly LoadedMod ownerMetadata;
 
     private static Encoding UTF8NoBom { get; } = new UTF8Encoding(false);
 
     /// <inheritdoc cref="JsonConfig" />
     public JsonConfigFile(string configPath, bool saveOnInit) : this(configPath, saveOnInit, null) { }
 
-    private T _context;
+    private T context;
 
     /// <summary>
     ///     Create a new config file at the specified config path.
@@ -28,8 +28,8 @@ namespace MoreCommands.Data.Configuration {
     /// <param name="ownerMetadata">Information about the plugin that owns this setting file.</param>
     /// <param name="context"></param>
     public JsonConfigFile(string configPath, bool saveOnInit, LoadedMod ownerMetadata) {
-      _ownerMetadata = ownerMetadata;
-      _context = (T)Activator.CreateInstance(typeof(T));
+      this.ownerMetadata = ownerMetadata;
+      context = (T)Activator.CreateInstance(typeof(T));
 
       ConfigFilePath = configPath ?? throw new ArgumentNullException(nameof(configPath));
 
@@ -60,7 +60,7 @@ namespace MoreCommands.Data.Configuration {
     /// </summary>
     public T Context {
       get {
-         return _context;
+         return context;
       }
     }
 
@@ -75,7 +75,7 @@ namespace MoreCommands.Data.Configuration {
     public void Reload() {
       var options = new JsonSerializerOptions
       {
-        ReadCommentHandling = JsonCommentHandling.Allow,
+        ReadCommentHandling = JsonCommentHandling.Skip,
         AllowTrailingCommas = true,
         MaxDepth = 1000,
       };
@@ -84,7 +84,7 @@ namespace MoreCommands.Data.Configuration {
       var fileText = UTF8NoBom.GetString(fileData);
 
       try {
-        _context = JsonSerializer.Deserialize<T>(fileText, options);
+        context = JsonSerializer.Deserialize<T>(fileText, options);
       } catch (Exception exception) {
         MoreCommandsMod.Log.LogError($"Failed to deserialize the json object for context of type {typeof(T)}\n{exception.Message}\n{exception.StackTrace}");
         return;
@@ -99,12 +99,14 @@ namespace MoreCommands.Data.Configuration {
     public void Save()
     {
       var directoryName = GetDirectoryName(ConfigFilePath);
-      if (directoryName != null) API.ConfigFilesystem.CreateDirectory(directoryName);
+      if (directoryName != null) {
+        API.ConfigFilesystem.CreateDirectory(directoryName);
+      }
 
       var stringBuilder = new StringBuilder();
 
-      if (_ownerMetadata != null) {
-        stringBuilder.AppendLine($"// Settings file was created by plugin {_ownerMetadata.Metadata.name}");
+      if (ownerMetadata != null) {
+        stringBuilder.AppendLine($"// Settings file was created by plugin {ownerMetadata.Metadata.name}");
         stringBuilder.AppendLine();
       }
 
@@ -115,10 +117,11 @@ namespace MoreCommands.Data.Configuration {
           ReadCommentHandling = JsonCommentHandling.Skip,
           MaxDepth = 1000,
         };
-        var jsonData = JsonSerializer.Serialize(_context, typeof(T), options);
+
+        var jsonData = JsonSerializer.Serialize(context, typeof(T), options);
         stringBuilder.Append(jsonData);
       } catch (Exception exception) {
-        MoreCommandsMod.Log.LogError($"Failed to serialize the json object for context of type {typeof(T)}\n{exception.Message}\n{exception.StackTrace}");
+        MoreCommandsMod.Log.LogError($"[{MoreCommandsMod.NAME}]: Failed to serialize the json object for context of type {typeof(T)}\n{exception.Message}\n{exception.StackTrace}");
         return;
       }
 
@@ -190,8 +193,8 @@ namespace MoreCommands.Data.Configuration {
       foreach (var callback in settingChanged.GetInvocationList().Cast<EventHandler<SettingChangedEventArgs>>()) {
         try {
           callback(sender, args);
-        } catch (Exception e) {
-          MoreCommandsMod.Log.LogError(e.ToString());
+        } catch (Exception exception) {
+          MoreCommandsMod.Log.LogError($"[{MoreCommandsMod.NAME}]: Failed to run callback.\n{exception.Message}\n{exception.StackTrace}");
         }
       }
     }
@@ -206,8 +209,8 @@ namespace MoreCommands.Data.Configuration {
       foreach (var callback in configReloaded.GetInvocationList().Cast<EventHandler>()) {
         try {
           callback(this, EventArgs.Empty);
-        } catch (Exception e) {
-          MoreCommandsMod.Log.LogError(e.ToString());
+        } catch (Exception exception) {
+          MoreCommandsMod.Log.LogError($"[{MoreCommandsMod.NAME}]: Failed to run callback.\n{exception.Message}\n{exception.StackTrace}");
         }
       }
     }

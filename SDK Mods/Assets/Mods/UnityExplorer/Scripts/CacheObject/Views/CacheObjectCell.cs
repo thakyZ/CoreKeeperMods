@@ -178,7 +178,7 @@ namespace UnityExplorer.CacheObject.Views
             UIFactory.SetLayoutElement(ApplyButton.Component.gameObject, minWidth: 70, minHeight: 25, flexibleWidth: 0, flexibleHeight: 0);
             ApplyButton.OnClick += ApplyClicked;
 
-            // Inspect 
+            // Inspect
 
             InspectButton = UIFactory.CreateButton(rightHoriGroup, "InspectButton", "Inspect", new Color(0.15f, 0.15f, 0.15f));
             UIFactory.SetLayoutElement(InspectButton.Component.gameObject, minWidth: 70, flexibleWidth: 0, minHeight: 25);
@@ -211,7 +211,7 @@ namespace UnityExplorer.CacheObject.Views
             // Subcontent
 
             SubContentHolder = UIFactory.CreateUIObject("SubContent", UIRoot);
-            UIFactory.SetLayoutElement(SubContentHolder.gameObject, minHeight: 30, flexibleHeight: 600, minWidth: 100, flexibleWidth: 9999);
+            UIFactory.SetLayoutElement(SubContentHolder, minHeight: 30, flexibleHeight: 600, minWidth: 100, flexibleWidth: 9999);
             UIFactory.SetLayoutGroup<VerticalLayoutGroup>(SubContentHolder, true, true, true, true, 2, childAlignment: TextAnchor.UpperLeft);
             //SubContentHolder.AddComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.MinSize;
             SubContentHolder.SetActive(false);

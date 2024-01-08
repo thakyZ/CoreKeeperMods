@@ -1,4 +1,4 @@
-[*.cs]
+[**.cs]
 tab_width = 4
 indent_size = 4
 indent_style = space
@@ -9,14 +9,15 @@ end_of_line = crlf
 # IDE1006: Naming Styles
 dotnet_diagnostic.IDE1006.severity = none
 
+# IDE1046: 'if' statement can be simplified
+dotnet_diagnostic.IDE1046.severity = none
+
+# IDE1048: Parentheses should be added for clarity
+dotnet_diagnostic.IDE1048.severity = none
+
 # IDE0007: use 'var' instead of explicit type
-dotnet_diagnostic.IDE007.severity = none
-
 # IDE0007: Use implicit type
-dotnet_diagnostic.IDE0007.severity = none
-
-# IDE0017: Simplify object initialization
-dotnet_diagnostic.IDE0017.severity = none
+dotnet_diagnostic.IDE007.severity = none
 
 # IDE0017: Simplify object initialization
 dotnet_diagnostic.IDE0017.severity = none
@@ -27,16 +28,11 @@ dotnet_diagnostic.IDE0031.severity = none
 # IDE0045: Convert to conditional expression
 dotnet_diagnostic.IDE0045.severity = none
 
-# UNT0019: Indirection call
-dotnet_diagnostic.UNT0019.severity = none
-
 # IDE0071: Simplify interpolation
 dotnet_diagnostic.IDE0071.severity = none
 
 # IDE0074: Use compound assignment
 dotnet_style_prefer_compound_assignment = false
-
-# IDE0074: Use compound assignment
 dotnet_diagnostic.IDE0074.severity = none
 
 # IDE0270: Use coalesce expression
@@ -47,21 +43,14 @@ csharp_style_prefer_range_operator = false
 
 # IDE0056: Use index operator
 csharp_style_prefer_index_operator = false
+dotnet_diagnostic.IDE0056.severity = none
 
 # IDE0052: Remove unread private members
 dotnet_diagnostic.IDE0052.severity = none
 
-# IDE0056: Use index operator
-dotnet_diagnostic.IDE0056.severity = none
-
-# IDE0057: Use range operator
-dotnet_diagnostic.IDE0057.severity = none
-
-# IDE0066: Convert switch statement to expression
-dotnet_diagnostic.IDE0066.severity = none
-
 # IDE0066: Convert switch statement to expression
 csharp_style_prefer_switch_expression = false
+dotnet_diagnostic.IDE0066.severity = none
 
 # IDE0079: Remove unnecessary suppression
 dotnet_diagnostic.IDE0079.severity = none
@@ -72,9 +61,6 @@ dotnet_diagnostic.IDE0090.severity = none
 # IDE0220: Add explicit cast
 dotnet_diagnostic.IDE0220.severity = none
 
-# IDE1006: Naming Styles
-dotnet_diagnostic.IDE1006.severity = none
-
 # TODO: TODO
 dotnet_diagnostic.TODO.severity = none
 
@@ -83,9 +69,6 @@ dotnet_diagnostic.VSSpell001.severity = none
 
 # VSSpell002: Spell Check
 dotnet_diagnostic.VSSpell002.severity = none
-
-# UNT0019: Indirection call
-dotnet_diagnostic.UNT0019.severity = none
 
 # NetCode: NetCode Generator
 dotnet_diagnostic.NetCode.severity = none
