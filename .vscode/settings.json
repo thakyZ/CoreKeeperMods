@@ -1,7 +1,20 @@
 {
+  "[jsonc]": {
+    "editor.quickSuggestions": {
+      "strings": true
+    },
+    "editor.suggest.insertMode": "replace",
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
   "dotnet.server.useOmnisharp": true,
   "dotnet.preferCSharpExtension": true,
   "dotnet.defaultSolution": "SDK Mods/SDK Mods.sln",
-  "cSpell.words": ["mscorlib", "Respawn"],
-  "cSpell.ignoreRegExpList": ["Dont(?=\\w+)", "UE(?=_\\w+)"]
+  "cSpell.words": [
+    "mscorlib",
+    "Respawn"
+  ],
+  "cSpell.ignoreRegExpList": [
+    "Dont(?=\\w+)",
+    "UE(?=_\\w+)"
+  ]
 }
