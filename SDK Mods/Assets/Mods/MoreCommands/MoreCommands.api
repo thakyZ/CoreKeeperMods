@@ -93,6 +93,16 @@ namespace MoreCommands.Data.Configuration
     }
 }
 
+namespace MoreCommands.Data.Converter
+{
+    public class Vector3JsonConverter : System.Text.Json.Serialization.JsonConverter<UnityEngine.Vector3>
+    {
+        public Vector3JsonConverter() {}
+        public override UnityEngine.Vector3 Read(ref System.Text.Json.Utf8JsonReader reader, System.Type typeToConvert, System.Text.Json.JsonSerializerOptions options);
+        public override void Write(System.Text.Json.Utf8JsonWriter writer, UnityEngine.Vector3 value, System.Text.Json.JsonSerializerOptions options);
+    }
+}
+
 namespace MoreCommands.Patches
 {
     [HarmonyLib.HarmonyPatch] public static class Death_Patch

@@ -166,7 +166,7 @@ namespace Unity.Physics.Authoring
         [UnityEngine.Scripting.Preserve] public ModifyJointLimitsBakingData() {}
     }
 
-    [UnityEngine.AddComponentMenu(@"Entities/Physics/Physics Body")] [UnityEngine.DisallowMultipleComponent] public sealed class PhysicsBodyAuthoring : UnityEngine.MonoBehaviour
+    [UnityEngine.AddComponentMenu(@"Entities/Physics/Physics Body")] [UnityEngine.DisallowMultipleComponent] [UnityEngine.Icon(@"Packages/com.unity.physics/Unity.Physics.Editor/Editor Default Resources/Icons/d_Rigidbody@64.png")] public sealed class PhysicsBodyAuthoring : UnityEngine.MonoBehaviour
     {
         public float AngularDamping { get; set; }
         public MassDistribution CustomMassDistribution { get; set; }
@@ -266,7 +266,7 @@ namespace Unity.Physics.Authoring
         public PhysicsRenderEntityAuthoring() {}
     }
 
-    [UnityEngine.AddComponentMenu(@"Entities/Physics/Physics Shape")] public sealed class PhysicsShapeAuthoring : UnityEngine.MonoBehaviour, UnityEngine.ISerializationCallbackReceiver
+    [UnityEngine.AddComponentMenu(@"Entities/Physics/Physics Shape")] [UnityEngine.Icon(@"Packages/com.unity.physics/Unity.Physics.Editor/Editor Default Resources/Icons/d_BoxCollider@64.png")] public sealed class PhysicsShapeAuthoring : UnityEngine.MonoBehaviour, UnityEngine.ISerializationCallbackReceiver
     {
         public PhysicsCategoryTags BelongsTo { get; set; }
         public PhysicsCategoryTags CollidesWith { get; set; }

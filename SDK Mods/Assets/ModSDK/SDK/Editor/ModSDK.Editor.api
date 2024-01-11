@@ -58,17 +58,6 @@ public class ProjectFilePostprocessor : UnityEditor.AssetPostprocessor
     public ProjectFilePostprocessor() {}
     public static string OnGeneratedCSProject(string path, string content);
     public static string OnGeneratedSlnSolution(string path, string content);
-    public static class Constants
-    {
-        public static readonly string ExtensibilityGlobals;
-        public static readonly string HiddenItems;
-        public static readonly string HiddenNestedProjectPrefix;
-        public static readonly string HiddenNestedProjectSuffix;
-        public static readonly string HiddenNestedProjectTemplate;
-        public static readonly string ProjectConfigurationPlatforms;
-        public static readonly string ScriptsProject;
-        public static readonly string SolutionItems;
-    }
 }
 
 public class SpriteInstancingModBuilder : PugMod.IPugModBuilderProcessor
