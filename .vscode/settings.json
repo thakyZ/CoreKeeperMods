@@ -6,6 +6,9 @@
     "editor.suggest.insertMode": "replace",
     "editor.defaultFormatter": "vscode.json-language-features"
   },
+  "[shellscript]": {
+    "files.eol": "\n"
+  },
   "dotnet.server.useOmnisharp": true,
   "dotnet.preferCSharpExtension": true,
   "dotnet.defaultSolution": "SDK Mods/SDK Mods.sln",
