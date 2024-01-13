@@ -18,7 +18,7 @@ using UnityEngine.UIElements;
 
 namespace PugMod
 {
-    public partial class ModSDKWindow
+  public partial class ModSDKWindow
   {
     private class UploadMod
     {
@@ -77,7 +77,8 @@ namespace PugMod
         if (EditorPrefs.HasKey(CHOSEN_MOD_KEY))
         {
           _modList.index = _modList.choices.IndexOf(EditorPrefs.GetString(CHOSEN_MOD_KEY));
-        } else if (_modList.choices.Count > 0)
+        }
+        else if (_modList.choices.Count > 0)
         {
           _modList.index = 0;
         }
@@ -196,7 +197,8 @@ namespace PugMod
             _modLogo.style.backgroundImage = modIOSettings.logo = logo;
 
             UpdateModIOSettings(modIOSettings);
-          } catch (Exception e)
+          }
+          catch (Exception e)
           {
             Debug.LogException(e);
             ShowError("Failed to load image");
@@ -230,12 +232,12 @@ namespace PugMod
           }
 
           var modProfileDetails = new ModProfileDetails
-                  {
-                    name = modBuilderSettings.metadata.name,
-                    logo = modIOSettings.logo,
-                    summary = modIOSettings.summary,
-                    visible = false,
-                  };
+          {
+            name = modBuilderSettings.metadata.name,
+            logo = modIOSettings.logo,
+            summary = modIOSettings.summary,
+            visible = false,
+          };
 
           if (!InitializeModIO())
           {
@@ -246,20 +248,20 @@ namespace PugMod
 
           ModIOUnity.CreateModProfile(creationToken, modProfileDetails, result =>
           {
-      if (!result.result.Succeeded())
-      {
-        ShowError($"Failed to create mod on mod.io: {result.result.message}");
-        return;
-      }
+            if (!result.result.Succeeded())
+            {
+              ShowError($"Failed to create mod on mod.io: {result.result.message}");
+              return;
+            }
 
-      modIOSettings.modId = result.value;
+            modIOSettings.modId = result.value;
 
-      EditorUtility.SetDirty(modIOSettings);
+            EditorUtility.SetDirty(modIOSettings);
 
-      UpdateSelection();
+            UpdateSelection();
 
-      EditorUtility.DisplayDialog("Register successful", $"Successfully registered new mod with ID={modIOSettings.modId}", "OK");
-    });
+            EditorUtility.DisplayDialog("Register successful", $"Successfully registered new mod with ID={modIOSettings.modId}", "OK");
+          });
         };
 
         _uploadButton.clicked += () =>
@@ -283,40 +285,40 @@ namespace PugMod
 
           ModIOUnity.GetMod(new ModId(modIOSettings.modId), result =>
           {
-      if (!result.result.Succeeded())
-      {
-        ShowError($"Couldn't find mod {modIOSettings.modSettings.metadata.name} at mod.io");
-        return;
-      }
+            if (!result.result.Succeeded())
+            {
+              ShowError($"Couldn't find mod {modIOSettings.modSettings.metadata.name} at mod.io");
+              return;
+            }
 
-      Debug.Assert(modIOSettings.modId == result.value.id);
+            Debug.Assert(modIOSettings.modId == result.value.id);
 
-      var modProfileDetails = new ModProfileDetails
+            var modProfileDetails = new ModProfileDetails
+            {
+              modId = new ModId(modIOSettings.modId),
+              name = modBuilderSettings.metadata.name,
+              logo = modIOSettings.logo,
+              summary = modIOSettings.summary,
+              visible = result.value.visible, // Not setting this will always set true anyway
+            };
+
+            ModIOUnity.EditModProfile(modProfileDetails, result =>
+            {
+              if (!result.Succeeded())
               {
-                modId = new ModId(modIOSettings.modId),
-                name = modBuilderSettings.metadata.name,
-                logo = modIOSettings.logo,
-                summary = modIOSettings.summary,
-                visible = result.value.visible, // Not setting this will always set true anyway
-              };
+                ShowError("Failed to update mod details");
+                return;
+              }
 
-      ModIOUnity.EditModProfile(modProfileDetails, result =>
-      {
-        if (!result.Succeeded())
-        {
-          ShowError("Failed to update mod details");
-          return;
-        }
+              var modPath = TempExport(modIOSettings.modSettings, modIOSettings);
+              if (string.IsNullOrEmpty(modPath))
+              {
+                return;
+              }
 
-        var modPath = TempExport(modIOSettings.modSettings, modIOSettings);
-        if (string.IsNullOrEmpty(modPath))
-        {
-          return;
-        }
-
-        Upload(modIOSettings, modPath);
-      });
-    });
+              Upload(modIOSettings, modPath);
+            });
+          });
         };
 
         _goToProfileButton.clicked += () =>
@@ -340,22 +342,22 @@ namespace PugMod
 
           ModIOUnity.GetMod(new ModId(modIOSettings.modId), result =>
           {
-      if (!result.result.Succeeded())
-      {
-        ShowError($"Couldn't find mod {modIOSettings.modSettings.metadata.name} at mod.io");
-        return;
-      }
+            if (!result.result.Succeeded())
+            {
+              ShowError($"Couldn't find mod {modIOSettings.modSettings.metadata.name} at mod.io");
+              return;
+            }
 
-      Debug.Assert(modIOSettings.modId == result.value.id);
+            Debug.Assert(modIOSettings.modId == result.value.id);
 
-      if (string.IsNullOrEmpty(result.value.profilePageUrl))
-      {
-        ShowError($"No profile url for mod {modIOSettings.modSettings.metadata.name}");
-        return;
-      }
+            if (string.IsNullOrEmpty(result.value.profilePageUrl))
+            {
+              ShowError($"No profile url for mod {modIOSettings.modSettings.metadata.name}");
+              return;
+            }
 
-      Application.OpenURL(result.value.profilePageUrl);
-    });
+            Application.OpenURL(result.value.profilePageUrl);
+          });
         };
 
         UpdateSelection();
@@ -455,10 +457,12 @@ namespace PugMod
           AssetDatabase.CreateAsset(settings, Path.Combine(dir, $"{modBuilderSettings.metadata.name}_modio.asset"));
 
           return settings;
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
           Debug.LogException(e);
-        } finally
+        }
+        finally
         {
           AssetDatabase.StopAssetEditing();
           AssetDatabase.Refresh();
@@ -554,16 +558,17 @@ namespace PugMod
             {
               ModIOUnity.DownloadTexture(result.value.logoImage_Original, downloadTextureResult =>
               {
-              if (!downloadTextureResult.result.Succeeded())
-              {
-                return;
-              }
+                if (!downloadTextureResult.result.Succeeded())
+                {
+                  return;
+                }
 
-              modIOSettings.logo = downloadTextureResult.value;
-              if (modIOSettings.logo != null)
-                _modLogo.style.backgroundImage = modIOSettings.logo;
-            });
-            } catch (Exception e)
+                modIOSettings.logo = downloadTextureResult.value;
+                if (modIOSettings.logo != null)
+                  _modLogo.style.backgroundImage = modIOSettings.logo;
+              });
+            }
+            catch (Exception e)
             {
               Debug.LogException(e);
             }

@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace PugMod.ModIO
 {
-    public class ModSettings : ScriptableObject
+  public class ModSettings : ScriptableObject
   {
     public long modId;
     public ModBuilderSettings modSettings;
