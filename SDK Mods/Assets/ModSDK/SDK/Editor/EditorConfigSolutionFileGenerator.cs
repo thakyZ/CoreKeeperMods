@@ -1,6 +1,6 @@
 // cSpell:ignoreRegexp SYSLIB(?=\d{3,4})
 // cSpell:ignoreRegexp  (?<=ENABLE_)VSTU
-// cSpell:ignore Postprocessor
+// cSpell:ignore Postprocessor, netcode
 
 using System.Collections.Generic;
 using System.Collections;
@@ -97,8 +97,15 @@ public class ProjectFilePostprocessor : AssetPostprocessor {
     internal static readonly Regex HideSolutionNodeRegex = new(@"^\t\tHideSolutionNode = FALSE$");
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "SYSLIB1045:Convert to 'GeneratedRegexAttribute'.", Justification = "Invalid on current CSharp language version.")]
     internal static readonly Regex EndGlobalRegex = new(@"^EndGlobal$");
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "SYSLIB1045:Convert to 'GeneratedRegexAttribute'.", Justification = "Invalid on current CSharp language version.")]
+    internal static readonly Regex NetCodeGenerator = new(@"^(\s+)(<Analyzer Include="".*com\.unity\.netcode.*\\NetCodeSourceGenerator\.dll"" />)$");
   }
 
+  /// <summary>
+  /// Gets projects that are white listed because they are in the mods directory.
+  /// </summary>
+  /// <param name="path">A path to base the Unity project root off of.</param>
+  /// <returns>A list containing names of projects that should be white listed.</returns>
   private static List<string> GetWhitelistedProjects(string path) {
     List<string> output = new();
     var modsDir = Path.Join(Path.GetDirectoryName(path), "Assets", "Mods");
@@ -111,6 +118,26 @@ public class ProjectFilePostprocessor : AssetPostprocessor {
 
     return output;
   }
+
+  private static readonly List<string> KnownNetCodeTroublemakers = new() {
+    "CoreLib",
+    "CoreLib.Audio",
+    "CoreLib.Commands",
+    "CoreLib.Drops",
+    "CoreLib.Editor",
+    "CoreLib.Entity",
+    "CoreLib.Equipment",
+    "CoreLib.Localization",
+    "CoreLib.JsonLoader",
+    "CoreLib.ModderTools",
+    "CoreLib.Resources",
+    "CoreLib.RewiredExtension",
+    "CoreLib.Tilesets",
+    "CoreLib.UserInterface",
+    "PugMod.SDK",
+    "SDKExtenions",
+    "Assembly-CSharp-Editor-firstpass",
+  };
 
   public static string OnGeneratedSlnSolution(string path, string content) {
     string[] fileTextLines = Constants.NewLineRegex.Split(content);
@@ -183,6 +210,34 @@ public class ProjectFilePostprocessor : AssetPostprocessor {
   }
 
   public static string OnGeneratedCSProject(string path, string content) {
-    return content;
+    string[] fileTextLines = Constants.NewLineRegex.Split(content);
+    var whitelisted = GetWhitelistedProjects(path);
+    var fileName = Path.GetFileNameWithoutExtension(path);
+
+    var outFileTextLines = new List<string>();
+
+    if (KnownNetCodeTroublemakers.Contains(fileName)) {
+      foreach ((int index, string line) in fileTextLines.Select((value, i) => (i, value))) {
+        if (Constants.NetCodeGenerator.IsMatch(line)) {
+          var netcode_analyzer_match = Constants.NetCodeGenerator.Match(line);
+          outFileTextLines.Add($"{netcode_analyzer_match.Groups[1].Value}<!--{netcode_analyzer_match.Groups[2].Value}-->");
+        } else {
+          outFileTextLines.Add(line);
+        }
+      }
+    } else if (whitelisted.Contains(fileName)) {
+      foreach ((int index, string line) in fileTextLines.Select((value, i) => (i, value))) {
+        if (Constants.NetCodeGenerator.IsMatch(line)) {
+          var netcode_analyzer_match = Constants.NetCodeGenerator.Match(line);
+          outFileTextLines.Add($"<!--{netcode_analyzer_match.Groups[1].Value}-->");
+        } else {
+          outFileTextLines.Add(line);
+        }
+      }
+    } else {
+      return content;
+    }
+
+    return string.Join("\r\n", outFileTextLines);
   }
 }
