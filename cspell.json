@@ -1,7 +1,8 @@
 {
     "version": "0.2",
     "ignorePaths": [
-        "cspell.json"
+        "cspell.json",
+        "EULA.txt"
     ],
     "dictionaryDefinitions": [],
     "dictionaries": [
@@ -17,11 +18,24 @@
     ],
     "words": [
         "Pugstorm",
-        "Omnisharp"
+        "Pugstorms",
+        "Omnisharp",
+        "Slöjdgatan",
+        "Linköping",
+        "gameplay"
     ],
     "ignoreWords": [],
     "import": [],
     "ignoreRegExpList": [
-        "(?<=\\$\\{)TMPLT(?=:.*\\})"
+        "(?<=\\$\\{)TMPLT(?=:.*\\})",
+        "(?<=\\\"\\*\\.)vsext(?=\\\")",
+        "(?<=\\\"\\.)vsconfig(?=\\\")",
+        "(?<=\\\")vsix(?=Id\\\")",
+        "(?<=C\\# Inline Color )Vizualizer",
+        "(?<=Tim)Heuer",
+        "(?<=Open )VSIX(?= Gallery)",
+        "(?<=Nikolay )Balakin",
+        "(?<=Side)Scroller(?=\\.Vsix)?",
+        "(?<=SideScroller\\.)Vsix"
     ]
 }

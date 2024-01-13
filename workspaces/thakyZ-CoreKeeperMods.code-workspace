@@ -29,6 +29,10 @@
 			"UE(?=_\\w+)"
 		],
 		"git.ignoreLimitWarning": true,
-		"powershell.cwd": "thakyZ-CoreKeeperMods"
+		"powershell.cwd": "thakyZ-CoreKeeperMods",
+		"files.associations": {
+			"*.vsext": "jsonc",
+			".vsconfig": "jsonc"
+		}
 	}
 }
