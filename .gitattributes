@@ -156,5 +156,6 @@ Assets/Plugins/**       linguist-vendored
 *.skel.bytes            lfs
 
 # Scripts
-*.sh                    text diff=shell eol=lf
-*.bat                   text diff=batch eol=crlf
+*.sh                    text diff=shell  eol=lf
+*.bat                   text diff=batch  eol=crlf
+*.py                    text diff=python eol=lf
