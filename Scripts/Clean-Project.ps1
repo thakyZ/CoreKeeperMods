@@ -78,7 +78,7 @@ ForEach ($Item in $script:ItemsToRemove) {
   Try {
     Remove-Item -LiteralPath $Item -Recurse -ErrorAction Stop;
   } Catch {
-    If ($_.Exception.Message -match "^You do not have sufficient access rights to perform this operation or the item is hidden, system, or read only\.$") {
+    If ($_.Exception.Message -match "^[Yy]ou do not have sufficient access rights to perform this operation or the item is hidden, system, or read only\.$") {
       Try {
         Remove-Item -LiteralPath $Item -Recurse -Force -ErrorAction Stop;
       } Catch {
