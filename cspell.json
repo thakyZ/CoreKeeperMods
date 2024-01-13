@@ -1,0 +1,27 @@
+{
+    "version": "0.2",
+    "ignorePaths": [
+        "cspell.json"
+    ],
+    "dictionaryDefinitions": [],
+    "dictionaries": [
+        "en_US",
+        "companies",
+        "softwareTerms",
+        "misc",
+        "python",
+        "powershell",
+        "csharp",
+        "fonts",
+        "filetypes"
+    ],
+    "words": [
+        "Pugstorm",
+        "Omnisharp"
+    ],
+    "ignoreWords": [],
+    "import": [],
+    "ignoreRegExpList": [
+        "(?<=\\$\\{)TMPLT(?=:.*\\})"
+    ]
+}

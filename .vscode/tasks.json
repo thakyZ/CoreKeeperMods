@@ -1,0 +1,29 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "script",
+      "scriptType": "python",
+      "path": "Scripts/",
+      "fileName": "create_vscode_template.py",
+      "scriptFile": true,
+      "script": "py",
+      "target": "py",
+      "uri": {
+        "$mid": 1,
+        "fsPath": "${workspaceFolder}\\..\\Scripts\\create_vscode_template.py",
+        "_sep": 1,
+        "external": "file:///${workspaceFolder}/../Scripts/create_vscode_template.py",
+        "path": "/${workspaceFolder}/../Scripts/create_vscode_template.py",
+        "scheme": "file"
+      },
+      "takesArgs": false,
+      "problemMatcher": [
+        "$msCompile"
+      ],
+      "label": "Create VSCode Project File"
+    }
+  ]
+}

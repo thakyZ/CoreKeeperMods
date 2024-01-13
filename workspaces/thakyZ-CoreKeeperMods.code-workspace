@@ -1,10 +1,12 @@
 {
 	"folders": [
 		{
-			"path": "."
+			"name": "CoreKeeper Mods",
+			"path": ".."
 		},
 		{
-			"path": "${env:HOME}/AppData/LocalLow/Pugstorm"
+			"name": "CoreKeeper Data",
+			"path": "C:/Users/thaky/AppData/LocalLow/Pugstorm"
 		}
 	],
 	"settings": {
@@ -25,6 +27,8 @@
 		"cSpell.ignoreRegExpList": [
 			"Dont(?=\\w+)",
 			"UE(?=_\\w+)"
-		]
+		],
+		"git.ignoreLimitWarning": true,
+		"powershell.cwd": "thakyZ-CoreKeeperMods"
 	}
 }
