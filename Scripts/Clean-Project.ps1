@@ -75,5 +75,17 @@ Get-ChildItem -LiteralPath $Scripts_Path -Hidden | ForEach-Object {
 
 ForEach ($Item in $script:ItemsToRemove) {
   Write-Host -Object "Removing $($Item.FullName)";
-  Remove-Item -LiteralPath $Item -Recurse;
+  Try {
+    Remove-Item -LiteralPath $Item -Recurse -ErrorAction Stop;
+  } Catch {
+    If ($_.Exception.Message -match "^You do not have sufficient access rights to perform this operation or the item is hidden, system, or read only\.$") {
+      Try {
+        Remove-Item -LiteralPath $Item -Recurse -Force -ErrorAction Stop;
+      } Catch {
+        Write-Error -Exception $_.Exception -Message $_.Exception.Message;
+      }
+    } Else {
+      Write-Error -Exception $_.Exception -Message $_.Exception.Message;
+    }
+  }
 }
