@@ -14,7 +14,7 @@ namespace NekoBoiNick.CoreKeeperMods
   /// <summary>
   /// Update solution file to contain development systems.
   /// </summary>
-  public partial class UpdateSolution
+  public static class UpdateSolution
   {
     public static class Constants
     {
