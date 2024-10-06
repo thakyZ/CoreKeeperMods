@@ -1,81 +1,83 @@
-﻿using System;
-using MoreCommands.Systems;
-using System.Text.Json.Serialization;
-using System.Text.Json.Nodes;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Text.Json;
+using System.Text.Json.Serialization;
+
+using MoreCommands.Systems;
+using Logger = MoreCommands.Util.Logger;
 
 namespace MoreCommands.Data.Configuration {
-  [Serializable()]
+  [Serializable]
   public class Configuration : IConfiguration {
     //[JsonComment("Disable specific commands")]
     [JsonPropertyName("commands_enabled")]
     [JsonPropertyOrder(1)]
-    [JsonRequired()]
+    [JsonRequired]
     public CommandsEnabled CommandsEnabled { get; set; } = new();
 
     //[JsonComment("Housing System Config")]
     [JsonPropertyName("housing_system")]
     [JsonPropertyOrder(2)]
-    [JsonRequired()]
-    public List<HomeListWorldEntry> HomeListSystem { get; set; } = new();
+    [JsonRequired]
+    public List<HomeListWorldEntry?>? HomeListSystem { get; set; }
 
     //[JsonComment("Death System Config")]
     [JsonPropertyName("death_system")]
     [JsonPropertyOrder(3)]
-    [JsonRequired()]
-    public List<DeathWorldEntry> DeathSystem { get; set; } = new();
+    [JsonRequired]
+    public List<DeathWorldEntry?>? DeathSystem { get; set; }
 
-    public Configuration(CommandsEnabled commands_enabled, List<HomeListWorldEntry> housing_system, List<DeathWorldEntry> death_system) {
+    public Configuration(CommandsEnabled commands_enabled, List<HomeListWorldEntry?> housingSystem, List<DeathWorldEntry?> deathSystem) {
       this.CommandsEnabled = commands_enabled;
 
-      if (housing_system == null) {
-        MoreCommandsMod.Log.LogInfo($"[{MoreCommandsMod.NAME}]: housing_system  is  null");
+      if (housingSystem is null) {
+        Logger.Info($"housing_system  is  null");
         this.HomeListSystem = new();
         this.HomeListSystem.Init();
       } else {
-        this.HomeListSystem = housing_system;
+        this.HomeListSystem = housingSystem;
         this.HomeListSystem.Init();
       }
 
-      if (death_system == null) {
-        MoreCommandsMod.Log.LogInfo($"[{MoreCommandsMod.NAME}]: death_system  is  null");
+      if (deathSystem is null) {
+        Logger.Info($"death_system  is  null");
         this.DeathSystem = new();
         this.DeathSystem.Init();
       } else {
-        this.DeathSystem = death_system;
+        this.DeathSystem = deathSystem;
         this.DeathSystem.Init();
       }
 
-      if (this.HomeListSystem == null) {
-        MoreCommandsMod.Log.LogInfo($"[{MoreCommandsMod.NAME}]: this.HousingSystem  is  null");
+      if (this.HomeListSystem is null) {
+        Logger.Info($"this.HousingSystem  is  null");
       }
-      if (this.DeathSystem == null) {
-        MoreCommandsMod.Log.LogInfo($"[{MoreCommandsMod.NAME}]: this.DeathSystem  is  null");
+      if (this.DeathSystem is null) {
+        Logger.Info($"this.DeathSystem  is  null");
       }
     }
 
-    [JsonConstructor()]
+    [JsonConstructor]
     public Configuration() { }
 
-    [JsonIgnore()]
+    [JsonIgnore]
     public static Configuration Default => new();
 
-    public override string ToString() => JsonSerializer.Serialize(this);
+    public override string ToString() => JsonSerializer.Serialize(this, JsonBase.JsonSerializerOptions);
   }
 
-  [Serializable()]
+  [Serializable]
   public class CommandsEnabled {
     //[JsonComment("Enable the home command?")]
     [JsonPropertyName("home")]
     [JsonPropertyOrder(1)]
-    [JsonRequired()]
+    [JsonRequired]
     public bool Home { get; set; } = true;
 
     //[JsonComment("Enable the back command?")]
     [JsonPropertyName("back")]
     [JsonPropertyOrder(2)]
-    [JsonRequired()]
+    [JsonRequired]
     public bool Back { get; set; } = true;
 
     public CommandsEnabled(bool home, bool back)
@@ -84,9 +86,9 @@ namespace MoreCommands.Data.Configuration {
       this.Back = back;
     }
 
-    [JsonConstructor()]
+    [JsonConstructor]
     public CommandsEnabled() { }
 
-    public override string ToString() => JsonSerializer.Serialize(this);
+    public override string ToString() => JsonSerializer.Serialize(this, JsonBase.JsonSerializerOptions);
   }
 }

@@ -1,11 +1,9 @@
-﻿using System.Numerics;
-
+﻿#nullable enable
+using System.Diagnostics.CodeAnalysis;
 using CoreLib.Commands;
 
 using Unity.Entities;
 using Unity.Mathematics;
-
-#nullable enable
 
 namespace MoreCommands.Util {
   public static class Extensions {
@@ -29,16 +27,33 @@ namespace MoreCommands.Util {
       return input;
     }
 
+    public static bool Equals(this float3 @value, float3? other) {
+      if (other is null) return false;
+      return @value.x.Equals(other.Value.x)
+          && @value.y.Equals(other.Value.y)
+          && @value.z.Equals(other.Value.z);
+    }
+
+    public static bool Equals(this float3 @value, object? obj) {
+      if (obj is null) return false;
+      if (obj is float3 other) return @value.Equals(other: other);
+      return false;
+    }
+
+    public static bool Equals(this float2 @value, float2? other) {
+      if (other is null) return false;
+      return @value.x.Equals(other.Value.x)
+          && @value.y.Equals(other.Value.y);
+    }
+
+    public static bool Equals(this float2 @value, object? obj) {
+      if (obj is null) return false;
+      if (obj is float2 other) return @value.Equals(other: other);
+      return false;
+    }
+
     public static bool IsAdmin(this Entity playerEntity) {
       return playerEntity.GetPlayerController().adminPrivileges > 0;
-    }
-
-    public static Vector3 ToVector3(this float3 @float3) {
-      return new Vector3(@float3.x, @float3.y, @float3.z);
-    }
-
-    public static float3 ToVector3(this Vector3 vector3) {
-      return new float3(vector3.X, vector3.Y, vector3.Z);
     }
 
     public static Direction ToDirection(this int value) {
@@ -50,8 +65,12 @@ namespace MoreCommands.Util {
       };
     }
 
-    public static string ToMathString(this UnityEngine.Vector3 value) {
-      return string.Format("({0}, {1}, {2})", value.x, value.y, value.z);
+    public static string ToMathString(this float3 value) {
+      return $"[ {value.x}, {value.y}, {value.z} ]";
+    }
+
+    public static string ToMathString(this float2 value) {
+      return $"[ {value.x}, {value.y} ]";
     }
   }
 }

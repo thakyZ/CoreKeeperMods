@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -27,7 +27,7 @@ namespace PugMod
 		{
 			GetWindow<ImporterWindow>(WINDOW_TITLE);
 		}
-
+		
 		private void OnEnable()
 		{
 			_settings = ImporterSettings.Instance;
@@ -44,9 +44,9 @@ namespace PugMod
 
 			// Expose settings properties in a user-friendly way
 			Editor.CreateCachedEditor(_settings, null, ref _editor);
-
+			
 			EditorGUI.BeginChangeCheck();
-
+			
 			_editor.OnInspectorGUI();
 
 			if (EditorGUI.EndChangeCheck())
@@ -60,7 +60,7 @@ namespace PugMod
 				var gamePath = EditorUtility.OpenFolderPanel("Select Game Directory", "", "");
 				UpdateFromGamePath(_settings, gamePath, out var addedAssemblies);
 			}
-
+			
 			GUILayout.EndScrollView();
 		}
 
@@ -71,12 +71,12 @@ namespace PugMod
 		public static void UpdateFromGamePath(ImporterSettings settings, string gamePath, out List<string> addedAssemblies)
 		{
 			addedAssemblies = new List<string>();
-
+			
 			if (string.IsNullOrEmpty(gamePath))
 			{
 				return;
 			}
-
+		
 			var dirInfo = new DirectoryInfo(gamePath);
 			if (!dirInfo.Exists)
 			{
@@ -102,7 +102,7 @@ namespace PugMod
 
 			var includeRegex = settings.includeGameAssemblies.Select(x => new Regex(x)).ToList();
 			var excludeRegex = settings.excludeGameAssemblies.Select(x => new Regex(x)).ToList();
-
+		
 			try
 			{
 				AssetDatabase.StartAssetEditing();
@@ -120,7 +120,7 @@ namespace PugMod
 						{
 							continue;
 						}
-
+							
 						var destPath = Path.Combine(settings.gameAssemblyPath, zipFile.Name);
 						zipFile.ExtractToFile(destPath, true);
 						assembliesFromSDK.Add(zipFile.Name);
@@ -128,7 +128,7 @@ namespace PugMod
 				}
 
 				var metaFileLookup = new Dictionary<string, ZipArchiveEntry>();
-
+				
 				if (File.Exists(METAFILE_ZIP_PATH))
 				{
 					// Install some non-editor assemblies where we just need the version compiled with UNITY_EDITOR
@@ -136,10 +136,10 @@ namespace PugMod
 					var zip = ZipFile.OpenRead(METAFILE_ZIP_PATH);
 					foreach (var zipFile in zip.Entries)
 					{
-						metaFileLookup.Add(zipFile.Name[..^".meta".Length], zipFile);
+						metaFileLookup.Add(zipFile.Name.Substring(0, zipFile.Name.Length - ".meta".Length), zipFile);
 					}
 				}
-
+		
 				foreach (var assembly in assemblyDir.EnumerateFiles("*.dll"))
 				{
 					Match includeMatch = null;
@@ -150,7 +150,7 @@ namespace PugMod
 						// We already installed this from SDK, which probably means we need the editor version or things will break in editor
 						continue;
 					}
-
+					
 					foreach (var regex in includeRegex)
 					{
 						if (regex.IsMatch(assembly.Name))
@@ -159,7 +159,7 @@ namespace PugMod
 							break;
 						}
 					}
-
+					
 					foreach (var regex in excludeRegex)
 					{
 						if (regex.IsMatch(assembly.Name))
@@ -168,13 +168,20 @@ namespace PugMod
 							break;
 						}
 					}
-
-					var include = settings.includeAllAssemblies;
+					
+					bool include = settings.includeAllAssemblies;
 
 					if (includeMatch != null && excludeMatch != null)
 					{
 						// both matches, take closest
-						include = includeMatch.Length > excludeMatch.Length;
+						if (includeMatch.Length > excludeMatch.Length)
+						{
+							include = true;
+						}
+						else
+						{
+							include = false;
+						}
 					}
 					else if (includeMatch != null)
 					{
@@ -184,7 +191,7 @@ namespace PugMod
 					{
 						include = false;
 					}
-
+					
 					if (!include)
 					{
 						Debug.Log($"Skipping {assembly}");
@@ -204,7 +211,7 @@ namespace PugMod
 							metaFileLookup[assembly.Name].ExtractToFile(metaFilePath);
 						}
 					}
-
+			
 					assemblyDestPaths.Add(destPath);
 					addedAssemblies.Add(Path.GetFileNameWithoutExtension(assembly.Name));
 				}
@@ -227,7 +234,7 @@ namespace PugMod
 								continue;
 							}
 						}
-
+						
 						// Install everything for now, might want to filter no game files later, but needs smarter check
 						//var matchingAssemblyIndex = addedAssemblies.FindIndex(x => zipFile.Name.StartsWith(x));
 						//if (matchingAssemblyIndex != -1)
@@ -236,7 +243,7 @@ namespace PugMod
 							{
 								Directory.CreateDirectory(settings.sdkAssemblyPath);
 							}
-
+							
 							// Found matching editor assembly, install this
 							zipFile.ExtractToFile(Path.Combine(settings.sdkAssemblyPath, zipFile.Name), true);
 						}
@@ -245,13 +252,13 @@ namespace PugMod
 			}
 			finally
 			{
-				AssetDatabase.StopAssetEditing();
+				AssetDatabase.StopAssetEditing();	
 			}
-
+			
 			AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
 		}
 	}
-
+	
 #if PUG_MOD_SDK
 	/// <summary>
 	/// Unity is really weird about us wanting to disable "Auto reference" since that breaks because of namespace collisions.
@@ -259,12 +266,12 @@ namespace PugMod
 	/// Has to use reflection to access hidden members because for some reason Unity wanted those to be internal and there is absolutely no other way to do this.
 	/// Changing the .meta file directly doesn't work either, it caches it locally so would have to change that while editor is not running I think.
 	/// </summary>
-	public class GameAssemblyPostProcessor : AssetPostprocessor
+	public class GameAssemblyPostprocessor : AssetPostprocessor
 	{
 		private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
 		{
-			var importedDll = false;
-			foreach (var asset in importedAssets)
+			bool importedDll = false;
+			foreach (string asset in importedAssets)
 			{
 				if (!asset.EndsWith(".dll"))
 				{
@@ -281,7 +288,7 @@ namespace PugMod
 				// If you change a value in prefab and call StartAssetEditing it is deselected...
 				return;
 			}
-
+			
 			try
 			{
 				AssetDatabase.StartAssetEditing();
@@ -294,7 +301,7 @@ namespace PugMod
 				var gameAssemblyDirectoryInfo = new DirectoryInfo(importerSettings.gameAssemblyPath);
 				var sdkAssemblyDirectoryInfo = new DirectoryInfo(importerSettings.sdkAssemblyPath);
 
-				foreach (var asset in importedAssets)
+				foreach (string asset in importedAssets)
 				{
 					if (!asset.EndsWith(".dll"))
 					{
@@ -304,7 +311,7 @@ namespace PugMod
 					var fileInfo = new FileInfo(asset);
 
 					if (fileInfo.FullName.StartsWith(gameAssemblyDirectoryInfo.FullName) ||
-							fileInfo.FullName.StartsWith(sdkAssemblyDirectoryInfo.FullName))
+					    fileInfo.FullName.StartsWith(sdkAssemblyDirectoryInfo.FullName))
 					{
 						SetAutoReference(asset);
 					}
@@ -324,10 +331,10 @@ namespace PugMod
 				Debug.LogError($"couldn't get importer for {dllPath}");
 				return;
 			}
-
-			var anyChange = false;
-
-			var isExplicitlyReferencedProperty = typeof(PluginImporter).GetProperty(
+			
+			bool anyChange = false;
+			
+			PropertyInfo isExplicitlyReferencedProperty = typeof(PluginImporter).GetProperty(
 				"IsExplicitlyReferenced", BindingFlags.NonPublic | BindingFlags.Instance);
 
 			if (isExplicitlyReferencedProperty != null)
@@ -343,8 +350,8 @@ namespace PugMod
 			{
 				Debug.LogError("Failed to get IsExplicitlyReferenced property.");
 			}
-
-			var validateReferencesProperty = typeof(PluginImporter).GetProperty(
+			
+			PropertyInfo validateReferencesProperty = typeof(PluginImporter).GetProperty(
 				"ValidateReferences", BindingFlags.NonPublic | BindingFlags.Instance);
 
 			if (validateReferencesProperty != null)

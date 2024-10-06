@@ -1,24 +1,54 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
+#nullable enable
 
 using System;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
 using CoreLib.Data.Configuration;
+using MoreCommands.Data.Converter;
 using PugMod;
+using Logger = MoreCommands.Util.Logger;
 
 namespace MoreCommands.Data.Configuration {
   public class JsonConfigFile<T> where T : IConfiguration {
     private readonly LoadedMod ownerMetadata;
 
-    private static Encoding UTF8NoBom { get; } = new UTF8Encoding(false);
+    private static Encoding UTF8NoBom => new UTF8Encoding(false);
+
+    private T? context;
+
+    /// <summary>
+    ///     Returns the ConfigEntryBase values that the ConfigFile contains.
+    ///     <para>Creates a new array when the property is accessed. Thread-safe.</para>
+    /// </summary>
+    public T? Context {
+      get {
+         return context;
+      }
+    }
+
+    /// <summary>
+    ///     Full path to the config file. The file might not exist until a setting is added and changed, or <see cref="Save" />
+    ///     is called.
+    /// </summary>
+    public string ConfigFilePath { get; }
+
+    /// <summary>
+    ///     If enabled, writes the config to disk every time a value is set.
+    ///     If disabled, you have to manually use <see cref="Save" /> or the changes will be lost!
+    /// </summary>
+    public bool SaveOnConfigSet { get; set; } = true;
+
+    /// <summary>
+    /// Generate user-readable comments for each of the settings in the saved .cfg file.
+    /// </summary>
+    public bool GenerateSettingDescriptions { get; set; } = true;
 
     /// <inheritdoc cref="JsonConfig" />
-    public JsonConfigFile(string configPath, bool saveOnInit) : this(configPath, saveOnInit, null) { }
-
-    private T context;
+    public JsonConfigFile(string configPath, bool saveOnInit) : this(configPath, saveOnInit, null!) { }
 
     /// <summary>
     ///     Create a new config file at the specified config path.
@@ -40,53 +70,20 @@ namespace MoreCommands.Data.Configuration {
       }
     }
 
-    /// <summary>
-    ///     Full path to the config file. The file might not exist until a setting is added and changed, or <see cref="Save" />
-    ///     is called.
-    /// </summary>
-    public string ConfigFilePath { get; }
-
-    /// <summary>
-    ///     If enabled, writes the config to disk every time a value is set.
-    ///     If disabled, you have to manually use <see cref="Save" /> or the changes will be lost!
-    /// </summary>
-    public bool SaveOnConfigSet { get; set; } = true;
-
     #region Save/Load
-
-    /// <summary>
-    ///     Returns the ConfigEntryBase values that the ConfigFile contains.
-    ///     <para>Creates a new array when the property is accessed. Thread-safe.</para>
-    /// </summary>
-    public T Context {
-      get {
-         return context;
-      }
-    }
-
-    /// <summary>
-    /// Generate user-readable comments for each of the settings in the saved .cfg file.
-    /// </summary>
-    public bool GenerateSettingDescriptions { get; set; } = true;
 
     /// <summary>
     /// Reloads the config from disk. Unsaved changes are lost.
     /// </summary>
     public void Reload() {
-      var options = new JsonSerializerOptions
-      {
-        ReadCommentHandling = JsonCommentHandling.Skip,
-        AllowTrailingCommas = true,
-        MaxDepth = 1000,
-      };
 
       var fileData = API.ConfigFilesystem.Read(ConfigFilePath);
       var fileText = UTF8NoBom.GetString(fileData);
 
       try {
-        context = JsonSerializer.Deserialize<T>(fileText, options);
+        context = JsonSerializer.Deserialize<T>(fileText, JsonBase.JsonSerializerOptions);
       } catch (Exception exception) {
-        MoreCommandsMod.Log.LogError($"Failed to deserialize the json object for context of type {typeof(T)}\n{exception.Message}\n{exception.StackTrace}");
+        Logger.Error($"Failed to deserialize the json object for context of type {typeof(T)}\n{exception.Message}\n{exception.StackTrace}");
         return;
       }
 
@@ -111,17 +108,10 @@ namespace MoreCommands.Data.Configuration {
       }
 
       try {
-        var options = new JsonSerializerOptions {
-          AllowTrailingCommas = true,
-          WriteIndented = true,
-          ReadCommentHandling = JsonCommentHandling.Skip,
-          MaxDepth = 1000,
-        };
-
-        var jsonData = JsonSerializer.Serialize(context, typeof(T), options);
+        var jsonData = JsonSerializer.Serialize(context, typeof(T), JsonBase.JsonSerializerOptions);
         stringBuilder.Append(jsonData);
       } catch (Exception exception) {
-        MoreCommandsMod.Log.LogError($"[{MoreCommandsMod.NAME}]: Failed to serialize the json object for context of type {typeof(T)}\n{exception.Message}\n{exception.StackTrace}");
+        Logger.Error($"Failed to serialize the json object for context of type {typeof(T)}\n{exception.Message}\n{exception.StackTrace}");
         return;
       }
 
@@ -129,14 +119,14 @@ namespace MoreCommands.Data.Configuration {
       API.ConfigFilesystem.Write(ConfigFilePath, fileData);
     }
 
-    internal static readonly char[] PathSeparatorChars = new[] { '/', '\\' };
+    internal static char[] PathSeparatorChars => new[] { '/', '\\' };
 
-    public static string GetDirectoryName(string path) {
+    public static string? GetDirectoryName(string? path) {
       if (path == string.Empty) {
         throw new ArgumentException("Invalid path");
       }
 
-      if (path == null) {
+      if (path is null) {
         return null;
       }
 
@@ -166,12 +156,12 @@ namespace MoreCommands.Data.Configuration {
     /// <summary>
     ///     An event that is fired every time the config is reloaded.
     /// </summary>
-    public event EventHandler ConfigReloaded;
+    public event EventHandler? ConfigReloaded;
 
     /// <summary>
     ///     Fired when one of the settings is changed.
     /// </summary>
-    public event EventHandler<SettingChangedEventArgs> SettingChanged;
+    public event EventHandler<SettingChangedEventArgs>? SettingChanged;
 
     internal void OnSettingChanged(object sender, ConfigEntryBase changedEntryBase) {
       if (changedEntryBase == null) {
@@ -194,7 +184,7 @@ namespace MoreCommands.Data.Configuration {
         try {
           callback(sender, args);
         } catch (Exception exception) {
-          MoreCommandsMod.Log.LogError($"[{MoreCommandsMod.NAME}]: Failed to run callback.\n{exception.Message}\n{exception.StackTrace}");
+          Logger.Error($"Failed to run callback.\n{exception.Message}\n{exception.StackTrace}");
         }
       }
     }
@@ -210,7 +200,7 @@ namespace MoreCommands.Data.Configuration {
         try {
           callback(this, EventArgs.Empty);
         } catch (Exception exception) {
-          MoreCommandsMod.Log.LogError($"[{MoreCommandsMod.NAME}]: Failed to run callback.\n{exception.Message}\n{exception.StackTrace}");
+          Logger.Error($"Failed to run callback.\n{exception.Message}\n{exception.StackTrace}");
         }
       }
     }

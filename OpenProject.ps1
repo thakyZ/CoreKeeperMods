@@ -31,4 +31,4 @@ if (-not $unityEditor) {
     Write-Host "Done"
 }
 
-& Start-UnityEditor -Version $editorVersion -Project (Get-UnityProjectInstance .\)
+& Start-UnityEditor -Version $editorVersion -Project (Get-UnityProjectInstance -BasePath $PSScriptRoot -Recurse)

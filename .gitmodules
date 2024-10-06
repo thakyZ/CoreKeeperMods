@@ -1,0 +1,4 @@
+[submodule "SDK Mods/Assets/Mods/ExtendedCraftingRange"]
+	path = SDK Mods/Assets/Mods/ExtendedCraftingRange
+	url = https://github.com/thakyZ/futroo-ExtendedCraftingRange.git
+	branch = personal

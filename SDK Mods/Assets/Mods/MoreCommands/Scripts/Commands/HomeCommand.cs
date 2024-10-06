@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿#nullable enable
+using System.Linq;
 using System.Text;
 
 using CoreLib.Commands;
@@ -10,7 +11,6 @@ using Unity.Entities;
 
 namespace MoreCommands.Chat.Commands
 {
-#nullable enable
   public class HomeCommand : IServerCommandHandler
   {
     public CommandOutput Execute(string[] parameters, Entity sender)
@@ -19,14 +19,10 @@ namespace MoreCommands.Chat.Commands
 
       if (parameters.Length >= 1)
       {
-        return GoToHome(playerEntity, 0);
-      } else if (parameters.Length == 1)
-      {
-        var allParameters = string.Join(" ", parameters).TrimQuotes(out var failedCommand);
+        var allParameters = string.Join(" ", parameters).TrimQuotes(out CommandOutput? failedCommand);
 
-        if (failedCommand != null)
-        {
-          return (CommandOutput)failedCommand;
+        if (failedCommand is CommandOutput commandOutput) {
+          return commandOutput;
         }
 
         if (int.TryParse(allParameters, out var houseIndex))
@@ -53,46 +49,41 @@ namespace MoreCommands.Chat.Commands
           {
             return ListHomes(playerEntity);
           }
-        } else if (parameters[0] == "set")
-        {
-          if (parameters.Length >= 2)
-          {
-            allParameters = string.Join(" ", parameters.Skip(1)).TrimQuotes(out var failedCommand2);
-
-            if (failedCommand2 != null)
-            {
-              return (CommandOutput)failedCommand2;
-            }
-
-            if (string.IsNullOrEmpty(allParameters) || allParameters.StartsWith("list") || allParameters.StartsWith("set") || !int.TryParse(allParameters, out var _))
-            {
-              return new CommandOutput("Label specified is invalid.", CommandStatus.Error);
-            }
-
-            return SetHome(playerEntity, allParameters);
-          }
-        } else
-        {
-          return GoToHome(playerEntity, allParameters);
         }
+        else if (parameters[0] == "set" && parameters.Length >= 2)
+        {
+          allParameters = string.Join(" ", parameters.Skip(1)).TrimQuotes(out var failedCommand2);
+
+          if (failedCommand2 != null)
+          {
+            return (CommandOutput)failedCommand2;
+          }
+
+          if (string.IsNullOrEmpty(allParameters) || allParameters.StartsWith("list") || allParameters.StartsWith("set") || !int.TryParse(allParameters, out var _))
+          {
+            return new CommandOutput("Label specified is invalid.", CommandStatus.Error);
+          }
+
+          return SetHome(playerEntity, allParameters);
+        }
+
+        return GoToHome(playerEntity, allParameters);
       }
 
-      return new CommandOutput("Command failed somehow spectacularly.", CommandStatus.Error);
+      return GetDescription();
     }
 
     public string GetDescription()
     {
-      return new StringBuilder()
-        .AppendLine("Use /home to manage homes. ")
-        .AppendLine("/home {number} Teleport to home with index supplied ")
-        .AppendLine("/home {label} Teleport to home with label ")
-        .AppendLine("/home set {label} Set home point with label ")
-        .AppendLine("  Note: the label of a home cannot start with these words: list, set, or only contain numbers ")
-        .AppendLine("/home list Get all homes that are saved to your character ")
-        .AppendLine("")
-        .AppendLine("Admin Commands:")
-        .AppendLine("/home list {player} Get list of homes of a player by name ")
-        .ToString();
+      return "Use /home to manage homes. " + '\n' +
+        "/home {number} Teleport to home with index supplied " + '\n' +
+        "/home {label} Teleport to home with label " + '\n' +
+        "/home set {label} Set home point with label " + '\n' +
+        "  Note: the label of a home cannot start with these words: list, set, or only contain numbers " + '\n' +
+        "/home list Get all homes that are saved to your character " + '\n' +
+        "" + '\n' +
+        "Admin Commands:" + '\n' +
+        "/home list {player} Get list of homes of a player by name ";
     }
 
     public string[] GetTriggerNames()

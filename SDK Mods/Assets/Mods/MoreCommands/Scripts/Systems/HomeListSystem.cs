@@ -1,34 +1,37 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-using MoreCommands.Util;
+using Unity.Mathematics;
 
 using PugMod;
 
-using UnityEngine;
+using MoreCommands.Data;
+using MoreCommands.Util;
 
 namespace MoreCommands.Systems {
-  [Serializable()]
-  public class HomeListEntry {
+  [Serializable]
+  public sealed class HomeListEntry : IEquatable<HomeListEntry> {
     [JsonPropertyName("label")]
     [JsonPropertyOrder(1)]
-    [JsonRequired()]
-    public string Label { get; set; }
+    [JsonRequired]
+    public string Label { get; set; } = string.Empty;
 
     [JsonPropertyName("position")]
     [JsonPropertyOrder(2)]
-    [JsonRequired()]
-    public Vector3 Position { get; set; }
+    [JsonRequired]
+    public float2 Position { get; set; } = float2.zero;
 
     [JsonPropertyName("direction")]
     [JsonPropertyOrder(3)]
-    [JsonRequired()]
-    public Direction Direction { get; set; }
+    [JsonRequired]
+    public Direction Direction { get; set; } = Direction.zero;
 
-    public HomeListEntry(string label, Vector3 position, Direction direction) {
+    public HomeListEntry(string label, float2 position, Direction direction) {
       this.Label = label;
       this.Position = position;
       this.Direction = direction;
@@ -36,28 +39,26 @@ namespace MoreCommands.Systems {
 
     public HomeListEntry(string label) {
       Label = label;
-      Position = Vector3.zero;
+      Position = float2.zero;
       Direction = Direction.zero;
     }
 
     [JsonConstructor()]
     public HomeListEntry() { }
 
-    public override string ToString() => JsonSerializer.Serialize(this);
+    public override string ToString() => JsonSerializer.Serialize(this, JsonBase.JsonSerializerOptions);
 
     public static bool Equals(HomeListEntry x, HomeListEntry y) {
-      return x.Label == y.Label;
+      return x.Equals(other: y);
     }
 
-    public bool Equals(HomeListEntry obj) {
-      return obj.Label == this.Label;
+    public bool Equals(HomeListEntry other) {
+      return other.Label.Equals(this.Label, StringComparison.Ordinal);
     }
 
-    public new bool Equals(object obj) {
-      if (obj.GetType() == typeof(HomeListEntry)) {
-        return Equals((HomeListEntry)obj);
-      }
-
+    public override bool Equals(object? obj) {
+      if (obj is null) return false;
+      if (obj is HomeListEntry other) return Equals(other: other);
       return false;
     }
 
@@ -65,80 +66,78 @@ namespace MoreCommands.Systems {
       return HashCode.Combine(obj.Label.GetHashCode());
     }
 
-    public new int GetHashCode() {
+    public override int GetHashCode() {
       return HashCode.Combine(this.Label.GetHashCode());
     }
   }
 
-  [Serializable()]
-  public class HomeListPlayerEntry {
+  [Serializable]
+  public sealed class HomeListPlayerEntry : IEquatable<HomeListPlayerEntry> {
     [JsonPropertyName("player_uuid")]
     [JsonPropertyOrder(1)]
-    [JsonRequired()]
-    public string PlayerUuid { get; set; }
+    [JsonRequired]
+    public string PlayerUuid { get; set; } = string.Empty;
 
     [JsonPropertyName("player_name")]
     [JsonPropertyOrder(2)]
-    [JsonRequired()]
-    public string PlayerName { get; set; }
+    [JsonRequired]
+    public string PlayerName { get; set; } = string.Empty;
 
     [JsonPropertyName("list_of_houses")]
     [JsonPropertyOrder(3)]
-    [JsonRequired()]
+    [JsonRequired]
     public List<HomeListEntry> ListOfHouses { get; set; } = new();
 
-    public HomeListPlayerEntry(string player_uuid, string player_name, List<HomeListEntry> list_of_houses) {
-      this.PlayerUuid = player_uuid;
-      this.PlayerName = player_name;
+    public HomeListPlayerEntry(string playerUuid, string playerName, List<HomeListEntry> listOfHouses) {
+      this.PlayerUuid = playerUuid;
+      this.PlayerName = playerName;
 
-      if (list_of_houses == null) {
+      if (listOfHouses == null) {
         this.ListOfHouses = new();
       } else {
-        this.ListOfHouses = list_of_houses;
+        this.ListOfHouses = listOfHouses;
       }
     }
 
     public HomeListPlayerEntry(PlayerController player) {
       PlayerName = player.playerName;
-      PlayerUuid = "";
       this.ListOfHouses = new();
       this.ListOfHouses.AddDefaultEntry(player);
     }
 
-    [JsonConstructor()]
+    [JsonConstructor]
     public HomeListPlayerEntry() { }
 
-    public override string ToString() => JsonSerializer.Serialize(this);
+    public override string ToString() => JsonSerializer.Serialize(this, JsonBase.JsonSerializerOptions);
 
-    public void RemoveHouse(HomeListEntry HomeListEntry) {
-      foreach ((int index, HomeListEntry house) in this.ListOfHouses.Select((value, index) => (index, value))) {
-        if (HomeListEntry.Equals(house)) {
-          this.ListOfHouses.RemoveAt(index);
+    public void RemoveHouse(HomeListEntry homeListEntry) {
+      for (int i = 0; i < this.ListOfHouses.Count; i++) {
+        if (homeListEntry.Equals(this.ListOfHouses[i])) {
+          this.ListOfHouses.RemoveAt(i);
         }
       }
     }
 
     public void RemoveHouse(string label) {
-      foreach ((int index, HomeListEntry house) in this.ListOfHouses.Select((value, index) => (index, value))) {
-        if (house.Label == label) {
-          this.ListOfHouses.RemoveAt(index);
+      for (int i = 0; i < this.ListOfHouses.Count; i++) {
+        if (label.Equals(this.ListOfHouses[i].Label)) {
+          this.ListOfHouses.RemoveAt(i);
         }
       }
     }
 
     public static bool Equals(HomeListPlayerEntry x, HomeListPlayerEntry y) {
-      return x.PlayerName == y.PlayerName && x.PlayerUuid == x.PlayerUuid && x.ListOfHouses.Equals(y.ListOfHouses);
+      return x.Equals(other: y);
     }
 
-    public bool Equals(HomeListPlayerEntry obj) {
-      return obj.PlayerName == this.PlayerName && obj.PlayerUuid == this.PlayerUuid && obj.ListOfHouses.Equals(this.ListOfHouses);
+    public bool Equals(HomeListPlayerEntry? other) {
+      if (other is null) return false;
+      return other.PlayerName.Equals(this.PlayerName, StringComparison.Ordinal) && other.PlayerUuid.Equals(this.PlayerUuid, StringComparison.Ordinal) && other.ListOfHouses.Equals(this.ListOfHouses);
     }
 
-    public new bool Equals(object obj) {
-      if (obj.GetType() == typeof(HomeListPlayerEntry)) {
-        return Equals((HomeListPlayerEntry)obj);
-      }
-
+    public override bool Equals(object? obj) {
+      if (obj is null) return false;
+      if (obj is HomeListPlayerEntry other) return this.Equals(other: other);
       return false;
     }
 
@@ -146,69 +145,62 @@ namespace MoreCommands.Systems {
       return HashCode.Combine(obj.PlayerName.GetHashCode(), obj.PlayerUuid.GetHashCode(), obj.ListOfHouses.GetHashCode());
     }
 
-    public new int GetHashCode() {
+    public override int GetHashCode() {
       return HashCode.Combine(this.PlayerName.GetHashCode(), this.PlayerUuid.GetHashCode(), this.ListOfHouses.GetHashCode());
     }
   }
 
-  [Serializable()]
+  [Serializable]
   public class HomeListWorldEntry {
     [JsonPropertyName("world_name")]
     [JsonPropertyOrder(1)]
-    [JsonRequired()]
-    public string WorldName { get; set; }
+    [JsonRequired]
+    public string WorldName { get; set; } = string.Empty;
 
     [JsonPropertyName("player_entries")]
     [JsonPropertyOrder(1)]
-    [JsonRequired()]
+    [JsonRequired]
     public List<HomeListPlayerEntry> PlayerEntries { get; set; } = new();
 
-    public HomeListWorldEntry(string world_name, List<HomeListPlayerEntry> player_entries) {
+    public HomeListWorldEntry(string world_name, List<HomeListPlayerEntry>? playerEntries) {
       this.WorldName = world_name;
-      if (player_entries == null) {
+      if (playerEntries is null) {
         this.PlayerEntries = new();
       } else {
-        this.PlayerEntries = player_entries;
+        this.PlayerEntries = playerEntries;
       }
     }
 
-    [JsonConstructor()]
+    [JsonConstructor]
     public HomeListWorldEntry() { }
 
     public override string ToString() => JsonSerializer.Serialize(this);
 
     internal HomeListPlayerEntry AddEntry(string label, PlayerController pc) {
-      if (PlayerEntries.Any(x => x.PlayerName == pc.playerName)) {
+      if (PlayerEntries.Exists(x => x.PlayerName == pc.playerName)) {
         return PlayerEntries.First(x => x.PlayerName == pc.playerName);
       }
 
       return PlayerEntries.AddEntry(label, pc);
     }
 
-    public bool TryGetPlayerEntry(string playerName, out HomeListPlayerEntry housingPlayerEntry) {
-      foreach (var entry in PlayerEntries) {
-        if (entry.PlayerName == playerName) {
-          housingPlayerEntry = entry;
-          return true;
-        }
-      }
-
-      housingPlayerEntry = null;
-      return false;
+    public bool TryGetPlayerEntry(string playerName, [NotNullWhen(true)] out HomeListPlayerEntry? housingPlayerEntry) {
+      housingPlayerEntry = this.PlayerEntries.Find(x => x.PlayerName.Equals(playerName, StringComparison.Ordinal));
+      return housingPlayerEntry is not null;
     }
   }
 
   public static class HomeListSystemExtensions {
-    public static void Init(this List<HomeListWorldEntry> list) {
-      foreach (var (key, value) in list.Select((value, index) => (index, value))) {
-        if (value == null) {
+    public static void Init(this List<HomeListWorldEntry?> list) {
+      foreach ((int key, HomeListWorldEntry? value) in list.Select((value, index) => (index, value))) {
+        if (value is null) {
           list[key] = new();
         }
       }
     }
 
     public static HomeListEntry AddHomeListEntry(this List<HomeListEntry> entries, string label, PlayerController player) {
-      var homeEntry = new HomeListEntry(label, player.WorldPosition, player.facingDirection);
+      var homeEntry = new HomeListEntry(label, player.WorldPosition.ToFloat2(), player.facingDirection);
 
       entries.Add(homeEntry);
       return homeEntry;
@@ -222,7 +214,7 @@ namespace MoreCommands.Systems {
         homeEntry.Position = claimedBed.position;
         homeEntry.Direction = API.Server.World.EntityManager.GetComponentObject<Bed>(claimedBed.claimedBedEntity).rotationIndex.ToDirection();
       } else {
-        homeEntry.Position = PlayerController.PLAYER_SPAWN_POSITION;
+        homeEntry.Position = float2.zero;
         homeEntry.Direction = Direction.forward;
       }
 
@@ -237,37 +229,7 @@ namespace MoreCommands.Systems {
       return playerEntry;
     }
 
-    public static HomeListWorldEntry GetWorldEntry(this List<HomeListWorldEntry> list, string worldName) {
-      if (list.TryGetWorldEntry(worldName, out var housingSystem)) {
-        return housingSystem;
-      }
-
-      return list.AddEntry(worldName);
-    }
-
-    public static HomeListPlayerEntry GetPlayerEntry(this List<HomeListWorldEntry> list, string label, string worldName, PlayerController pc) {
-      var housingSystem = list.GetWorldEntry(worldName);
-
-      if (housingSystem.TryGetPlayerEntry(pc.playerName, out var housingPlayerEntry)) {
-        return housingPlayerEntry;
-      }
-
-      return housingSystem.AddEntry(label, pc);
-    }
-
-    public static bool TryGetWorldEntry(this List<HomeListWorldEntry> list, string worldName, out HomeListWorldEntry homeWorldEntry) {
-      foreach (var entry in list) {
-        if (entry.WorldName == worldName) {
-          homeWorldEntry = entry;
-          return true;
-        }
-      }
-
-      homeWorldEntry = null;
-      return false;
-    }
-
-    public static HomeListWorldEntry AddEntry(this List<HomeListWorldEntry> list, string worldName) {
+    public static HomeListWorldEntry AddEntry(this List<HomeListWorldEntry?> list, string worldName) {
       if (list.TryGetWorldEntry(worldName, out var homeWorldEntry)) {
         return homeWorldEntry;
       }
@@ -277,8 +239,31 @@ namespace MoreCommands.Systems {
       return list.AddEntry(worldName);
     }
 
-    public static HomeListPlayerEntry AddPlayerEntry(this List<HomeListWorldEntry> list, string label, PlayerController pc) {
+    public static HomeListPlayerEntry AddPlayerEntry(this List<HomeListWorldEntry?> list, string label, PlayerController pc) {
       return list.GetWorldEntry(pc.world.Name).PlayerEntries.AddEntry(label, pc);
+    }
+
+    public static HomeListWorldEntry GetWorldEntry(this List<HomeListWorldEntry?> list, string worldName) {
+      if (list.TryGetWorldEntry(worldName, out var housingSystem)) {
+        return housingSystem;
+      }
+
+      return list.AddEntry(worldName);
+    }
+
+    public static HomeListPlayerEntry GetPlayerEntry(this List<HomeListWorldEntry?> list, string label, string worldName, PlayerController pc) {
+      var housingSystem = list.GetWorldEntry(worldName);
+
+      if (housingSystem.TryGetPlayerEntry(pc.playerName, out var housingPlayerEntry)) {
+        return housingPlayerEntry;
+      }
+
+      return housingSystem.AddEntry(label, pc);
+    }
+
+    public static bool TryGetWorldEntry(this List<HomeListWorldEntry?> list, string worldName, [NotNullWhen(true)] out HomeListWorldEntry? homeWorldEntry) {
+      homeWorldEntry = list.Find(x => x?.WorldName.Equals(worldName, StringComparison.Ordinal) == true);
+      return homeWorldEntry is not null;
     }
   }
 }

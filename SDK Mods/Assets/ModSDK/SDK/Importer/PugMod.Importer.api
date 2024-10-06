@@ -3,9 +3,9 @@
 // make sure the XML doc file is present and located next to the scraped dll
 namespace PugMod
 {
-    public class GameAssemblyPostProcessor : UnityEditor.AssetPostprocessor
+    public class GameAssemblyPostprocessor : UnityEditor.AssetPostprocessor
     {
-        public GameAssemblyPostProcessor() {}
+        public GameAssemblyPostprocessor() {}
     }
 
     public class ImporterSettings : UnityEngine.ScriptableObject

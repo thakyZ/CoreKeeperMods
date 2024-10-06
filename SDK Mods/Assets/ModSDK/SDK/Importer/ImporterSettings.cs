@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
@@ -8,7 +8,7 @@ namespace PugMod
 	public class ImporterSettings : ScriptableObject
 	{
 		private static ImporterSettings _instance;
-
+	
 		public static ImporterSettings Instance
 		{
 			get
@@ -34,17 +34,17 @@ namespace PugMod
 		}
 
 		public const string GAME_NAME = "CoreKeeper";
-
+		
 		private const int CURRENT_VERSION = 2;
 		private const string SETTINGS_PATH = "Assets/ModSDK/ModSDKSettings.asset";
 
 		public bool includeAllAssemblies = true;
-		public List<string> includeGameAssemblies = new();
-		public List<string> excludeGameAssemblies = new();
-
+		public List<string> includeGameAssemblies = new List<string>();
+		public List<string> excludeGameAssemblies = new List<string>();
+		
 		public string sdkAssemblyPath  = $"Assets/Plugins/{GAME_NAME}ModSDK/";
 		public string gameAssemblyPath = $"Assets/Plugins/{GAME_NAME}/";
-
+	
 		[HideInInspector]
 		public int initializedToVersion = 0;
 
@@ -107,7 +107,7 @@ namespace PugMod
 			}
 
 			initializedToVersion = CURRENT_VERSION;
-
+		
 			EditorUtility.SetDirty(this);
 			AssetDatabase.SaveAssets();
 		}

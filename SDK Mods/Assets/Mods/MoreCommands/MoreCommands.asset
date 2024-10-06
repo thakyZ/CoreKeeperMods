@@ -21,11 +21,15 @@ MonoBehaviour:
     disableHarmonyPatching: 0
     requiredOn: 0
     files:
+    - path: Scripts/Scripts/Util/Logger.cs
     - path: Scripts/Scripts/Util/Extensions.cs
     - path: Scripts/Scripts/Systems/HomeListSystem.cs
     - path: Scripts/Scripts/Systems/DeathSystem.cs
     - path: Scripts/Scripts/Patches/Death_Patch.cs
     - path: Scripts/Scripts/MoreCommandsMod.cs
+    - path: Scripts/Scripts/Data/JsonBase.cs
+    - path: Scripts/Scripts/Data/Converter/Float3JsonConverter.cs
+    - path: Scripts/Scripts/Data/Converter/Float2JsonConverter.cs
     - path: Scripts/Scripts/Data/Configuration/JsonConfigFile.cs
     - path: Scripts/Scripts/Data/Configuration/JsonCommentConverter.cs
     - path: Scripts/Scripts/Data/Configuration/IConfiguration.cs
@@ -45,9 +49,9 @@ MonoBehaviour:
   cachedBuild: 0
   assets:
   - path: Assets/Mods/MoreCommands/MoreCommands.api
-    hash: 904414FA1886FA853B47FA542157A3232D281FD66E3758180B622C27E2D3D872
+    hash: 17C01F0EF1F3CD346DE76C6518F687F843527B5269C8DD8B446FCB0884357273
   - path: Assets/Mods/MoreCommands/MoreCommands.asset
-    hash: A238C46C51E07335183A182BA7DC68A73C79D1B7379EEBBD344B1177F36F5294
+    hash: 8EE1E779063A1999D9BBD223038405DDDC28EEDD16F4777BC8413779FF5C890E
   - path: Assets/Mods/MoreCommands/MoreCommands_modio.asset
-    hash: A7AEC12D8FBE4AF7EECD21B8645A36D1DE00B29E5428525D50B7B3F5B291FFE0
+    hash: EF28A67720CAA7D9CB9B6DC70ED661F0D882AF3BD0D10D3A6E54363778F47F98
   lastBuildLinux: 0

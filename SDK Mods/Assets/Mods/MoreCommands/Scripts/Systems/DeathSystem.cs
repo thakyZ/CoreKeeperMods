@@ -1,55 +1,57 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-using Unity.Entities;
+using Unity.Mathematics;
 
-using UnityEngine;
+using MoreCommands.Data;
+using MoreCommands.Util;
 
 namespace MoreCommands.Systems {
-  [Serializable()]
-  public class DeathEntry {
+  [Serializable]
+  public sealed class DeathEntry : IEquatable<DeathEntry> {
     [JsonPropertyName("position")]
     [JsonPropertyOrder(1)]
-    [JsonRequired()]
-    public Vector3 Position { get; set; } = PlayerController.PLAYER_SPAWN_POSITION;
+    [JsonRequired]
+    public float3 Position { get; set; } = float3.zero;
 
     [JsonPropertyName("direction")]
     [JsonPropertyOrder(2)]
-    [JsonRequired()]
+    [JsonRequired]
     public Direction Direction { get; set; } = Direction.forward;
 
-    [JsonConstructor()]
-    public DeathEntry(Vector3 position, Direction direction) {
+    [JsonConstructor]
+    public DeathEntry(float3 position, Direction direction) {
       Position = position;
       Direction = direction;
     }
 
-    public DeathEntry(Vector3 position, Direction direction, List<DeathEntry> parent) {
+    public DeathEntry(float3 position, Direction direction, List<DeathEntry> parent) {
       Position = position;
       Direction = direction;
     }
 
-    [JsonConstructor()]
+    [JsonConstructor]
     public DeathEntry() { }
 
-    public override string ToString() => JsonSerializer.Serialize(this);
+    public override string ToString() => JsonSerializer.Serialize(this, JsonBase.JsonSerializerOptions);
 
     public static bool Equals(DeathEntry x, DeathEntry y) {
-      return x.Position == y.Position && x.Direction == y.Direction;
+      return x.Equals(other: y);
     }
 
-    public bool Equals(DeathEntry obj) {
-      return obj.Position == this.Position && obj.Direction == this.Direction;
+    public bool Equals(DeathEntry? other) {
+      if (other is null) return false;
+      return this.Position.Equals(other: other.Position) && this.Direction == other.Direction;
     }
 
-    public new bool Equals(object obj) {
-      if (obj.GetType() == typeof(DeathEntry)) {
-        return Equals((DeathEntry)obj);
-      }
-
+    public override bool Equals(object? obj) {
+      if (obj is null) return false;
+      if (obj is DeathEntry other) return this.Equals(other: other);
       return false;
     }
 
@@ -57,26 +59,26 @@ namespace MoreCommands.Systems {
       return HashCode.Combine(obj.Direction.GetHashCode(), obj.Position.GetHashCode());
     }
 
-    public new int GetHashCode() {
+    public override int GetHashCode() {
       return HashCode.Combine(this.Direction.GetHashCode(), this.Position.GetHashCode());
     }
   }
 
-  [Serializable()]
-  public class DeathPlayerEntry {
+  [Serializable]
+  public sealed class DeathPlayerEntry : IEquatable<DeathPlayerEntry> {
     [JsonPropertyName("player_uuid")]
     [JsonPropertyOrder(1)]
-    [JsonRequired()]
-    public string PlayerUuid { get; set; }
+    [JsonRequired]
+    public string PlayerUuid { get; set; } = string.Empty;
 
     [JsonPropertyName("player_name")]
     [JsonPropertyOrder(2)]
-    [JsonRequired()]
-    public string PlayerName { get; set; }
+    [JsonRequired]
+    public string PlayerName { get; set; } = string.Empty;
 
     [JsonPropertyName("death_positions")]
     [JsonPropertyOrder(3)]
-    [JsonRequired()]
+    [JsonRequired]
     public List<DeathEntry> DeathPositions { get; set; } = new();
 
     public DeathPlayerEntry(string player_uuid, string player_name, List<DeathEntry> death_positions) {
@@ -92,7 +94,6 @@ namespace MoreCommands.Systems {
 
     public DeathPlayerEntry(PlayerController player) {
       PlayerName = player.playerName;
-      PlayerUuid = "";
       if (this.DeathPositions == null) {
         this.DeathPositions = new();
       }
@@ -102,21 +103,20 @@ namespace MoreCommands.Systems {
     [JsonConstructor()]
     public DeathPlayerEntry() { }
 
-    public override string ToString() => JsonSerializer.Serialize(this);
+    public override string ToString() => JsonSerializer.Serialize(this, JsonBase.JsonSerializerOptions);
 
     public static bool Equals(DeathPlayerEntry x, DeathPlayerEntry y) {
-      return x.PlayerName == y.PlayerName;
+      return x.Equals(other: y);
     }
 
-    public bool Equals(DeathPlayerEntry obj) {
-      return obj.PlayerName == this.PlayerName;
+    public bool Equals(DeathPlayerEntry? other) {
+      if (other is null) return false;
+      return this.PlayerName.Equals(other.PlayerName, StringComparison.Ordinal);
     }
 
-    public new bool Equals(object obj) {
-      if (obj.GetType() == typeof(DeathPlayerEntry)) {
-        return Equals((DeathPlayerEntry)obj);
-      }
-
+    public override bool Equals(object? obj) {
+      if (obj is null) return false;
+      if (obj is DeathPlayerEntry other) return this.Equals(other: other);
       return false;
     }
 
@@ -124,22 +124,23 @@ namespace MoreCommands.Systems {
       return obj.PlayerName.GetHashCode();
     }
 
-    public new int GetHashCode() {
+    public override int GetHashCode() {
       return this.PlayerName.GetHashCode();
     }
   }
 
-  [Serializable()]
-  public class DeathWorldEntry {
+  [Serializable]
+  public sealed class DeathWorldEntry : IEquatable<DeathWorldEntry> {
     [JsonPropertyName("world_name")]
     [JsonPropertyOrder(1)]
-    [JsonRequired()]
-    public string WorldName { get; set; }
+    [JsonRequired]
+    public string WorldName { get; set; } = string.Empty;
 
     [JsonPropertyName("player_entries")]
     [JsonPropertyOrder(1)]
-    [JsonRequired()]
+    [JsonRequired]
     public List<DeathPlayerEntry> PlayerEntries { get; set; } = new();
+
     public DeathWorldEntry(string world_name, List<DeathPlayerEntry> player_entries) {
       this.WorldName = world_name;
       if (player_entries == null) {
@@ -149,36 +150,52 @@ namespace MoreCommands.Systems {
       }
     }
 
-    [JsonConstructor()]
+    [JsonConstructor]
     public DeathWorldEntry() { }
 
-    public override string ToString() => JsonSerializer.Serialize(this);
+    public override string ToString() => JsonSerializer.Serialize(this, JsonBase.JsonSerializerOptions);
 
     internal DeathPlayerEntry AddEntry(PlayerController pc) {
-      if (PlayerEntries.Any(x => x.PlayerName == pc.playerName)) {
+      if (PlayerEntries.Exists(x => x.PlayerName == pc.playerName)) {
         return PlayerEntries.First(x => x.PlayerName == pc.playerName);
       }
 
       return PlayerEntries.AddEntry(pc);
     }
 
-    public bool TryGetPlayerEntry(string playerName, out DeathPlayerEntry deathPlayerEntry) {
-      foreach (var entry in PlayerEntries) {
-        if (entry.PlayerName == playerName) {
-          deathPlayerEntry = entry;
-          return true;
-        }
-      }
+    public bool TryGetPlayerEntry(string playerName, [NotNullWhen(true)] out DeathPlayerEntry? deathPlayerEntry) {
+      deathPlayerEntry = PlayerEntries.Find(x => x.PlayerName.Equals(playerName, StringComparison.Ordinal));
+      return deathPlayerEntry is not null;
+    }
 
-      deathPlayerEntry = null;
+    public static bool Equals(DeathWorldEntry x, DeathWorldEntry y) {
+      return x.Equals(other: y);
+    }
+
+    public bool Equals(DeathWorldEntry? other) {
+      if (other is null) return false;
+      return this.WorldName.Equals(other.WorldName, StringComparison.Ordinal);
+    }
+
+    public override bool Equals(object? obj) {
+      if (obj is null) return false;
+      if (obj is DeathWorldEntry other) return this.Equals(other: other);
       return false;
+    }
+
+    public static int GetHashCode(DeathWorldEntry obj) {
+      return obj.WorldName.GetHashCode();
+    }
+
+    public override int GetHashCode() {
+      return this.WorldName.GetHashCode();
     }
   }
 
   public static class DeathSystemExtensions {
-    public static void Init(this List<DeathWorldEntry> list) {
-      foreach (var (key, value) in list.Select((value, index) => (index, value))) {
-        if (value == null) {
+    public static void Init(this List<DeathWorldEntry?> list) {
+      foreach ((int key, DeathWorldEntry? value) in list.Select((value, index) => (index, value))) {
+        if (value is null) {
           list[key] = new();
         }
       }
@@ -198,7 +215,20 @@ namespace MoreCommands.Systems {
       return playerEntry;
     }
 
-    public static DeathWorldEntry GetWorldEntry(this List<DeathWorldEntry> list, string worldName) {
+    public static DeathWorldEntry AddEntry(this List<DeathWorldEntry?> list, string worldName) {
+      if (list.TryGetWorldEntry(worldName, out var deathWorldEntry)) {
+        return deathWorldEntry;
+      }
+      var temp = new DeathWorldEntry(worldName, new());
+      list.Add(temp);
+      return list.AddEntry(worldName);
+    }
+
+    public static DeathPlayerEntry AddPlayerEntry(this List<DeathWorldEntry?> list, PlayerController pc) {
+      return list.GetWorldEntry(pc.world.Name).PlayerEntries.AddEntry(pc);
+    }
+
+    public static DeathWorldEntry GetWorldEntry(this List<DeathWorldEntry?> list, string worldName) {
       if (list.TryGetWorldEntry(worldName, out var deathSystem)) {
         return deathSystem;
       }
@@ -206,7 +236,7 @@ namespace MoreCommands.Systems {
       return list.AddEntry(worldName);
     }
 
-    public static DeathPlayerEntry GetPlayerEntry(this List<DeathWorldEntry> list, string worldName, PlayerController pc) {
+    public static DeathPlayerEntry GetPlayerEntry(this List<DeathWorldEntry?> list, string worldName, PlayerController pc) {
       var deathSystem = list.GetWorldEntry(worldName);
 
       if (deathSystem.TryGetPlayerEntry(pc.playerName, out var deathPlayerEntry)) {
@@ -216,29 +246,9 @@ namespace MoreCommands.Systems {
       return deathSystem.AddEntry(pc);
     }
 
-    public static bool TryGetWorldEntry(this List<DeathWorldEntry> list, string worldName, out DeathWorldEntry deathWorldEntry) {
-      foreach (var entry in list) {
-        if (entry.WorldName == worldName) {
-          deathWorldEntry = entry;
-          return true;
-        }
-      }
-
-      deathWorldEntry = null;
-      return false;
-    }
-
-    public static DeathWorldEntry AddEntry(this List<DeathWorldEntry> list, string worldName) {
-      if (list.TryGetWorldEntry(worldName, out var deathWorldEntry)) {
-        return deathWorldEntry;
-      }
-      var temp = new DeathWorldEntry(worldName, new());
-      list.Add(temp);
-      return list.AddEntry(worldName);
-    }
-
-    public static DeathPlayerEntry AddPlayerEntry(this List<DeathWorldEntry> list, PlayerController pc) {
-      return list.GetWorldEntry(pc.world.Name).PlayerEntries.AddEntry(pc);
+    public static bool TryGetWorldEntry(this List<DeathWorldEntry?> list, string worldName, [NotNullWhen(true)] out DeathWorldEntry? deathWorldEntry) {
+      deathWorldEntry = list.Find(x => x?.WorldName.Equals(worldName, StringComparison.Ordinal) == true);
+      return deathWorldEntry is not null;
     }
   }
 }

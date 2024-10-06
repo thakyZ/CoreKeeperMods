@@ -5,7 +5,6 @@ namespace MoreCommands
 {
     public class MoreCommandsMod : PugMod.IMod
     {
-        public static CoreLib.Util.Logger Log;
         public const string NAME = @"More Commands";
         public const string VERSION = @"1.0.0";
         public static MoreCommands.Data.Configuration.JsonConfigFile<Data.Configuration.Configuration> Config { get; }
@@ -38,6 +37,14 @@ namespace MoreCommands.Chat.Commands
     }
 }
 
+namespace MoreCommands.Data
+{
+    public static class JsonBase
+    {
+        public static System.Text.Json.JsonSerializerOptions JsonSerializerOptions { get; }
+    }
+}
+
 namespace MoreCommands.Data.Configuration
 {
     public class CommandsEnabled
@@ -56,7 +63,7 @@ namespace MoreCommands.Data.Configuration
         [System.Text.Json.Serialization.JsonIgnore] public static Configuration Default { get; }
         [System.Text.Json.Serialization.JsonPropertyName(@"housing_system")] [System.Text.Json.Serialization.JsonPropertyOrder(2)] [System.Text.Json.Serialization.JsonRequired] public System.Collections.Generic.List<MoreCommands.Systems.HomeListWorldEntry> HomeListSystem { get; set; }
         [System.Text.Json.Serialization.JsonConstructor] public Configuration() {}
-        public Configuration(CommandsEnabled commands_enabled, System.Collections.Generic.List<MoreCommands.Systems.HomeListWorldEntry> housing_system, System.Collections.Generic.List<MoreCommands.Systems.DeathWorldEntry> death_system) {}
+        public Configuration(CommandsEnabled commands_enabled, System.Collections.Generic.List<MoreCommands.Systems.HomeListWorldEntry> housingSystem, System.Collections.Generic.List<MoreCommands.Systems.DeathWorldEntry> deathSystem) {}
         public override string ToString();
     }
 
@@ -95,11 +102,30 @@ namespace MoreCommands.Data.Configuration
 
 namespace MoreCommands.Data.Converter
 {
-    public class Vector3JsonConverter : System.Text.Json.Serialization.JsonConverter<UnityEngine.Vector3>
+    public class Float2JsonConverter : System.Text.Json.Serialization.JsonConverterFactory
     {
-        public Vector3JsonConverter() {}
-        public override UnityEngine.Vector3 Read(ref System.Text.Json.Utf8JsonReader reader, System.Type typeToConvert, System.Text.Json.JsonSerializerOptions options);
-        public override void Write(System.Text.Json.Utf8JsonWriter writer, UnityEngine.Vector3 value, System.Text.Json.JsonSerializerOptions options);
+        public Float2JsonConverter() {}
+        public override bool CanConvert(System.Type typeToConvert);
+        public override System.Text.Json.Serialization.JsonConverter CreateConverter(System.Type typeToConvert, System.Text.Json.JsonSerializerOptions options);
+        public class Float2JsonConverterInner : System.Text.Json.Serialization.JsonConverter<Unity.Mathematics.float2>
+        {
+            public Float2JsonConverterInner(System.Text.Json.JsonSerializerOptions options) {}
+            public override Unity.Mathematics.float2 Read(ref System.Text.Json.Utf8JsonReader reader, System.Type typeToConvert, System.Text.Json.JsonSerializerOptions options);
+            public override void Write(System.Text.Json.Utf8JsonWriter writer, Unity.Mathematics.float2 value, System.Text.Json.JsonSerializerOptions options);
+        }
+    }
+
+    public class Float3JsonConverter : System.Text.Json.Serialization.JsonConverterFactory
+    {
+        public Float3JsonConverter() {}
+        public override bool CanConvert(System.Type typeToConvert);
+        public override System.Text.Json.Serialization.JsonConverter CreateConverter(System.Type typeToConvert, System.Text.Json.JsonSerializerOptions options);
+        public class Float3JsonConverterInner : System.Text.Json.Serialization.JsonConverter<Unity.Mathematics.float3>
+        {
+            public Float3JsonConverterInner(System.Text.Json.JsonSerializerOptions options) {}
+            public override Unity.Mathematics.float3 Read(ref System.Text.Json.Utf8JsonReader reader, System.Type typeToConvert, System.Text.Json.JsonSerializerOptions options);
+            public override void Write(System.Text.Json.Utf8JsonWriter writer, Unity.Mathematics.float3 value, System.Text.Json.JsonSerializerOptions options);
+        }
     }
 }
 
@@ -107,28 +133,28 @@ namespace MoreCommands.Patches
 {
     [HarmonyLib.HarmonyPatch] public static class Death_Patch
     {
-        [HarmonyLib.HarmonyPatch(typeof(PlayerState.Death), @"RespawnPlayer")] [HarmonyLib.HarmonyPrefix] public static bool RespawnPlayer_Prefix(PlayerState.Death __instance);
+        [HarmonyLib.HarmonyPatch(typeof(PlayerState.Death), @"RespawnPlayer")] [HarmonyLib.HarmonyPrefix] public static bool RespawnPlayer_Prefix(PlayerState.StateUpdateAspect stateUpdateAspect, PlayerState.SharedStateUpdateData sharedStateUpdateData, PlayerState.LookupStateUpdateData lookupStateUpdateData);
     }
 }
 
 namespace MoreCommands.Systems
 {
-    public class DeathEntry
+    public sealed class DeathEntry : System.IEquatable<DeathEntry>
     {
         [System.Text.Json.Serialization.JsonPropertyName(@"direction")] [System.Text.Json.Serialization.JsonPropertyOrder(2)] [System.Text.Json.Serialization.JsonRequired] public Direction Direction { get; set; }
-        [System.Text.Json.Serialization.JsonPropertyName(@"position")] [System.Text.Json.Serialization.JsonPropertyOrder(1)] [System.Text.Json.Serialization.JsonRequired] public UnityEngine.Vector3 Position { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName(@"position")] [System.Text.Json.Serialization.JsonPropertyOrder(1)] [System.Text.Json.Serialization.JsonRequired] public Unity.Mathematics.float3 Position { get; set; }
         [System.Text.Json.Serialization.JsonConstructor] public DeathEntry() {}
-        [System.Text.Json.Serialization.JsonConstructor] public DeathEntry(UnityEngine.Vector3 position, Direction direction) {}
-        public DeathEntry(UnityEngine.Vector3 position, Direction direction, System.Collections.Generic.List<DeathEntry> parent) {}
-        public bool Equals(DeathEntry obj);
-        public bool Equals(object obj);
+        [System.Text.Json.Serialization.JsonConstructor] public DeathEntry(Unity.Mathematics.float3 position, Direction direction) {}
+        public DeathEntry(Unity.Mathematics.float3 position, Direction direction, System.Collections.Generic.List<DeathEntry> parent) {}
+        public bool Equals(DeathEntry other);
+        public override bool Equals(object obj);
         public static bool Equals(DeathEntry x, DeathEntry y);
-        public int GetHashCode();
+        public override int GetHashCode();
         public static int GetHashCode(DeathEntry obj);
         public override string ToString();
     }
 
-    public class DeathPlayerEntry
+    public sealed class DeathPlayerEntry : System.IEquatable<DeathPlayerEntry>
     {
         [System.Text.Json.Serialization.JsonPropertyName(@"death_positions")] [System.Text.Json.Serialization.JsonPropertyOrder(3)] [System.Text.Json.Serialization.JsonRequired] public System.Collections.Generic.List<DeathEntry> DeathPositions { get; set; }
         [System.Text.Json.Serialization.JsonPropertyName(@"player_name")] [System.Text.Json.Serialization.JsonPropertyOrder(2)] [System.Text.Json.Serialization.JsonRequired] public string PlayerName { get; set; }
@@ -136,10 +162,10 @@ namespace MoreCommands.Systems
         [System.Text.Json.Serialization.JsonConstructor] public DeathPlayerEntry() {}
         public DeathPlayerEntry(PlayerController player) {}
         public DeathPlayerEntry(string player_uuid, string player_name, System.Collections.Generic.List<DeathEntry> death_positions) {}
-        public bool Equals(DeathPlayerEntry obj);
-        public bool Equals(object obj);
+        public bool Equals(DeathPlayerEntry other);
+        public override bool Equals(object obj);
         public static bool Equals(DeathPlayerEntry x, DeathPlayerEntry y);
-        public int GetHashCode();
+        public override int GetHashCode();
         public static int GetHashCode(DeathPlayerEntry obj);
         public override string ToString();
     }
@@ -156,46 +182,51 @@ namespace MoreCommands.Systems
         public static bool TryGetWorldEntry(this System.Collections.Generic.List<DeathWorldEntry> list, string worldName, out DeathWorldEntry deathWorldEntry);
     }
 
-    public class DeathWorldEntry
+    public sealed class DeathWorldEntry : System.IEquatable<DeathWorldEntry>
     {
         [System.Text.Json.Serialization.JsonPropertyName(@"player_entries")] [System.Text.Json.Serialization.JsonPropertyOrder(1)] [System.Text.Json.Serialization.JsonRequired] public System.Collections.Generic.List<DeathPlayerEntry> PlayerEntries { get; set; }
         [System.Text.Json.Serialization.JsonPropertyName(@"world_name")] [System.Text.Json.Serialization.JsonPropertyOrder(1)] [System.Text.Json.Serialization.JsonRequired] public string WorldName { get; set; }
         [System.Text.Json.Serialization.JsonConstructor] public DeathWorldEntry() {}
         public DeathWorldEntry(string world_name, System.Collections.Generic.List<DeathPlayerEntry> player_entries) {}
+        public bool Equals(DeathWorldEntry other);
+        public override bool Equals(object obj);
+        public static bool Equals(DeathWorldEntry x, DeathWorldEntry y);
+        public override int GetHashCode();
+        public static int GetHashCode(DeathWorldEntry obj);
         public override string ToString();
         public bool TryGetPlayerEntry(string playerName, out DeathPlayerEntry deathPlayerEntry);
     }
 
-    public class HomeListEntry
+    public sealed class HomeListEntry : System.IEquatable<HomeListEntry>
     {
         [System.Text.Json.Serialization.JsonPropertyName(@"direction")] [System.Text.Json.Serialization.JsonPropertyOrder(3)] [System.Text.Json.Serialization.JsonRequired] public Direction Direction { get; set; }
         [System.Text.Json.Serialization.JsonPropertyName(@"label")] [System.Text.Json.Serialization.JsonPropertyOrder(1)] [System.Text.Json.Serialization.JsonRequired] public string Label { get; set; }
-        [System.Text.Json.Serialization.JsonPropertyName(@"position")] [System.Text.Json.Serialization.JsonPropertyOrder(2)] [System.Text.Json.Serialization.JsonRequired] public UnityEngine.Vector3 Position { get; set; }
+        [System.Text.Json.Serialization.JsonPropertyName(@"position")] [System.Text.Json.Serialization.JsonPropertyOrder(2)] [System.Text.Json.Serialization.JsonRequired] public Unity.Mathematics.float2 Position { get; set; }
         [System.Text.Json.Serialization.JsonConstructor] public HomeListEntry() {}
         public HomeListEntry(string label) {}
-        public HomeListEntry(string label, UnityEngine.Vector3 position, Direction direction) {}
-        public bool Equals(HomeListEntry obj);
-        public bool Equals(object obj);
+        public HomeListEntry(string label, Unity.Mathematics.float2 position, Direction direction) {}
+        public bool Equals(HomeListEntry other);
+        public override bool Equals(object obj);
         public static bool Equals(HomeListEntry x, HomeListEntry y);
-        public int GetHashCode();
+        public override int GetHashCode();
         public static int GetHashCode(HomeListEntry obj);
         public override string ToString();
     }
 
-    public class HomeListPlayerEntry
+    public sealed class HomeListPlayerEntry : System.IEquatable<HomeListPlayerEntry>
     {
         [System.Text.Json.Serialization.JsonPropertyName(@"list_of_houses")] [System.Text.Json.Serialization.JsonPropertyOrder(3)] [System.Text.Json.Serialization.JsonRequired] public System.Collections.Generic.List<HomeListEntry> ListOfHouses { get; set; }
         [System.Text.Json.Serialization.JsonPropertyName(@"player_name")] [System.Text.Json.Serialization.JsonPropertyOrder(2)] [System.Text.Json.Serialization.JsonRequired] public string PlayerName { get; set; }
         [System.Text.Json.Serialization.JsonPropertyName(@"player_uuid")] [System.Text.Json.Serialization.JsonPropertyOrder(1)] [System.Text.Json.Serialization.JsonRequired] public string PlayerUuid { get; set; }
         [System.Text.Json.Serialization.JsonConstructor] public HomeListPlayerEntry() {}
         public HomeListPlayerEntry(PlayerController player) {}
-        public HomeListPlayerEntry(string player_uuid, string player_name, System.Collections.Generic.List<HomeListEntry> list_of_houses) {}
-        public bool Equals(HomeListPlayerEntry obj);
-        public bool Equals(object obj);
+        public HomeListPlayerEntry(string playerUuid, string playerName, System.Collections.Generic.List<HomeListEntry> listOfHouses) {}
+        public bool Equals(HomeListPlayerEntry other);
+        public override bool Equals(object obj);
         public static bool Equals(HomeListPlayerEntry x, HomeListPlayerEntry y);
-        public int GetHashCode();
+        public override int GetHashCode();
         public static int GetHashCode(HomeListPlayerEntry obj);
-        public void RemoveHouse(HomeListEntry HomeListEntry);
+        public void RemoveHouse(HomeListEntry homeListEntry);
         public void RemoveHouse(string label);
         public override string ToString();
     }
@@ -218,7 +249,7 @@ namespace MoreCommands.Systems
         [System.Text.Json.Serialization.JsonPropertyName(@"player_entries")] [System.Text.Json.Serialization.JsonPropertyOrder(1)] [System.Text.Json.Serialization.JsonRequired] public System.Collections.Generic.List<HomeListPlayerEntry> PlayerEntries { get; set; }
         [System.Text.Json.Serialization.JsonPropertyName(@"world_name")] [System.Text.Json.Serialization.JsonPropertyOrder(1)] [System.Text.Json.Serialization.JsonRequired] public string WorldName { get; set; }
         [System.Text.Json.Serialization.JsonConstructor] public HomeListWorldEntry() {}
-        public HomeListWorldEntry(string world_name, System.Collections.Generic.List<HomeListPlayerEntry> player_entries) {}
+        public HomeListWorldEntry(string world_name, System.Collections.Generic.List<HomeListPlayerEntry> playerEntries) {}
         public override string ToString();
         public bool TryGetPlayerEntry(string playerName, out HomeListPlayerEntry housingPlayerEntry);
     }
@@ -228,11 +259,23 @@ namespace MoreCommands.Util
 {
     public static class Extensions
     {
+        public static bool Equals(this Unity.Mathematics.float2 value, System.Nullable<Unity.Mathematics.float2> other);
+        public static bool Equals(this Unity.Mathematics.float2 value, object obj);
+        public static bool Equals(this Unity.Mathematics.float3 value, System.Nullable<Unity.Mathematics.float3> other);
+        public static bool Equals(this Unity.Mathematics.float3 value, object obj);
         public static bool IsAdmin(this Unity.Entities.Entity playerEntity);
         public static Direction ToDirection(this int value);
-        public static string ToMathString(this UnityEngine.Vector3 value);
-        public static System.Numerics.Vector3 ToVector3(this Unity.Mathematics.float3 float3);
-        public static Unity.Mathematics.float3 ToVector3(this System.Numerics.Vector3 vector3);
+        public static string ToMathString(this Unity.Mathematics.float2 value);
+        public static string ToMathString(this Unity.Mathematics.float3 value);
         public static string TrimQuotes(this string input, out System.Nullable<CoreLib.Commands.CommandOutput> failedCommand);
+    }
+
+    public class Logger
+    {
+        public static void Error(string message);
+        public void ErrorImpl(string message);
+        public static void Info(string message);
+        public void InfoImpl(string message);
+        public static void Init(string modName);
     }
 }

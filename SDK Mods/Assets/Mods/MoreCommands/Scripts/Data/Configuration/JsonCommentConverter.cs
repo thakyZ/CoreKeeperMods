@@ -1,9 +1,9 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace MoreCommands.Data.Configuration {
-#nullable enable
   /*
    * public class JsonCommentContractResolver<T> : DefaultContractResolver where T : Attribute
    * {
