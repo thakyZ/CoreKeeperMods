@@ -4,7 +4,7 @@
 root = true
 
 # Don't use tabs for indentation.
-[**]
+[*]
 indent_style = space
 tab_width = 2
 end_of_line = crlf
@@ -17,16 +17,30 @@ vsspell_dictionary_languages_e71b92b15a6c46a5aa8373108c6c5444 = inherited,en-US
 vsspell_ignored_words_e71b92b15a6c46a5aa8373108c6c5444 = Ctrl|Dropdown|ECS|Lexer|Lexers|Navbar|Scroller|Unpatch|Util|Uuid|Respawn|deserialize|NekoBoiNick
 vsspell_exclusion_expressions_e71b92b15a6c46a5aa8373108c6c5444 = Nav(?=Button)(?@@PND@@ Nav Prefix)(?@@PND@@/Options/Singleline)UE_(?=\w+)(?@@PND@@ Unity Explorer Prefix)(?@@PND@@/Options/Singleline)Sav(?=Wav)(?@@PND@@ Some misspelled library)(?@@PND@@/Options/Singleline)(?<=SortDragger)Heirarchy(?@@PND@@ PreCompiled library)(?@@PND@@/Options/Singleline)
 
-[**.sh]
+[*.sh]
 end_of_line = lf
 insert_final_newline = true
-trim_trailing_whitespace = true
+#trim_trailing_whitespace = true
 
-[**.cs]
+[*.{bat,cmd}]
+end_of_line = crlf
+insert_final_newline = true
+#trim_trailing_whitespace = true
+
+[*.{ps1}]
+end_of_line = crlf
+insert_final_newline = true
+#trim_trailing_whitespace = true
+
+[*.cs]
 generated_code = true
 dotnet_analyzer_diagnostic.severity = none
 
-[**/Mods/**.cs]
+[*.asmdef]
+tab_width = 4
+indent_size = 4
+
+[Assets/Mods/**/*.cs]
 generated_code = false
 dotnet_analyzer_diagnostic.severity = default
 

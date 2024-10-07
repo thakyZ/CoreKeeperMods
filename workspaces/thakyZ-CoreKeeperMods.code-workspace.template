@@ -1,34 +1,43 @@
 {
-	"folders": [
-		{
-			"name": "CoreKeeper Mods",
-			"path": ".."
-		},
-		{
-			"name": "CoreKeeper Data",
-			"path": "${TMPLT:HOME}/AppData/LocalLow/Pugstorm"
-		}
-	],
-	"settings": {
-		"[jsonc]": {
-			"editor.quickSuggestions": {
-				"strings": true
-			},
-			"editor.suggest.insertMode": "replace",
-			"editor.defaultFormatter": "vscode.json-language-features"
-		},
-		"dotnet.server.useOmnisharp": true,
-		"dotnet.preferCSharpExtension": true,
-		"dotnet.defaultSolution": "SDK Mods/SDK Mods.sln",
-		"cSpell.words": [
-			"mscorlib",
-			"Respawn"
-		],
-		"cSpell.ignoreRegExpList": [
-			"Dont(?=\\w+)",
-			"UE(?=_\\w+)"
-		],
-		"git.ignoreLimitWarning": true,
-		"powershell.cwd": "thakyZ-CoreKeeperMods"
-	}
+  "folders": [
+    {
+      "name": "CoreKeeper Mods",
+      "path": ".."
+    },
+    {
+      "name": "CoreKeeper Data",
+      "path": "${TMPLT:HOME}/AppData/LocalLow/Pugstorm"
+    },
+    {
+      "path": "D:/SteamLibrary/SteamApps/common/Core Keeper"
+    },
+    {
+      "path": "../../CoreLib"
+    },
+    {
+      "path": "../../futroo-ExtendedCraftingRange"
+    }
+  ],
+  "settings": {
+    "[jsonc]": {
+      "editor.quickSuggestions": {
+        "strings": true
+      },
+      "editor.suggest.insertMode": "replace",
+      "editor.defaultFormatter": "vscode.json-language-features"
+    },
+    "dotnet.server.useOmnisharp": true,
+    "dotnet.preferCSharpExtension": true,
+    "dotnet.defaultSolution": "SDK Mods/SDK Mods.sln",
+    "cSpell.words": [
+      "mscorlib",
+      "Respawn"
+    ],
+    "cSpell.ignoreRegExpList": [
+      "Dont(?=\\w+)",
+      "UE(?=_\\w+)"
+    ],
+    "git.ignoreLimitWarning": true,
+    "powershell.cwd": "thakyZ-CoreKeeperMods"
+  }
 }

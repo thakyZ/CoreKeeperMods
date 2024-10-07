@@ -20,9 +20,10 @@ namespace MoreCommands
     private static MoreCommandsMod? instance;
     public const string VERSION = "1.0.0";
     public const string NAME = "More Commands";
+    public const string AUTHOR = "Neko Boi Nick";
 
     private JsonConfigFile<Configuration>? config;
-    public static JsonConfigFile<Configuration>? Config => instance?.config;
+    public static Configuration? Config => instance?.config?.Context;
 
     public void EarlyInit()
     {
@@ -38,10 +39,13 @@ namespace MoreCommands
         return;
       }
 
-      config = new("MoreCommands/MoreCommands.json", true, modInfo);
+      config = new JsonConfigFile<Configuration>("MoreCommands/MoreCommands.json", true, modInfo);
 
       CoreLibMod.LoadModule(typeof(CommandsModule));
       CommandsModule.AddCommands(modInfo.ModId, NAME);
+    }
+
+    public void Init() {
       if (this.config is null) {
         Logger.Info("Config is null.");
       } else if (this.config.Context is null) {
@@ -65,8 +69,6 @@ namespace MoreCommands
       Logger.Info("Mod failed to load successfully");
       Debug.Log("Mod failed to load successfully");
     }
-
-    public void Init() { }
 
     public void Shutdown()
     {

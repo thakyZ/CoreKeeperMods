@@ -103,12 +103,13 @@ namespace MoreCommands.Chat.Commands
         return new CommandOutput("No privileges for this command.", CommandStatus.Error);
       }
 
-      var findPlayer = CoreLib.Util.Players.GetAllPlayers().First(x => x.playerName == playerName);
+      PlayerController? findPlayer = CoreLib.Util.Players.GetAllPlayers().First(x => x.playerName == playerName);
 
       if (findPlayer == null)
       {
         return new CommandOutput("Player not found.", CommandStatus.Error);
-      } else
+      }
+      else
       {
       }
 

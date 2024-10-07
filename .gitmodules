@@ -2,3 +2,7 @@
 	path = SDK Mods/Assets/Mods/ExtendedCraftingRange
 	url = https://github.com/thakyZ/futroo-ExtendedCraftingRange.git
 	branch = personal
+[submodule "SDK Mods/Packages/CoreLib"]
+	path = SDK Mods/Packages/CoreLib
+	url = https://github.com/CoreKeeperMods/CoreLib.git
+	branch = main

@@ -1,11 +1,4 @@
 {
-  "[jsonc]": {
-    "editor.quickSuggestions": {
-      "strings": true
-    },
-    "editor.suggest.insertMode": "replace",
-    "editor.defaultFormatter": "vscode.json-language-features"
-  },
   "[shellscript]": {
     "files.eol": "\n"
   },
@@ -19,5 +12,5 @@
   "cSpell.ignoreRegExpList": [
     "Dont(?=\\w+)",
     "UE(?=_\\w+)"
-  ]
+  ],
 }

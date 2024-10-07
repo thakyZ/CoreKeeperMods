@@ -56,7 +56,6 @@ namespace MoreCommands.Data.Configuration {
     /// <param name="configPath">Full path to a file that contains settings. The file will be created as needed.</param>
     /// <param name="saveOnInit">If the config file/directory doesn't exist, create it immediately.</param>
     /// <param name="ownerMetadata">Information about the plugin that owns this setting file.</param>
-    /// <param name="context"></param>
     public JsonConfigFile(string configPath, bool saveOnInit, LoadedMod ownerMetadata) {
       this.ownerMetadata = ownerMetadata;
       context = (T)Activator.CreateInstance(typeof(T));

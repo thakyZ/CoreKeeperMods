@@ -28,12 +28,12 @@ namespace MoreCommands.Data.Configuration {
     [JsonRequired]
     public List<DeathWorldEntry?>? DeathSystem { get; set; }
 
-    public Configuration(CommandsEnabled commands_enabled, List<HomeListWorldEntry?> housingSystem, List<DeathWorldEntry?> deathSystem) {
+    public Configuration(CommandsEnabled commands_enabled, List<HomeListWorldEntry?>? housingSystem, List<DeathWorldEntry?>? deathSystem) {
       this.CommandsEnabled = commands_enabled;
 
       if (housingSystem is null) {
-        Logger.Info($"housing_system  is  null");
-        this.HomeListSystem = new();
+        Logger.Info("housing_system  is  null");
+        this.HomeListSystem = new List<HomeListWorldEntry?>();
         this.HomeListSystem.Init();
       } else {
         this.HomeListSystem = housingSystem;
@@ -41,8 +41,8 @@ namespace MoreCommands.Data.Configuration {
       }
 
       if (deathSystem is null) {
-        Logger.Info($"death_system  is  null");
-        this.DeathSystem = new();
+        Logger.Info("death_system  is  null");
+        this.DeathSystem = new List<DeathWorldEntry?>();
         this.DeathSystem.Init();
       } else {
         this.DeathSystem = deathSystem;
@@ -50,10 +50,10 @@ namespace MoreCommands.Data.Configuration {
       }
 
       if (this.HomeListSystem is null) {
-        Logger.Info($"this.HousingSystem  is  null");
+        Logger.Info("this.HousingSystem  is  null");
       }
       if (this.DeathSystem is null) {
-        Logger.Info($"this.DeathSystem  is  null");
+        Logger.Info("this.DeathSystem  is  null");
       }
     }
 

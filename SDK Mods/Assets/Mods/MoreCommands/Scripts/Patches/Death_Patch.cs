@@ -27,22 +27,20 @@ namespace MoreCommands.Patches {
       try {
         if (MoreCommandsMod.Config is null) {
           Logger.Info($"MoreCommandsMod.Config  is  null");
-        } else if (MoreCommandsMod.Config.Context is null) {
-          Logger.Info($"MoreCommandsMod.Config.Context  is  null");
-        } else if (MoreCommandsMod.Config.Context.DeathSystem is null) {
-          Logger.Info($"MoreCommandsMod.Config.Context.DeathSystem  is  null");
+        } else if (MoreCommandsMod.Config.DeathSystem is null) {
+          Logger.Info($"MoreCommandsMod.Config.DeathSystem  is  null");
         } else {
-          if (MoreCommandsMod.Config.Context.DeathSystem.Count is 0) {
-            Logger.Info($"MoreCommandsMod.Config.Context.DeathSystem.Count  is  0 - A");
+          if (MoreCommandsMod.Config.DeathSystem.Count is 0) {
+            Logger.Info($"MoreCommandsMod.Config.DeathSystem.Count  is  0 - A");
           }
-          MoreCommandsMod.Config.Context.DeathSystem.AddPlayerEntry(pc);
-          if (MoreCommandsMod.Config.Context.DeathSystem.Count == 0) {
-            Logger.Info($"MoreCommandsMod.Config.Context.DeathSystem.Count  is  0 - B");
+          MoreCommandsMod.Config.DeathSystem.AddPlayerEntry(pc);
+          if (MoreCommandsMod.Config.DeathSystem.Count == 0) {
+            Logger.Info($"MoreCommandsMod.Config.DeathSystem.Count  is  0 - B");
           } else {
-            Logger.Info($"MoreCommandsMod.Config.Context.DeathSystem.Count  is  {MoreCommandsMod.Config.Context.DeathSystem.Count} - C");
+            Logger.Info($"MoreCommandsMod.Config.DeathSystem.Count  is  {MoreCommandsMod.Config.DeathSystem.Count} - C");
           }
-          if (MoreCommandsMod.Config.Context.DeathSystem.GetPlayerEntry(pc.world.Name, pc).DeathPositions.Count == 0) {
-            Logger.Info($"MoreCommandsMod.Config.Context.DeathSystem.GetDeathPlayerEntry(\"{pc.world.Name}\", \"{pc.playerName}\").DeathPositions.Count  is  0 - D");
+          if (MoreCommandsMod.Config.DeathSystem.GetPlayerEntry(pc.world.Name, pc).DeathPositions.Count == 0) {
+            Logger.Info($"MoreCommandsMod.Config.DeathSystem.GetDeathPlayerEntry(\"{pc.world.Name}\", \"{pc.playerName}\").DeathPositions.Count  is  0 - D");
           }
         }
       } catch (Exception exception) {
