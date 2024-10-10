@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc43e4983a160e543856e5ba0421c9e1, type: 3}
+  m_Name: AutoDoor
+  m_EditorClassIdentifier: 
+  metadata:
+    guid: e5682ee28739474792d8801d091fd88a
+    name: AutoDoor
+    skipSafetyChecks: 0
+    disableScripts: 0
+    accessesExtraAssemblies: 1
+    disableHarmonyPatching: 0
+    requiredOn: 3
+    files:
+    - path: Scripts/AutoDoorMod.cs
+    dependencies: []
+  modPath: Assets\Mods\AutoDoor
+  forceReimport: 1
+  buildBundles: 0
+  buildLinux: 0
+  buildBurst: 1
+  cachedBuild: 0
+  assets:
+  - path: Assets/Mods/AutoDoor/AutoDoor.api
+    hash: 17C01F0EF1F3CD346DE76C6518F687F843527B5269C8DD8B446FCB0884357273
+  - path: Assets/Mods/AutoDoor/AutoDoor.asset
+    hash: C86220626A1D3ABBB8466DF6A4EF5F465831A5D2CF3DA9C43F18398BDCE30DA2
+  - path: Assets/Mods/AutoDoor/AutoDoor_modio.asset
+    hash: EF28A67720CAA7D9CB9B6DC70ED661F0D882AF3BD0D10D3A6E54363778F47F98
+  lastBuildLinux: 0
