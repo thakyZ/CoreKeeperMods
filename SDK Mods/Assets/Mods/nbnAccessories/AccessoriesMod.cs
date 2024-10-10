@@ -5,12 +5,12 @@ using Object = UnityEngine.Object;
 using PugMod;
 using CoreLib;
 using CoreLib.Commands;
-using Logger = NekoBoiNick.Accessories.Util.Logger;
+using Logger = NekoBoiNick.CoreKeeper.Common.Util.Logger;
 
 namespace NekoBoiNick.Accessories {
   public class AccessoriesMod : IMod {
     public const string VERSION = "1.0.0";
-    public const string NAME = "More Commands";
+    public const string NAME = "nbnAccessories";
     public const string AUTHOR = "Neko Boi Nick";
 
     public void EarlyInit()
