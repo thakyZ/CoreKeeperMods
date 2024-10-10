@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bc43e4983a160e543856e5ba0421c9e1, type: 3}
   m_Name: MoreCommands
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier:
   metadata:
     guid: 623d74c59e574f22a797ee279ca4b6e5
     name: MoreCommands
@@ -21,21 +21,21 @@ MonoBehaviour:
     disableHarmonyPatching: 0
     requiredOn: 0
     files:
-    - path: Scripts/Scripts/Util/Logger.cs
-    - path: Scripts/Scripts/Util/Extensions.cs
-    - path: Scripts/Scripts/Systems/HomeListSystem.cs
-    - path: Scripts/Scripts/Systems/DeathSystem.cs
-    - path: Scripts/Scripts/Patches/Death_Patch.cs
-    - path: Scripts/Scripts/MoreCommandsMod.cs
-    - path: Scripts/Scripts/Data/JsonBase.cs
-    - path: Scripts/Scripts/Data/Converter/Float3JsonConverter.cs
-    - path: Scripts/Scripts/Data/Converter/Float2JsonConverter.cs
-    - path: Scripts/Scripts/Data/Configuration/JsonConfigFile.cs
-    - path: Scripts/Scripts/Data/Configuration/JsonCommentConverter.cs
-    - path: Scripts/Scripts/Data/Configuration/IConfiguration.cs
-    - path: Scripts/Scripts/Data/Configuration/Configuration.cs
-    - path: Scripts/Scripts/Commands/HomeCommand.cs
-    - path: Scripts/Scripts/Commands/BackCommand.cs
+    - path: Scripts/Util/Logger.cs
+    - path: Scripts/Util/Extensions.cs
+    - path: Scripts/Systems/HomeListSystem.cs
+    - path: Scripts/Systems/DeathSystem.cs
+    - path: Scripts/Patches/Death_Patch.cs
+    - path: Scripts/MoreCommandsMod.cs
+    - path: Scripts/Data/JsonBase.cs
+    - path: Scripts/Data/Converter/Float3JsonConverter.cs
+    - path: Scripts/Data/Converter/Float2JsonConverter.cs
+    - path: Scripts/Data/Configuration/JsonConfigFile.cs
+    - path: Scripts/Data/Configuration/JsonCommentConverter.cs
+    - path: Scripts/Data/Configuration/IConfiguration.cs
+    - path: Scripts/Data/Configuration/Configuration.cs
+    - path: Scripts/Commands/HomeCommand.cs
+    - path: Scripts/Commands/BackCommand.cs
     dependencies:
     - modName: CoreLib
       required: 1
