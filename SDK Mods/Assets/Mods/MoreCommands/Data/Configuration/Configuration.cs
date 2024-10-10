@@ -1,11 +1,10 @@
-﻿#nullable enable
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-
 using MoreCommands.Systems;
-using Logger = MoreCommands.Util.Logger;
+using Logger = NekoBoiNick.CoreKeeper.Common.Util.Logger;
 
 namespace MoreCommands.Data.Configuration {
   [Serializable]

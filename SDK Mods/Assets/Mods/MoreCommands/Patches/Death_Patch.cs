@@ -1,15 +1,11 @@
-﻿#nullable enable
+#nullable enable
 using System;
 using System.Diagnostics.CodeAnalysis;
-
-using PlayerState;
-
 using HarmonyLib;
-
+using PlayerState;
 using CoreLib.Commands;
-
 using MoreCommands.Systems;
-using Logger = MoreCommands.Util.Logger;
+using Logger = NekoBoiNick.CoreKeeper.Common.Util.Logger;
 
 namespace MoreCommands.Patches {
 #nullable enable

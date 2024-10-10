@@ -1,13 +1,9 @@
-﻿#nullable enable
+#nullable enable
 using System.Linq;
-using System.Text;
-
+using Unity.Entities;
 using CoreLib.Commands;
 using CoreLib.Commands.Communication;
-
-using MoreCommands.Util;
-
-using Unity.Entities;
+using NekoBoiNick.CoreKeeper.Common.Util;
 
 namespace MoreCommands.Chat.Commands
 {

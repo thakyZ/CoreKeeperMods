@@ -1,13 +1,27 @@
 ﻿#nullable enable
+using System;
+using System.Diagnostics;
 using CoreLogger = CoreLib.Util.Logger;
 
-namespace MoreCommands.Util {
-  public class Logger {
+namespace NekoBoiNick.CoreKeeper.Common.Util {
+  public sealed class Logger {
     private static Logger? instance;
     private CoreLogger Log { get; }
 
     private Logger(string modName) {
       this.Log = new CoreLogger(modName);
+    }
+
+    public static void Exception(Exception exception, string? message = null) {
+      instance?.Log.LogError(exception.GetFullyQualifiedExceptionMessage(message));
+    }
+
+    public static void Exception(string message, Exception? exception = null) {
+      StackTrace? stackTrace = null;
+      if (exception is null) {
+        stackTrace = new StackTrace(1);
+      }
+      instance?.Log.LogError(exception is not null ? exception.GetFullyQualifiedExceptionMessage(message) : stackTrace.PrintExceptionLike(message));
     }
 
     public static void Init(string modName) {

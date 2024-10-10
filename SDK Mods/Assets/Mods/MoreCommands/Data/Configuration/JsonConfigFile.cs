@@ -1,16 +1,15 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
+// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 #nullable enable
-
 using System;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
 using CoreLib.Data.Configuration;
-using MoreCommands.Data.Converter;
 using PugMod;
-using Logger = MoreCommands.Util.Logger;
+using MoreCommands.Data.Converter;
+using Logger = NekoBoiNick.CoreKeeper.Common.Util.Logger;
 
 namespace MoreCommands.Data.Configuration {
   public class JsonConfigFile<T> where T : IConfiguration {

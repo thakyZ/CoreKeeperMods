@@ -1,15 +1,13 @@
-﻿#nullable enable
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-
 using Unity.Mathematics;
-
 using MoreCommands.Data;
-using MoreCommands.Util;
+using NekoBoiNick.CoreKeeper.Common.Util;
 
 namespace MoreCommands.Systems {
   [Serializable]

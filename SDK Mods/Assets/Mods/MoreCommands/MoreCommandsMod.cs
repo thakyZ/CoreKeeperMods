@@ -1,17 +1,13 @@
-﻿#nullable enable
+#nullable enable
 using System.Linq;
-
-using CoreLib;
-using CoreLib.Commands;
-
-using MoreCommands.Chat.Commands;
-using MoreCommands.Data.Configuration;
-using Logger = MoreCommands.Util.Logger;
-
-using PugMod;
-
 using UnityEngine;
 using Object = UnityEngine.Object;
+using PugMod;
+using CoreLib;
+using CoreLib.Commands;
+using MoreCommands.Chat.Commands;
+using MoreCommands.Data.Configuration;
+using Logger = NekoBoiNick.CoreKeeper.Common.Util.Logger;
 
 namespace MoreCommands
 {
