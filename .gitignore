@@ -561,6 +561,7 @@ FodyWeavers.xsd
 **/DTAR_*_DTAR
 !SDK Mods/Assets/**/*.meta
 SDK Mods/Assets/Plugins/**/*.dll.meta
+!SDK Mods/Assets/Plugins/NGTools/**/*.dll.meta
 SDK Mods/Assets/Unity/*/
 SDK Mods/Library/*
 !SDK Mods/Library/PackageCache/.editorconfig
