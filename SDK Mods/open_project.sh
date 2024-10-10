@@ -8,10 +8,10 @@ PWSH=$(which "pwsh")
 exitcode=1
 
 if [ -z "${PWSH}" ]; then
-  powershell -noprofile -c "& \"${SCRIPT_DIR}\.gpg-pinentry-loopback.ps1\" \"$*\""
+  powershell -noprofile -c "& \"${SCRIPT_DIR}\Open-Project.ps1\" \"$*\""
   exitcode=$?
 else
-  "${PWSH}" -noprofile -c "& \"${SCRIPT_DIR}\.gpg-pinentry-loopback.ps1\" \"$*\""
+  "${PWSH}" -noprofile -c "& \"${SCRIPT_DIR}\Open-Project.ps1\" \"$*\""
   exitcode=$?
 fi
 
