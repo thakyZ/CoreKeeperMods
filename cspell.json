@@ -1,42 +1,46 @@
 {
-    "version": "0.2",
-    "ignorePaths": [
-        "cspell.json",
-        "EULA.txt"
-    ],
-    "dictionaryDefinitions": [],
-    "dictionaries": [
-        "en_US",
-        "companies",
-        "softwareTerms",
-        "misc",
-        "python",
-        "powershell",
-        "csharp",
-        "fonts",
-        "filetypes"
-    ],
-    "words": [
-        "Pugstorm",
-        "Pugstorms",
-        "Omnisharp",
-        "Slöjdgatan",
-        "Linköping",
-        "gameplay",
-        "Sailie"
-    ],
-    "ignoreWords": [],
-    "import": [],
-    "ignoreRegExpList": [
-        "(?<=\\$\\{)TMPLT(?=:.*\\})",
-        "(?<=\\\"\\*\\.)vsext(?=\\\")",
-        "(?<=\\\"\\.)vsconfig(?=\\\")",
-        "(?<=\\\")vsix(?=Id\\\")",
-        "(?<=C\\# Inline Color )Vizualizer",
-        "(?<=Tim)Heuer",
-        "(?<=Open )VSIX(?= Gallery)",
-        "(?<=Nikolay )Balakin",
-        "(?<=Side)Scroller(?=\\.Vsix)?",
-        "(?<=SideScroller\\.)Vsix"
-    ]
+  "version": "0.2",
+  "ignorePaths": [
+    "cspell.json",
+    "EULA.txt"
+  ],
+  "dictionaryDefinitions": [],
+  "dictionaries": [
+    "en_US",
+    "companies",
+    "softwareTerms",
+    "misc",
+    "python",
+    "powershell",
+    "csharp",
+    "fonts",
+    "filetypes"
+  ],
+  "words": [
+    "Pugstorm",
+    "Pugstorms",
+    "Omnisharp",
+    "Slöjdgatan",
+    "Linköping",
+    "gameplay",
+    "Sailie",
+    "mscorlib",
+    "Respawn",
+  ],
+  "ignoreWords": [],
+  "import": [],
+  "ignoreRegExpList": [
+    "(?<=\\$\\{)TMPLT(?=:.*\\})",
+    "(?<=\\\"\\*\\.)vsext(?=\\\")",
+    "(?<=\\\"\\.)vsconfig(?=\\\")",
+    "(?<=\\\")vsix(?=Id\\\")",
+    "(?<=C\\# Inline Color )Vizualizer",
+    "(?<=Tim)Heuer",
+    "(?<=Open )VSIX(?= Gallery)",
+    "(?<=Nikolay )Balakin",
+    "(?<=Side)Scroller(?=\\.Vsix)?",
+    "(?<=SideScroller\\.)Vsix",
+    "Dont(?=\\w+)",
+    "UE(?=_\\w+)",
+  ]
 }
