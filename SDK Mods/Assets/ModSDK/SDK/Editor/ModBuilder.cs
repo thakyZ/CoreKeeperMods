@@ -7,8 +7,6 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Security.Cryptography;
-using PugMod.ModIO;
 
 namespace PugMod
 {
@@ -45,54 +43,36 @@ namespace PugMod
 			{
 				AssetDatabase.DisallowAutoRefresh();
 
-                var assetGuids = AssetDatabase.FindAssets("t:Object", new[] { modDirectory });
-                assetPaths = assetGuids.Select(AssetDatabase.GUIDToAssetPath).Where(x => !Directory.Exists(x)).ToList();
-
-                bool bundleAssetsChanged = CheckAssetsForChanges(settings, assetPaths, installDirectoryInfo);
-
-                // Remove old files
-                if (installInSubDirectory && Directory.Exists(installDirectory))
-                {
-                    SmartClearDirectory(settings, bundleAssetsChanged, installDirectory);
-                }
+				// Remove old files
+				if (installInSubDirectory && Directory.Exists(installDirectory))
+				{
+					Directory.Delete(installDirectory, true);
+				}
 
 				if (installInSubDirectory)
 				{
 					Directory.CreateDirectory(installDirectory);
 				}
 
-                originalAssetPaths = new List<string>(assetPaths);
-                List<string> manifest = new();
+				var assetGuids = AssetDatabase.FindAssets("t:Object", new[] { modDirectory });
+				assetPaths = assetGuids.Select(AssetDatabase.GUIDToAssetPath).Where(x => !Directory.Exists(x)).ToList();
+
+				originalAssetPaths = new List<string>(assetPaths);
+				List<string> manifest = new();
 
 				PreProcess(settings, installDirectory, assetPaths);
 
 				BuildConf(modDirectory, installDirectory, assetPaths, manifest);
 				BuildLocalization(modDirectory, installDirectory, assetPaths, manifest);
 
-                BuildScripts(modDirectory, modName, installDirectory, assetPaths, manifest, settings.forceReimport);
+				BuildScripts(modDirectory, modName, installDirectory, assetPaths, manifest);
 				BuildLibraries(modDirectory, installDirectory, assetPaths, manifest);
 
-                if (settings.buildBundles)
-                {
-                    var buildConfigs = Configs.Where(config => config.Name.Equals("Windows") || settings.buildLinux).ToList();
-                    
-                    if (bundleAssetsChanged)
-                    {
-                        if (!BuildAssets(modDirectory, modName, installDirectory, buildConfigs, assetPaths, manifest))
-                        {
-                            callback?.Invoke(false);
-                            return;
-                        }
-                    }
-                    else
-                    {
-                        var bundleFiles = Directory.EnumerateFiles(Path.Combine(installDirectory, "Bundles"));
-                        foreach (var file in bundleFiles)
-                        {
-                            manifest.Add(file);
-                        }
-                    }
-                }
+				if (!BuildAssets(modDirectory, modName, installDirectory, Configs, assetPaths, manifest))
+				{
+					callback?.Invoke(false);
+					return;
+				}
 
 				// Create mod manifest
 				var modManifest = settings.metadata;
@@ -105,9 +85,6 @@ namespace PugMod
 					var path = fileInfo.FullName.Substring(installDirectoryInfo.FullName.Length + 1).Replace('\\', '/');
 					modManifest.files.Add(new ModFile { path = path });
 				}
-                
-                UpdateAssetHashes(settings, modDirectory);
-                settings.lastBuildLinux = settings.buildLinux;
 
 				// Write mod manifest to disk
 				string json = JsonUtility.ToJson(modManifest, true);
@@ -131,99 +108,10 @@ namespace PugMod
 						File.Delete(asset);
 					}
 				}
-                AssetDatabase.AllowAutoRefresh();
-            }
-        }
-
-        private static void UpdateAssetHashes(ModBuilderSettings settings, string modDirectory)
-        {
-            var assetGuids = AssetDatabase.FindAssets("t:Object", new[] { modDirectory });
-            var assetPaths = assetGuids.Select(AssetDatabase.GUIDToAssetPath).Where(x => !Directory.Exists(x)).ToList();
-            
-            settings.assets.Clear();
-            foreach (string assetPath in assetPaths)
-            {
-                if (assetPath.EndsWith(".cs")) continue;
-                if (assetPath.EndsWith(".dll")) continue;
-                if (assetPath.EndsWith(".asmdef")) continue;
-                
-                using FileStream stream = File.OpenRead(assetPath);
-
-                SHA256Managed sha = new SHA256Managed();
-                byte[] hash = sha.ComputeHash(stream);
-                string hashStr = BitConverter.ToString(hash).Replace("-", String.Empty);
-
-                settings.assets.Add(new ModBuilderSettings.ModAsset()
-                {
-                    path = assetPath,
-                    hash = hashStr
-                });
-            }
-        }
-
-        private static bool CheckAssetsForChanges(ModBuilderSettings settings, List<string> assetPaths, DirectoryInfo installDirectoryInfo)
-        {
-            if (!settings.cachedBuild) return true;
-            if (settings.buildLinux != settings.lastBuildLinux) return true;
-
-            foreach (string assetPath in assetPaths)
-            {
-                if (assetPath.EndsWith(".cs")) continue;
-                if (assetPath.EndsWith(".dll")) continue;
-                if (assetPath.EndsWith(".asmdef")) continue;
-
-                var assetType = AssetDatabase.GetMainAssetTypeAtPath(assetPath);
-                if (assetType == typeof(ModBuilderSettings)) continue;
-                if (assetType == typeof(ModSettings)) continue;
-                
-                var fileInfo = settings.assets.FirstOrDefault(file => file.path == assetPath);
-                if (string.IsNullOrEmpty(fileInfo.path) ||
-                    string.IsNullOrEmpty(fileInfo.hash))
-                {
-                    Debug.Log($"Not found: {assetPath}");
-                    Debug.Log("Some files were renamed/moved, cannot cache bundles!");
-                    return true;
-                }
-
-                using FileStream stream = File.OpenRead(assetPath);
-
-                SHA256Managed sha = new SHA256Managed();
-                byte[] hash = sha.ComputeHash(stream);
-                string hashStr = BitConverter.ToString(hash).Replace("-", String.Empty);
-
-                if (fileInfo.hash != hashStr)
-                {
-                    Debug.Log("Found changed files, cannot cache bundles!");
-                    return true;
-                }
-            }
-
-            Debug.Log("Caching bundles!");
-            return false;
-        }
-
-        private static void SmartClearDirectory(ModBuilderSettings settings, bool bundleAssetsChanged, string installDirectory)
-        {
-            if (settings.cachedBuild && !bundleAssetsChanged)
-            {
-                foreach (string fileSystemEntry in Directory.EnumerateFileSystemEntries(installDirectory))
-                {
-                    if (Directory.Exists(fileSystemEntry))
-                    {
-                        if (fileSystemEntry.Contains("Bundles")) continue;
-                        Directory.Delete(fileSystemEntry, true);
-                    }
-
-                    if (File.Exists(fileSystemEntry))
-                        File.Delete(fileSystemEntry);
-                }
-            }
-            else
-            {
-                Directory.Delete(installDirectory, true);
-            }
-        }
-
+				AssetDatabase.AllowAutoRefresh();
+			}
+		}
+		
 		private static void PreProcess(ModBuilderSettings modBuilderSettings, string installDirectory, List<string> assetPaths)
 		{
 			foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
@@ -292,9 +180,8 @@ namespace PugMod
 			}
 		}
 
-        private static void BuildScripts(string modDirectory, string modName, string outputPath, List<string> assetPaths, List<string> manifest,
-            bool forceReimport)
-        {
+		private static void BuildScripts(string modDirectory, string modName, string outputPath, List<string> assetPaths, List<string> manifest)
+		{
 			DirectoryInfo directoryInfo = new(modDirectory);
 			List<string> scriptPaths = new();
 			List<string> relativeDestPaths = new();
@@ -319,13 +206,10 @@ namespace PugMod
 				assetPaths.RemoveAt(i);
 			}
 			
-            if (forceReimport)
-            {
-                foreach (var asset in scriptPaths)
-                {
-                    AssetDatabase.ImportAsset(asset, ImportAssetOptions.ForceUpdate | ImportAssetOptions.ForceSynchronousImport);
-                }
-            }
+			foreach (var asset in scriptPaths)
+			{
+				AssetDatabase.ImportAsset(asset, ImportAssetOptions.ForceUpdate | ImportAssetOptions.ForceSynchronousImport);
+			}
 
 			var generatedCodeDirectories = new string[]
 			{
@@ -505,9 +389,8 @@ namespace PugMod
 			var parentDirectory = fileInfo.Directory;
 			while (parentDirectory != null && !parentDirectory.FullName.Equals(modDirectoryInfo.FullName))
 			{
-                if (parentDirectory.Name.Equals("Editor") ||
-                    parentDirectory.Name.Equals("CodeGen"))
-                {
+				if (parentDirectory.Name.Equals("Editor"))
+				{
 					return true;
 				}
 				parentDirectory = parentDirectory.Parent;
