@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using System.Linq;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -21,42 +21,58 @@ namespace MoreCommands
     private JsonConfigFile<Configuration>? config;
     public static Configuration? Config => instance?.config?.Context;
 
+    internal static LoadedMod? ModInfo { get; private set; }
+
     public void EarlyInit()
     {
       instance = this;
       Logger.Init(NAME);
       Logger.Info($"Mod version: {VERSION}");
 
-      var modInfo = GetModInfo(this);
+      ModInfo = API.ModLoader.LoadedMods.FirstOrDefault(modInfo => modInfo.Handlers.Contains(this));
 
-      if (modInfo is null)
+      if (ModInfo is null)
       {
         Logger.Error($"Failed to load {NAME}: mod metadata not found!");
         return;
       }
 
-      config = new JsonConfigFile<Configuration>("MoreCommands/MoreCommands.json", true, modInfo);
+      config = new JsonConfigFile<Configuration>("MoreCommands/MoreCommands.json", true, ModInfo);
 
       CoreLibMod.LoadModule(typeof(CommandsModule));
-      CommandsModule.AddCommands(modInfo.ModId, NAME);
+      CommandsModule.AddCommands(ModInfo.ModId, NAME);
     }
 
-    public void Init() {
-      if (this.config is null) {
+    public void Init()
+    {
+      if (this.config is null)
+      {
         Logger.Info("Config is null.");
-      } else if (this.config.Context is null) {
+      }
+      else if (this.config.Context is null)
+      {
         Logger.Info("Config.Context is null.");
-      } else if (this.config.Context.CommandsEnabled is null) {
+      }
+      else if (this.config.Context.CommandsEnabled is null)
+      {
         Logger.Info("Config.Context.CommandsEnabled is null.");
-      } else if (this.config.Context.CommandsEnabled.Home != false && this.config.Context.CommandsEnabled.Home != true) {
+      }
+      else if (this.config.Context.CommandsEnabled.Home != false && this.config.Context.CommandsEnabled.Home != true)
+      {
         Logger.Info("Config.Context.CommandsEnabled.Home is null.");
-      } else if (this.config.Context.CommandsEnabled.Home != true) {
+      }
+      else if (this.config.Context.CommandsEnabled.Home != true)
+      {
         Logger.Info("Unregistered command /home");
         CommandsModule.UnregisterCommandHandler(typeof(HomeCommand));
-      } else if (this.config.Context.CommandsEnabled.Back != true) {
+      }
+      else if (this.config.Context.CommandsEnabled.Back != true)
+      {
         Logger.Info("Unregistered command /back");
         CommandsModule.UnregisterCommandHandler(typeof(BackCommand));
-      } else {
+      }
+      else
+      {
         Logger.Info("Mod loaded successfully");
         Debug.Log("Mod loaded successfully");
         return;
@@ -74,10 +90,5 @@ namespace MoreCommands
     public void ModObjectLoaded(Object obj) { }
 
     public void Update() { }
-
-    public static LoadedMod GetModInfo(IMod mod)
-    {
-      return API.ModLoader.LoadedMods.FirstOrDefault(modInfo => modInfo.Handlers.Contains(mod));
-    }
   }
 }
