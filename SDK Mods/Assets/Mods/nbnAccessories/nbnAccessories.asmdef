@@ -1,5 +1,5 @@
 ﻿{
-    "name": "nbnAssesories",
+    "name": "nbnAccessories",
     "references": [
         "Unity.Burst",
         "Unity.Collections",
