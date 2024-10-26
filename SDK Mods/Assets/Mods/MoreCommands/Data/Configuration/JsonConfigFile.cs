@@ -30,13 +30,13 @@ namespace MoreCommands.Data.Configuration {
     }
 
     /// <summary>
-    ///     Full path to the config file. The file might not exist until a setting is added and changed, or <see cref="Save" />
+    ///     Full path to the _config file. The file might not exist until a setting is added and changed, or <see cref="Save" />
     ///     is called.
     /// </summary>
     public string ConfigFilePath { get; }
 
     /// <summary>
-    ///     If enabled, writes the config to disk every time a value is set.
+    ///     If enabled, writes the _config to disk every time a value is set.
     ///     If disabled, you have to manually use <see cref="Save" /> or the changes will be lost!
     /// </summary>
     public bool SaveOnConfigSet { get; set; } = true;
@@ -50,10 +50,10 @@ namespace MoreCommands.Data.Configuration {
     public JsonConfigFile(string configPath, bool saveOnInit) : this(configPath, saveOnInit, null!) { }
 
     /// <summary>
-    ///     Create a new config file at the specified config path.
+    ///     Create a new _config file at the specified _config path.
     /// </summary>
     /// <param name="configPath">Full path to a file that contains settings. The file will be created as needed.</param>
-    /// <param name="saveOnInit">If the config file/directory doesn't exist, create it immediately.</param>
+    /// <param name="saveOnInit">If the _config file/directory doesn't exist, create it immediately.</param>
     /// <param name="ownerMetadata">Information about the plugin that owns this setting file.</param>
     public JsonConfigFile(string configPath, bool saveOnInit, LoadedMod ownerMetadata) {
       this.ownerMetadata = ownerMetadata;
@@ -71,7 +71,7 @@ namespace MoreCommands.Data.Configuration {
     #region Save/Load
 
     /// <summary>
-    /// Reloads the config from disk. Unsaved changes are lost.
+    /// Reloads the _config from disk. Unsaved changes are lost.
     /// </summary>
     public void Reload() {
 
@@ -89,7 +89,7 @@ namespace MoreCommands.Data.Configuration {
     }
 
     /// <summary>
-    /// Writes the config to disk.
+    /// Writes the _config to disk.
     /// </summary>
     public void Save()
     {
@@ -152,7 +152,7 @@ namespace MoreCommands.Data.Configuration {
     #region Events
 
     /// <summary>
-    ///     An event that is fired every time the config is reloaded.
+    ///     An event that is fired every time the _config is reloaded.
     /// </summary>
     public event EventHandler? ConfigReloaded;
 

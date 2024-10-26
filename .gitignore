@@ -571,6 +571,8 @@ SDK Mods/Library/*
 !/SDK Mods/Packages/.editorconfig
 !/SDK Mods/ProjectSettings/*.meta
 SDK Mods/UserSettings/
+**/CoreKeeperModSDK/**/*.dll
+**/CoreKeeperModSDK/**/*.dll.meta
 **/bin/*
 **/obj/*
 **/[Tt]emp/
@@ -579,3 +581,8 @@ todo.txt
 ideas.txt
 todo.txt.meta
 .mypy_cache
+/SDK Mods/Assets/Plugins/CoreKeeper/*
+!/SDK Mods/Assets/Plugins/CoreKeeper/.gitkeep
+/SDK Mods/Assets/Mods/**/Libraries/*
+!/SDK Mods/Assets/Mods/**/Libraries/.gitkeep
+*.pdf.meta

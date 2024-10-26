@@ -9,52 +9,61 @@ using NekoBoiNick.CoreKeeper.Common.Util;
 using Logger = NekoBoiNick.CoreKeeper.Common.Util.Logger;
 using MoreCommands.Systems;
 
+// ReSharper disable once CheckNamespace
 namespace MoreCommands.Chat.Commands {
   public class BackCommand : IServerCommandHandler {
     public CommandOutput Execute(string[] parameters, Entity sender) {
       var playerController = sender.GetPlayerController();
 
-      if (parameters.Length >= 1) {
-        if (string.Equals(parameters[0], "worlds", StringComparison.OrdinalIgnoreCase) && parameters.Length >= 2) {
-          if (string.Equals(parameters[0], "list", StringComparison.OrdinalIgnoreCase)) {
-            if (MoreCommandsMod.Config?.DeathSystem is List<DeathWorldEntry?> entry) {
-              var output = entry.Select((x, i) => (Index: i, DeathEntry: x, Output: "")).Aggregate((total, current) => (total.Index, total.DeathEntry, total.Output + $"[{current.Index}] \"{current.DeathEntry?.WorldName}\"\n"));
-              return new CommandOutput(output.Output, status: CommandStatus.Info);
-            }
+      if (parameters.Length < 1) {
+        return GoBackToDeath(playerController);
+      }
 
+      if (string.Equals(parameters[0], "worlds", StringComparison.OrdinalIgnoreCase) && parameters.Length >= 2) {
+        if (string.Equals(parameters[0], "list", StringComparison.OrdinalIgnoreCase)) {
+          if (MoreCommandsMod.Config?.DeathSystem is not List<DeathWorldEntry?> entry) {
             return new CommandOutput("Unable to find world entry list.", CommandStatus.Error);
           }
 
-          if (int.TryParse(parameters[1].ToLower(), out var index)) {
-            if (MoreCommandsMod.Config?.DeathSystem?[index] is DeathWorldEntry entry) {
-              return new CommandOutput($"Name: \"{entry.WorldName}\"\nCount: {entry.PlayerEntries.Count}", CommandStatus.Info);
-            }
+          var output = entry.Select((x, i) => (Index: i, DeathEntry: x, Output: "")).Aggregate((total, current) => (total.Index, total.DeathEntry, total.Output + $"[{current.Index}] \"{current.DeathEntry?.WorldName}\"\n"));
+          return new CommandOutput(output.Output, status: CommandStatus.Info);
+        }
 
-            return new CommandOutput($"Unable to find world entry at index {index}.", CommandStatus.Error);
+        if (int.TryParse(parameters[1].ToLower(), out var index)) {
+          if (MoreCommandsMod.Config?.DeathSystem?[index] is DeathWorldEntry entry) {
+            return new CommandOutput($"Name: \"{entry.WorldName}\"\nCount: {entry.PlayerEntries.Count}", CommandStatus.Info);
           }
 
-          if (MoreCommandsMod.Config?.DeathSystem?.TryGetWorldEntry(parameters[1].ToLower(), out var deathWorldEntry) == true) {
-            return new CommandOutput($"Name: \"{deathWorldEntry.WorldName}\"\nCount: {deathWorldEntry.PlayerEntries.Count}", CommandStatus.Info);
-          }
-        } else if (string.Equals(parameters[0], "players", StringComparison.OrdinalIgnoreCase) && parameters.Length >= 2) {
-          if (string.Equals(parameters[1], "list", StringComparison.OrdinalIgnoreCase)) {
-            if (MoreCommandsMod.Config?.DeathSystem is List<DeathWorldEntry?> outList) {
-              if (outList.GetWorldEntry(playerController.world.Name)?.PlayerEntries is List<DeathPlayerEntry> entry) {
-                var output = entry.Select((x, i) => (Index: i, PlayerEntry: x, Output: "")).Aggregate((total, current) => (total.Index, total.PlayerEntry, total.Output + $"[{current.Index}] \"{current.PlayerEntry.PlayerName}\" \"{current.PlayerEntry.PlayerUuid}\"\n"));
-                return new CommandOutput(output.Output, CommandStatus.Info);
-              }
+          return new CommandOutput($"Unable to find world entry at index {index}.", CommandStatus.Error);
+        }
 
-              return new CommandOutput("Unable to find world entry list.", CommandStatus.Error);
-            }
-          } else if (int.TryParse(parameters[1].ToLower(), out var index)) {
-            if (MoreCommandsMod.Config?.DeathSystem?.GetWorldEntry(playerController.world.Name).PlayerEntries[index] is DeathPlayerEntry entry) {
-              return new CommandOutput($"Name: \"{entry.PlayerName}\"\nCount: {entry.DeathPositions.Count}", CommandStatus.Info);
-            }
-
-            return new CommandOutput($"Unable to find player entry at index {index}.", CommandStatus.Error);
-          } else if (MoreCommandsMod.Config?.DeathSystem?.GetWorldEntry(playerController.world.Name).TryGetPlayerEntry(parameters[1].ToLower(), out var deathPlayerEntry) == true) {
-            return new CommandOutput($"Name: \"{deathPlayerEntry.PlayerName}\"\nCount: {deathPlayerEntry.DeathPositions.Count}", CommandStatus.Info);
+        if (MoreCommandsMod.Config?.DeathSystem?.TryGetWorldEntry(parameters[1].ToLower(), out var deathWorldEntry) == true) {
+          return new CommandOutput($"Name: \"{deathWorldEntry.WorldName}\"\nCount: {deathWorldEntry.PlayerEntries.Count}", CommandStatus.Info);
+        }
+      } else if (string.Equals(parameters[0], "players", StringComparison.OrdinalIgnoreCase) && parameters.Length >= 2) {
+        if (string.Equals(parameters[1], "list", StringComparison.OrdinalIgnoreCase)) {
+          if (MoreCommandsMod.Config?.DeathSystem is not List<DeathWorldEntry?> outList) {
+            return GoBackToDeath(playerController);
           }
+
+          if (outList.GetWorldEntry(playerController.world.Name)?.PlayerEntries is not List<DeathPlayerEntry> entry) {
+            return new CommandOutput("Unable to find world entry list.", CommandStatus.Error);
+          }
+
+          var output = entry.Select((x, i) => (Index: i, PlayerEntry: x, Output: "")).Aggregate((total, current) => (total.Index, total.PlayerEntry, total.Output + $"[{current.Index}] \"{current.PlayerEntry.PlayerName}\" \"{current.PlayerEntry.PlayerUuid}\"\n"));
+          return new CommandOutput(output.Output, CommandStatus.Info);
+        }
+
+        if (int.TryParse(parameters[1].ToLower(), out var index)) {
+          if (MoreCommandsMod.Config?.DeathSystem?.GetWorldEntry(playerController.world.Name).PlayerEntries[index] is DeathPlayerEntry entry) {
+            return new CommandOutput($"Name: \"{entry.PlayerName}\"\nCount: {entry.DeathPositions.Count}", CommandStatus.Info);
+          }
+
+          return new CommandOutput($"Unable to find player entry at index {index}.", CommandStatus.Error);
+        }
+
+        if (MoreCommandsMod.Config?.DeathSystem?.GetWorldEntry(playerController.world.Name).TryGetPlayerEntry(parameters[1].ToLower(), out var deathPlayerEntry) == true) {
+          return new CommandOutput($"Name: \"{deathPlayerEntry.PlayerName}\"\nCount: {deathPlayerEntry.DeathPositions.Count}", CommandStatus.Info);
         }
       }
 
@@ -87,5 +96,4 @@ namespace MoreCommands.Chat.Commands {
       }
     }
   }
-#nullable disable
 }

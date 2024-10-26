@@ -9,86 +9,43 @@ using MoreCommands.Chat.Commands;
 using MoreCommands.Data.Configuration;
 using Logger = NekoBoiNick.CoreKeeper.Common.Util.Logger;
 
-namespace MoreCommands
-{
-  public class MoreCommandsMod : IMod
-  {
-    private static MoreCommandsMod? instance;
-    public const string VERSION = "1.0.0";
-    public const string NAME = "More Commands";
-    public const string AUTHOR = "Neko Boi Nick";
-
-    private JsonConfigFile<Configuration>? config;
-    public static Configuration? Config => instance?.config?.Context;
-
+namespace MoreCommands {
+  public class MoreCommandsMod : IMod {
+    private static MoreCommandsMod? _instance;
+    public const string MOD_VERSION = "1.0.0";
+    public const string MOD_NAME = "More Commands";
+    public const string MOD_AUTHOR = "Neko Boi Nick";
+    private JsonConfigFile<Configuration>? _config;
+    public static Configuration? Config => _instance?._config?.Context;
     internal static LoadedMod? ModInfo { get; private set; }
 
-    public void EarlyInit()
-    {
-      instance = this;
-      Logger.Init(NAME);
-      Logger.Info($"Mod version: {VERSION}");
-
+    public void EarlyInit() {
+      _instance = this;
+      Logger.Init(MOD_NAME);
+      Logger.Info($"Loading mod {MOD_NAME} v{MOD_VERSION}...");
       ModInfo = API.ModLoader.LoadedMods.FirstOrDefault(modInfo => modInfo.Handlers.Contains(this));
-
-      if (ModInfo is null)
-      {
-        Logger.Error($"Failed to load {NAME}: mod metadata not found!");
+      if (ModInfo is null) {
+        Logger.Error($"Failed to load {MOD_NAME}: mod metadata not found!");
         return;
       }
 
-      config = new JsonConfigFile<Configuration>("MoreCommands/MoreCommands.json", true, ModInfo);
-
+      Debug.Log($"Finished loading mod {MOD_NAME} v{MOD_VERSION}");
+      _config = new JsonConfigFile<Configuration>("MoreCommands/MoreCommands.json", true, ModInfo);
       CoreLibMod.LoadModule(typeof(CommandsModule));
-      CommandsModule.AddCommands(ModInfo.ModId, NAME);
+      CommandsModule.AddCommands(ModInfo.ModId, MOD_NAME);
     }
 
-    public void Init()
-    {
-      if (this.config is null)
-      {
-        Logger.Info("Config is null.");
-      }
-      else if (this.config.Context is null)
-      {
-        Logger.Info("Config.Context is null.");
-      }
-      else if (this.config.Context.CommandsEnabled is null)
-      {
-        Logger.Info("Config.Context.CommandsEnabled is null.");
-      }
-      else if (this.config.Context.CommandsEnabled.Home != false && this.config.Context.CommandsEnabled.Home != true)
-      {
-        Logger.Info("Config.Context.CommandsEnabled.Home is null.");
-      }
-      else if (this.config.Context.CommandsEnabled.Home != true)
-      {
-        Logger.Info("Unregistered command /home");
-        CommandsModule.UnregisterCommandHandler(typeof(HomeCommand));
-      }
-      else if (this.config.Context.CommandsEnabled.Back != true)
-      {
-        Logger.Info("Unregistered command /back");
-        CommandsModule.UnregisterCommandHandler(typeof(BackCommand));
-      }
-      else
-      {
-        Logger.Info("Mod loaded successfully");
-        Debug.Log("Mod loaded successfully");
-        return;
-      }
-
-      Logger.Info("Mod failed to load successfully");
-      Debug.Log("Mod failed to load successfully");
+    public void Init() {
     }
 
-    public void Shutdown()
-    {
-      this.config?.Save();
+    public void Shutdown() {
+      this._config?.Save();
     }
 
-    public void ModObjectLoaded(Object obj) { }
+    public void ModObjectLoaded(Object obj) {
+    }
 
-    public void Update() { }
+    public void Update() {
+    }
   }
 }

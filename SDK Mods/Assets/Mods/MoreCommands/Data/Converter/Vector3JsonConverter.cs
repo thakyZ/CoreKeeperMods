@@ -1,0 +1,80 @@
+﻿#nullable enable
+using System;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using Unity.Mathematics;
+using UnityEngine;
+
+namespace MoreCommands.Data.Converter {
+  public class Vector3JsonConverter : JsonConverterFactory {
+    public override bool CanConvert(Type typeToConvert) {
+      return typeToConvert.IsEquivalentTo(typeof(Vector3));
+    }
+
+    public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options) {
+      return new Vector3JsonConverterInner(options);
+    }
+
+    public class Vector3JsonConverterInner : JsonConverter<Vector3> {
+      private readonly JsonConverter<float> _valueConverter;
+
+      public Vector3JsonConverterInner(JsonSerializerOptions options) {
+        _valueConverter = (JsonConverter<float>)options.GetConverter(typeof(float));
+      }
+
+      public override Vector3 Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
+        if (reader.TokenType != JsonTokenType.StartObject) {
+          throw new JsonException();
+        }
+
+        Vector3 output = Vector3.zero;
+        while (reader.Read()) {
+          if (reader.TokenType == JsonTokenType.EndObject) {
+            return output;
+          }
+
+          if (reader.TokenType != JsonTokenType.PropertyName) {
+            throw new JsonException();
+          }
+
+          string? propertyName = reader.GetString();
+
+          // ReSharper disable once InvertIf
+          if (!string.IsNullOrEmpty(propertyName) && !string.IsNullOrWhiteSpace(propertyName)) {
+            if (propertyName.Equals("x", StringComparison.OrdinalIgnoreCase)) {
+              reader.Read();
+              float @value = _valueConverter.Read(ref reader, typeof(float), options)!;
+              output.x = @value;
+            }
+
+            if (propertyName.Equals("y", StringComparison.OrdinalIgnoreCase)) {
+              reader.Read();
+              float @value = _valueConverter.Read(ref reader, typeof(float), options)!;
+              output.y = @value;
+            }
+
+            // ReSharper disable once InvertIf
+            if (propertyName.Equals("z", StringComparison.OrdinalIgnoreCase)) {
+              reader.Read();
+              float @value = _valueConverter.Read(ref reader, typeof(float), options)!;
+              output.z = @value;
+            }
+          }
+        }
+
+        return output;
+      }
+
+      public override void Write(Utf8JsonWriter writer, Vector3 value, JsonSerializerOptions options) {
+        writer.WriteStartObject();
+        writer.WritePropertyName("x");
+        _valueConverter.Write(writer, value.x, options);
+        writer.WritePropertyName("y");
+        _valueConverter.Write(writer, value.y, options);
+        writer.WritePropertyName("z");
+        _valueConverter.Write(writer, value.z, options);
+        writer.WriteEndObject();
+      }
+    }
+  }
+}

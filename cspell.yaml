@@ -26,6 +26,9 @@ words:
   - Sailie
   - mscorlib
   - Respawn
+  - Scriptable
+  - UXML
+  - unpressable
 ignoreWords: []
 import: []
 ignoreRegExpList:

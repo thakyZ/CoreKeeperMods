@@ -1,0 +1,6 @@
+{
+  "[csharp]": {
+    "editor.maxTokenizationLineLength": 2500,
+    "editor.indentSize": 4
+  }
+}

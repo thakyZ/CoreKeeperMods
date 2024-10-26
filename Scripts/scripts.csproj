@@ -1,8 +1,35 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net8.0-windows</TargetFramework>
-    <RootNamespace>NekoBoiNick.CoreKeeperMods</RootNamespace>
-    <LangVersion>latest</LangVersion>
-    <Nullable>Enable</Nullable>
-  </PropertyGroup>
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net8.0</TargetFramework>
+        <RootNamespace>NekoBoiNick.CoreKeeperMods.Scripts</RootNamespace>
+        <ImplicitUsings>disable</ImplicitUsings>
+        <LangVersion>latest</LangVersion>
+        <Nullable>enable</Nullable>
+        <RunWorkingDirectory>$(MSBuildProjectDirectory)</RunWorkingDirectory>
+        <ProjectDirectory Condition=" '$(ProjectDirectory)' == '' ">$(MSBuildProjectDirectory)\</ProjectDirectory>
+        <SolutionDirectory Condition=" '$(SolutionDirectory)' == '' ">$(ProjectDirectory)..\SDK Mods\</SolutionDirectory>
+        <OutputPath>$(ProjectDirectory)bin</OutputPath>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="Cake.Frosting.Git" Version="4.0.0" />
+        <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" Version="8.0.0" />
+        <PackageReference Include="NuGet.Packaging" Version="6.11.1" />
+        <PackageReference Include="System.Formats.Asn1" Version="8.0.1" />
+        <PackageReference Include="YamlDotNet" Version="16.1.3" />
+        <PackageReference Include="Cake.Frosting" Version="4.2.0" />
+        <PackageReference Include="Cake.Yaml" Version="6.0.0" />
+        <PackageReference Include="Cake.Unity" Version="0.9.0" />
+        <PackageReference Include="Cake.FileHelpers" Version="7.0.0" />
+        <PackageReference Include="Cake.7zip" Version="4.1.0" />
+        <Reference Include="Cake.MSBuildSolutionParser" HintPath="$(ProjectDirectory)ref\Cake.MSBuildSolutionParser.dll" />
+    </ItemGroup>
+    <Target Name="UpdateRefs" BeforeTargets="CoreCompile" Condition=" '$(MSBuildSolutionParserBinDirectory)' != '' AND Exists('$(MSBuildSolutionParserBinDirectory)') ">
+        <ItemGroup>
+            <BinFiles Include="$(MSBuildSolutionParserBinDirectory)*.*" />
+        </ItemGroup>
+        <Copy SourceFiles="@(BinFiles)" DestinationFolder="$(ProjectDirectory)ref" />
+    </Target>
 </Project>

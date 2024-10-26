@@ -28,7 +28,7 @@ namespace NekoBoiNick.CoreKeeper.Common.Util {
       instance = new Logger(modName);
     }
 
-    public void InfoImpl(string message) {
+    private void InfoImpl(string message) {
       this.Log.LogInfo(message);
     }
 
@@ -36,7 +36,7 @@ namespace NekoBoiNick.CoreKeeper.Common.Util {
       instance?.InfoImpl(message);
     }
 
-    public void ErrorImpl(string message) {
+    private void ErrorImpl(string message) {
       this.Log.LogError(message);
     }
 
@@ -44,7 +44,7 @@ namespace NekoBoiNick.CoreKeeper.Common.Util {
       instance?.ErrorImpl(message);
     }
 
-    public void WarnImpl(string message) {
+    private void WarnImpl(string message) {
       this.Log.LogWarning(message);
     }
 

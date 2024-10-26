@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "scripts": {
+      "commandName": "Project",
+      "commandLineArgs": "--clean --debug"
+    }
+  }
+}

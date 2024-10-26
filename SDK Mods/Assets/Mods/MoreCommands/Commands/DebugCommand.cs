@@ -4,27 +4,22 @@ using Unity.Entities;
 using CoreLib.Commands;
 using NekoBoiNick.CoreKeeper.Common.Util;
 
-namespace MoreCommands.Chat.Commands
-{
-  public class DebugCommand : IServerCommandHandler
-  {
-    public CommandOutput Execute(string[] parameters, Entity sender)
-    {
-      if (parameters.Length == 1 && parameters[0].Equals("print", System.StringComparison.OrdinalIgnoreCase))
-      {
+// ReSharper disable once CheckNamespace
+namespace MoreCommands.Chat.Commands  {
+  public class DebugCommand : IServerCommandHandler {
+    public CommandOutput Execute(string[] parameters, Entity sender) {
+      if (parameters.Length == 1 && parameters[0].Equals("print", System.StringComparison.OrdinalIgnoreCase)) {
         return PrintRunningConfig();
       }
 
       return "";
     }
 
-    public string GetDescription()
-    {
+    public string GetDescription() {
       return "Command to debug this mod.";
     }
 
-    public string[] GetTriggerNames()
-    {
+    public string[] GetTriggerNames() {
       return new[] { "mc_debug" };
     }
 
@@ -39,5 +34,4 @@ namespace MoreCommands.Chat.Commands
       }
     }
   }
-#nullable disable
 }

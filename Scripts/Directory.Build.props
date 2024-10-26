@@ -1,0 +1,7 @@
+<Project>
+  <!-- See https://aka.ms/dotnet/msbuild/customize for more details on customizing your build -->
+  <PropertyGroup>
+    <USERPROFILE Condition=" '$(USERPROFILE)' == ''">$(HOMEDRIVE)$(HOMEPATH)\</USERPROFILE>
+    <MSBuildSolutionParserBinDirectory Condition=" '$(MSBuildSolutionParserBinDirectory)' == '' AND Exists('$(USERPROFILE)\Development\Git\CSharp\MSBuildSolutionParser\Cake.MSBuildSolutionParser\bin\Debug\net8.0\') ">$(USERPROFILE)\Development\Git\CSharp\MSBuildSolutionParser\Cake.MSBuildSolutionParser\bin\Debug\net8.0\</MSBuildSolutionParserBinDirectory>
+  </PropertyGroup>
+</Project>

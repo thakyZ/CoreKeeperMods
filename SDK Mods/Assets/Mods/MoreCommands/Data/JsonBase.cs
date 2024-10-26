@@ -9,8 +9,8 @@ namespace MoreCommands.Data {
       AllowTrailingCommas = true,
       MaxDepth = 1000,
       Converters = {
-				new Float3JsonConverter(),
-        new Float2JsonConverter(),
+				new Vector3JsonConverter(),
+        new Vector2JsonConverter(),
 			}
     };
   }

@@ -1,0 +1,1900 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Cake.MSBuildSolutionParser</name>
+    </assembly>
+    <members>
+        <member name="T:Cake.MSBuildSolutionParser.AddinAliases">
+            <summary>
+            Add-in aliases for Cake from Cake.MSBuildSolutionParser
+            </summary>
+        </member>
+        <member name="T:Cake.MSBuildSolutionParser.Project.ProjectAliases">
+            <summary>
+            Contains functionality related to MSBuild project files.
+            </summary>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Project.ProjectAliases.ProjectParser(Cake.Core.ICakeContext)">
+            <summary>
+            An implementation of the <see cref="T:Cake.MSBuildSolutionParser.Project.ProjectParser"/> as a CommandBuilder
+            </summary>
+            <param name="context"></param>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Project.ProjectAliases.DeserializeProject(Cake.Core.ICakeContext,Cake.Core.IO.FilePath,Cake.Core.IO.FilePath)">
+            <summary>
+            Deserializes project information from a project file.
+            </summary>
+            <param name="context">The cake context.</param>
+            <param name="projectPath">The project path.</param>
+            <param name="solutionPath">The solution path.</param>
+            <returns>A deserialized project.</returns>
+            <example>
+            <code>
+            var solutionPath = comtext.File("./src/Cake.sln");
+            var projectPath = comtext.File("./src/Cake.csproj");
+            comtext.Log.Information("Parsing {0}", projectPath);
+            var parsedProject = comtext.DeserializeProject(projectPath, solutionPath);
+            ...
+            context.Log.Information($"Serializing {projectPath}");
+            var serializeProject = context.SerializeProject(deserializeProject, projectPath, solutionPath);
+            context.Log.Information($"{nameof(deserializeProject)} and {nameof(serializeProject)} are{(deserializeProject.Equals(serializeProject) ? "" : " not")} equal.");
+            </code>
+            </example>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Project.ProjectAliases.SerializeProject(Cake.Core.ICakeContext,Cake.MSBuildSolutionParser.Project.ProjectParserResult,Cake.Core.IO.FilePath,Cake.Core.IO.FilePath)">
+            <summary>
+            Serializes a project file from project information.
+            </summary>
+            <param name="context">The cake context.</param>
+            <param name="projectParserResult">The deserialized project.</param>
+            <param name="projectPath">The project path.</param>
+            <param name="solutionPath">The solution path.</param>
+            <returns>A serialized project.</returns>
+            <example>
+            <code>
+            var solutionPath = context.File("./src/Cake.sln");
+            var projectPath = context.File("./src/Cake.csproj");
+            context.Log.Information($"Deserializing {solutionPath}");
+            var deserializeProject = context.SerializeProject(solutionPath);
+            ...
+            context.Log.Information($"Serializing {projectPath}");
+            var serializeProject = context.SerializeProject(deserializeProject, projectPath, solutionPath);
+            context.Log.Information($"{nameof(deserializeProject)} and {nameof(serializeProject)} are{(deserializeProject.Equals(serializeProject) ? "" : " not")} equal.");
+            </code>
+            </example>
+        </member>
+        <member name="T:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoAliases">
+            <summary>
+            Contains functionality related to assembly info.
+            </summary>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoAliases.CreateAssemblyInfo(Cake.Core.ICakeContext,Cake.Core.IO.FilePath,Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoSettings)">
+            <summary>
+            Creates an assembly information file.
+            </summary>
+            <param name="context">The cake context.</param>
+            <param name="outputPath">The output path.</param>
+            <param name="settings">The settings.</param>
+            <example>
+            <code>
+            var file = "./SolutionInfo.cs";
+            var version = "0.0.1";
+            var buildNo = "123";
+            var semVersion = string.Concat(version + "-" + buildNo);
+            CreateAssemblyInfo(file, new AssemblyInfoSettings {
+                Product = "SampleProject",
+                Version = version,
+                FileVersion = version,
+                InformationalVersion = semVersion,
+                Copyright = string.Format("Copyright (c) Contoso 2014 - {0}", DateTime.Now.Year)
+            });
+            </code>
+            </example>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoAliases.DeserializeAssemblyInfo(Cake.Core.ICakeContext,Cake.Core.IO.FilePath)">
+            <summary>
+            Deserializes an existing assembly information file.
+            </summary>
+            <param name="context">The cake context.</param>
+            <param name="assemblyInfoPath">The assembly info path.</param>
+            <returns>The content of the assembly info file.</returns>
+            <example>
+            <code>
+            var assemblyInfo = DeserializeAssemblyInfo("./SolutionInfo.cs");
+            Information("Version: {0}", assemblyInfo.AssemblyVersion);
+            Information("File version: {0}", assemblyInfo.AssemblyFileVersion);
+            Information("Informational version: {0}", assemblyInfo.AssemblyInformationalVersion);
+            </code>
+            </example>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoAliases.SerializeAssemblyInfo(Cake.Core.ICakeContext,Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoParseResult,Cake.Core.IO.FilePath)">
+            <summary>
+            Serializes an existing assembly information file.
+            </summary>
+            <param name="context">The cake context.</param>
+            <param name="assemblyInfoParseResult">The deerialized assembly info.</param>
+            <param name="assemblyInfoPath">The assembly info path.</param>
+            <returns>The content of the assembly info file.</returns>
+            <example>
+            <code>
+            var assemblyInfo = SerializeAssemblyInfo("./SolutionInfo.cs");
+            Information("Version: {0}", assemblyInfo.AssemblyVersion);
+            Information("File version: {0}", assemblyInfo.AssemblyFileVersion);
+            Information("Informational version: {0}", assemblyInfo.AssemblyInformationalVersion);
+            </code>
+            </example>
+        </member>
+        <member name="T:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoCreator">
+            <summary>
+            The assembly info creator.
+            </summary>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoCreator.#ctor(Cake.Core.IO.IFileSystem,Cake.Core.ICakeEnvironment,Cake.Core.Diagnostics.ICakeLog)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoCreator"/> class.
+            </summary>
+            <param name="fileSystem">The file system.</param>
+            <param name="environment">The environment.</param>
+            <param name="log">The log.</param>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoCreator.Create(Cake.Core.IO.FilePath,Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoSettings,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Creates an assembly info file.
+            </summary>
+            <param name="outputPath">The output path.</param>
+            <param name="settings">The settings.</param>
+            <param name="attributeFormat">The attribute format.</param>
+            <param name="attributeWithValueFormat">The attribute with value format.</param>
+            <param name="attributeWithKeyValueFormat">The attribute with key value format.</param>
+            <param name="vbAttributeFormat">The VB attribute format.</param>
+            <param name="vbAttributeWithValueFormat">The VB attribute with value format.</param>
+            <param name="vbAttributeWithKeyValueFormat">The VB attribute with key value format.</param>
+        </member>
+        <member name="T:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoCustomAttribute">
+            <summary>
+            Custom Attribute class used by <see cref="T:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoSettings"/>.
+            </summary>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoCustomAttribute.Name">
+            <summary>
+            Gets or sets the name.
+            </summary>
+            <value>The attribute name.</value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoCustomAttribute.NameSpace">
+            <summary>
+            Gets or sets the namespace.
+            </summary>
+            <value>The namespace for the attribute.</value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoCustomAttribute.Value">
+            <summary>
+            Gets or sets the value.
+            </summary>
+            <value>The value for the attribute.</value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoCustomAttribute.UseRawValue">
+            <summary>
+            Gets or sets a value indicating whether the value is raw or should be quoted in the created attribute.
+            </summary>
+            <value>
+              <c>true</c> if should be treated as raw; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="T:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoMetadataAttribute">
+            <summary>
+            Metadata Attribute class used by <see cref="T:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoSettings"/>.
+            </summary>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoMetadataAttribute.Name">
+            <summary>
+            Gets the name.
+            </summary>
+            <value>The attribute name.</value>
+            ReSharper disable once ReplaceAutoPropertyWithComputedProperty
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoMetadataAttribute.Key">
+            <summary>
+            Gets or sets the key for meta data.
+            </summary>
+            <value>The key for meta data.</value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoMetadataAttribute.NameSpace">
+            <summary>
+            Gets the namespace.
+            </summary>
+            <value>The namespace for the meta data attribute.</value>
+            ReSharper disable once ReplaceAutoPropertyWithComputedProperty
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoMetadataAttribute.Value">
+            <summary>
+            Gets or sets the value.
+            </summary>
+            <value>The value for the meta data.</value>
+        </member>
+        <member name="T:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoParser">
+            <summary>
+            The assembly info parser.
+            </summary>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoParser.#ctor(Cake.Core.IO.IFileSystem,Cake.Core.ICakeEnvironment)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoParser"/> class.
+            </summary>
+            <param name="fileSystem">The file system.</param>
+            <param name="environment">The environment.</param>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoParser.Deserialize(Cake.Core.IO.FilePath)">
+            <summary>
+            Deserializes information from an assembly info file.
+            </summary>
+            <param name="assemblyInfoPath">The file path.</param>
+            <returns>Information about the assembly info content.</returns>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoParser.Serialize(Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoParseResult,Cake.Core.IO.FilePath)">
+            <summary>
+            Serializes information from an assembly info file.
+            </summary>
+            <param name="assemblyInfoParseResult">Information about the assembly info content.</param>
+            <param name="assemblyInfoPath">The file path.</param>
+            <returns>The seralized assembly info content.</returns>
+        </member>
+        <member name="T:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoParseResult">
+            <summary>
+            Represents the content in an assembly info file.
+            </summary>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoParseResult.CLSCompliant">
+            <summary>
+            Gets a value indicating whether the assembly is CLS compliant.
+            </summary>
+            <value>
+              <c>true</c> if the assembly is CLS compliant; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoParseResult.Company">
+            <summary>
+            Gets the assembly company attribute.
+            </summary>
+            <value>The assembly company attribute.</value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoParseResult.ComVisible">
+            <summary>
+            Gets a value indicating whether the assembly is accessible from COM.
+            </summary>
+            <value>
+              <c>true</c> if the assembly is accessible from COM; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoParseResult.Configuration">
+            <summary>
+            Gets the assembly configuration attribute.
+            </summary>
+            <value>The assembly Configuration attribute.</value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoParseResult.Copyright">
+            <summary>
+            Gets the assembly copyright attribute.
+            </summary>
+            <value>The assembly copyright attribute.</value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoParseResult.Description">
+            <summary>
+            Gets the assembly's description attribute.
+            </summary>
+            <value>The assembly's Description attribute.</value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoParseResult.AssemblyFileVersion">
+            <summary>
+            Gets the assembly file version.
+            </summary>
+            <value>The assembly file version.</value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoParseResult.Guid">
+            <summary>
+            Gets the assembly GUID attribute.
+            </summary>
+            <value>The assembly GUID attribute.</value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoParseResult.AssemblyInformationalVersion">
+            <summary>
+            Gets the assembly informational version.
+            </summary>
+            <value>The assembly informational version.</value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoParseResult.Product">
+            <summary>
+            Gets the assembly product Attribute.
+            </summary>
+            <value>The assembly product attribute.</value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoParseResult.Title">
+            <summary>
+            Gets the assembly title Attribute.
+            </summary>
+            <value>The assembly Title attribute.</value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoParseResult.Trademark">
+            <summary>
+            Gets the assembly trademark Attribute.
+            </summary>
+            <value>The assembly Trademark attribute.</value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoParseResult.AssemblyVersion">
+            <summary>
+            Gets the assembly version.
+            </summary>
+            <value>The assembly version.</value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoParseResult.InternalsVisibleTo">
+            <summary>
+            Gets the assemblies that internals are visible to.
+            </summary>
+            <value>The assemblies that internals are visible to.</value>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoParseResult.#ctor(System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoParseResult"/> class.
+            </summary>
+            <param name="clsCompliant">Whether the assembly is CLS compliant.</param>
+            <param name="company">The assembly company attribute.</param>
+            <param name="comVisible">Whether the assembly is accessible from COM.</param>
+            <param name="configuration">The assembly configuration attribute.</param>
+            <param name="copyright">The assembly copyright attribute.</param>
+            <param name="description">The assembly description attribute.</param>
+            <param name="assemblyFileVersion">The assembly file version.</param>
+            <param name="guid">The assembly GUID attribute.</param>
+            <param name="assemblyInformationalVersion">The assembly informational version.</param>
+            <param name="product">The assembly product attribute.</param>
+            <param name="title">The assembly title attribute.</param>
+            <param name="trademark">The assembly trademark attribute.</param>
+            <param name="assemblyVersion">The assembly version.</param>
+            <param name="internalsVisibleTo">The assemblies that internals are visible to.</param>
+        </member>
+        <member name="T:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoSettings">
+            <summary>
+            Contains settings used by <see cref="T:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoCreator"/>.
+            </summary>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoSettings.Title">
+            <summary>
+            Gets or sets the title.
+            </summary>
+            <value>The assembly title.</value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoSettings.Description">
+            <summary>
+            Gets or sets the description.
+            </summary>
+            <value>The assembly description.</value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoSettings.Guid">
+            <summary>
+            Gets or sets the unique identifier.
+            </summary>
+            <value>The unique identifier.</value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoSettings.Product">
+            <summary>
+            Gets or sets the product.
+            </summary>
+            <value>The assembly product.</value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoSettings.Copyright">
+            <summary>
+            Gets or sets the copyright.
+            </summary>
+            <value>The copyright.</value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoSettings.Trademark">
+            <summary>
+            Gets or sets the trademark.
+            </summary>
+            <value>The trademark.</value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoSettings.Version">
+            <summary>
+            Gets or sets the version.
+            </summary>
+            <value>The version.</value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoSettings.FileVersion">
+            <summary>
+            Gets or sets the file version.
+            </summary>
+            <value>The file version.</value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoSettings.InformationalVersion">
+            <summary>
+            Gets or sets the informational version.
+            </summary>
+            <value>The informational version.</value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoSettings.ComVisible">
+            <summary>
+            Gets or sets whether or not the assembly is COM visible.
+            </summary>
+            <value>Whether or not the assembly is COM visible.</value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoSettings.CLSCompliant">
+            <summary>
+            Gets or sets whether or not the assembly is CLS compliant.
+            </summary>
+            <value>Whether or not the assembly is CLS compliant.</value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoSettings.Company">
+            <summary>
+            Gets or sets the company.
+            </summary>
+            <value>The company.</value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoSettings.InternalsVisibleTo">
+            <summary>
+            Gets or sets the name(s) of the assembly(s) that internals should be visible to.
+            </summary>
+            <value>The name(s) of the assembly(s).</value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoSettings.Configuration">
+            <summary>
+            Gets or sets the configuration of the assembly.
+            </summary>
+            <value>The configuration.</value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoSettings.CustomAttributes">
+            <summary>
+            Gets or sets the custom attribute(s) that should be added to the assembly info file.
+            </summary>
+            <value>The namespace(s).</value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoSettings.MetaDataAttributes">
+            <summary>
+            Gets or sets the meta data attribute(s) that should be added to the assembly info file.
+            </summary>
+            <value>The meta data.</value>
+        </member>
+        <member name="T:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoSettingsExtensions">
+            <summary>
+            Contains functionality related to AssemblyInfo settings.
+            </summary>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoSettingsExtensions.AddCustomAttribute(Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoSettings,System.String,System.String,System.String)">
+            <summary>
+            Adds a custom attribute to the AssemblyInfo settings.
+            </summary>
+            <param name="settings">The settings.</param>
+            <param name="name">The name of the custom attribute.</param>
+            <param name="namespace">The namespace for the custom attribute.</param>
+            <param name="value">The value for the attribute.</param>
+            <returns>The same <see cref="T:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoSettings"/> instance so that multiple calls can be chained.</returns>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoSettingsExtensions.AddMetadataAttribute(Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoSettings,System.String,System.String)">
+            <summary>
+            Adds a meta data attribute to the AssemblyInfo settings.
+            </summary>
+            <param name="settings">The settings.</param>
+            <param name="key">The key of the meta data attribute.</param>
+            <param name="value">The value for the attribute.</param>
+            <returns>The same <see cref="T:Cake.MSBuildSolutionParser.Project.Properties.AssemblyInfoSettings"/> instance so that multiple calls can be chained.</returns>
+        </member>
+        <member name="T:Cake.MSBuildSolutionParser.Project.XmlDoc.XmlDocAliases">
+            <summary>
+            Contains functionality related to MSBuild XML document files.
+            </summary>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Project.XmlDoc.XmlDocAliases.XmlDocExampleCode(Cake.Core.ICakeContext)">
+            <summary>
+            An implementation of the <see cref="T:Cake.MSBuildSolutionParser.Project.XmlDoc.XmlDocExampleCodeParser"/> as a CommandBuilder
+            </summary>
+            <param name="context"></param>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Project.XmlDoc.XmlDocAliases.DeserializeXmlDocExampleCode(Cake.Core.ICakeContext,Cake.Core.IO.FilePath)">
+            <summary>
+            Parses Xml documentation example code from given path.
+            </summary>
+            <param name="context">The cake context.</param>
+            <param name="xmlFilePath">The Path to the file to parse.</param>
+            <returns>Parsed example code.</returns>
+            <example>
+            <code>
+            var exampleCodes = context.DeserializeXmlDocExampleCode("./Cake.Common.xml");
+            foreach(var exampleCode in exampleCodes)
+            {
+                Information(
+                    "{0}\r\n{1}",
+                    exampleCode.Name,
+                    exampleCode.Code
+                );
+            }
+            </code>
+            </example>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Project.XmlDoc.XmlDocAliases.DeserializeXmlDocFilesExampleCode(Cake.Core.ICakeContext,Cake.Core.IO.GlobPattern)">
+            <summary>
+            Parses Xml documentation example code from file(s) using given pattern.
+            </summary>
+            <param name="context">The cake context.</param>
+            <param name="pattern">The globber file pattern.</param>
+            <returns>Parsed example code.</returns>
+            <example>
+            <code>
+            var filesExampleCodes =  context.DeserializeXmlDocExampleCode("./Cake.*.xml");
+            foreach(var exampleCode in filesExampleCodes)
+            {
+                Information(
+                    "{0}\r\n{1}",
+                    exampleCode.Name,
+                    exampleCode.Code
+                );
+            }
+            </code>
+            </example>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Project.XmlDoc.XmlDocAliases.SerializeXmlDocExampleCode(Cake.Core.ICakeContext,System.Collections.Generic.IEnumerable{Cake.MSBuildSolutionParser.Project.XmlDoc.XmlDocExampleCode})">
+            <summary>
+            Serializes a XmlDocExampleCode file from xml doc example code information.
+            </summary>
+            <param name="context">The cake context.</param>
+            <param name="xmlDocExampleCodes">The deserializd xml doc example code.</param>
+            <returns>A serializd xml doc example code.</returns>
+        </member>
+        <member name="T:Cake.MSBuildSolutionParser.Project.XmlDoc.XmlDocExampleCode">
+            <summary>
+            Parsed Xml documentation example code.
+            </summary>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.XmlDoc.XmlDocExampleCode.Name">
+            <summary>
+            Gets Example code parent name.
+            </summary>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.XmlDoc.XmlDocExampleCode.Code">
+            <summary>
+            Gets Example code.
+            </summary>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Project.XmlDoc.XmlDocExampleCode.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Cake.MSBuildSolutionParser.Project.XmlDoc.XmlDocExampleCode"/> class.
+            </summary>
+            <param name="name">The name of code parent.</param>
+            <param name="code">The example code.</param>
+        </member>
+        <member name="T:Cake.MSBuildSolutionParser.Project.XmlDoc.XmlDocExampleCodeParser">
+            <summary>
+            The MSBuild Xml documentation example code parser.
+            </summary>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Project.XmlDoc.XmlDocExampleCodeParser.#ctor(Cake.Core.IO.IFileSystem,Cake.Core.IO.IGlobber,Cake.Core.Diagnostics.ICakeLog)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Cake.MSBuildSolutionParser.Project.XmlDoc.XmlDocExampleCodeParser"/> class.
+            </summary>
+            <param name="fileSystem">The file system.</param>
+            <param name="globber">The globber.</param>
+            <param name="log">The log.</param>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Project.XmlDoc.XmlDocExampleCodeParser.Deserialize(Cake.Core.IO.FilePath,System.Int32)">
+            <summary>
+            Deserializes Xml documentation example code from given path.
+            </summary>
+            <param name="xmlFilePath">Path to the file to parse.</param>
+            <param name="index">index of which block to deserialize.</param>
+            <returns>Deserialized Xml documentation example code.</returns>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Project.XmlDoc.XmlDocExampleCodeParser.DeserializeFiles(Cake.Core.IO.GlobPattern)">
+            <summary>
+            Deserialize Xml documentation example code from file(s) using given pattern.
+            </summary>
+            <param name="pattern">The globber file pattern.</param>
+            <returns>Deserialized Xml documentation example code.</returns>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Project.XmlDoc.XmlDocExampleCodeParser.Serialize(System.Collections.Generic.IEnumerable{Cake.MSBuildSolutionParser.Project.XmlDoc.XmlDocExampleCode})">
+            <summary>
+            Serializes Xml documentation example code from given parsed value.
+            </summary>
+            <param name="xmlDocExampleCodes">Deseserialized Xml documentation example code.</param>
+            <returns>Serialized Xml documentation example code.</returns>
+        </member>
+        <member name="T:Cake.MSBuildSolutionParser.Project.ProjectAssemblyReference">
+            <summary>
+            Represents a project assembly reference.
+            </summary>
+            <remarks>
+            Schema from https://msdn.microsoft.com/en-us/library/ms164283.aspx
+            and https://msdn.microsoft.com/en-us/library/bb629388.aspx.
+            </remarks>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.ProjectAssemblyReference.Include">
+            <summary>
+            Gets or sets the reference to include.
+            </summary>
+            <value>
+            The reference to include.
+            </value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.ProjectAssemblyReference.HintPath">
+            <summary>
+            Gets or sets the relative or absolute path of the assembly.
+            </summary>
+            <value>
+            The relative or absolute path of the assembly.
+            </value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.ProjectAssemblyReference.Name">
+            <summary>
+            Gets or sets the display name of the assembly.
+            </summary>
+            <value>
+            The display name of the assembly.
+            </value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.ProjectAssemblyReference.FusionName">
+            <summary>
+            Gets or sets the simple or strong fusion name for the item.
+            </summary>
+            <value>
+            The simple or strong fusion name for the item.
+            </value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.ProjectAssemblyReference.SpecificVersion">
+            <summary>
+            Gets or sets whether only the version in the fusion name should be referenced.
+            </summary>
+            <value>
+            Whether only the version in the fusion name should be referenced.
+            </value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.ProjectAssemblyReference.Aliases">
+            <summary>
+            Gets or sets any aliases for the reference.
+            </summary>
+            <value>
+            Any aliases for the reference.
+            </value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.ProjectAssemblyReference.Private">
+            <summary>
+            Gets or sets whether the reference should be copied to the output folder.
+            </summary>
+            <value>
+            Whether the reference should be copied to the output folder.
+            </value>
+        </member>
+        <member name="T:Cake.MSBuildSolutionParser.Project.ProjectFile">
+            <summary>
+            Represents a MSBuild project file.
+            </summary>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.ProjectFile.FilePath">
+            <summary>
+            Gets or sets the project file path.
+            </summary>
+            <value>The project file path.</value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.ProjectFile.RelativePath">
+            <summary>
+            Gets or sets the relative path to the project file.
+            </summary>
+            <value>
+            The relative path to the project file.
+            </value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.ProjectFile.Compile">
+            <summary>
+            Gets or sets a value indicating whether this <see cref="T:Cake.MSBuildSolutionParser.Project.ProjectFile"/> is compiled.
+            </summary>
+            <value>
+              <c>true</c> if compiled; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="T:Cake.MSBuildSolutionParser.Project.ProjectParser">
+            <summary>
+            The MSBuild project file parser.
+            </summary>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Project.ProjectParser.#ctor(Cake.Core.IO.IFileSystem,Cake.Core.ICakeEnvironment)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Cake.MSBuildSolutionParser.Project.ProjectParser"/> class.
+            </summary>
+            <param name="fileSystem">The file system.</param>
+            <param name="environment">The environment.</param>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Project.ProjectParser.Deserialize(Cake.Core.IO.FilePath,Cake.Core.IO.FilePath)">
+            <summary>
+            Deserializes a project file.
+            </summary>
+            <param name="projectPath">The project path.</param>
+            <param name="solutionPath">The solution path.</param>
+            <returns>The deserialized project.</returns>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Project.ProjectParser.Serialize(Cake.MSBuildSolutionParser.Project.ProjectParserResult,Cake.Core.IO.FilePath,Cake.Core.IO.FilePath)">
+            <summary>
+            Serializes a project file.
+            </summary>
+            <param name="projectParserResult">The deserialized project.</param>
+            <param name="projectPath">The project path.</param>
+            <param name="solutionPath">The solution path.</param>
+            <returns>The serialized project.</returns>
+        </member>
+        <member name="T:Cake.MSBuildSolutionParser.Project.ProjectParserResult">
+            <summary>
+            Represents the content in an MSBuild project file.
+            </summary>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.ProjectParserResult.Configuration">
+            <summary>
+            Gets the build configuration.
+            </summary>
+            <value>The build configuration.</value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.ProjectParserResult.Platform">
+            <summary>
+            Gets the target platform.
+            </summary>
+            <value>The platform.</value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.ProjectParserResult.ProjectGuid">
+            <summary>
+            Gets the unique project identifier.
+            </summary>
+            <value>The unique project identifier.</value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.ProjectParserResult.OutputType">
+            <summary>
+            Gets the compiler output _Type, i.e. <c>Exe/Library</c>.
+            </summary>
+            <value>The output _Type.</value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.ProjectParserResult.OutputPath">
+            <summary>
+            Gets the compiler output path.
+            </summary>
+            <value>The output path.</value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.ProjectParserResult.RootNameSpace">
+            <summary>
+            Gets the default root namespace.
+            </summary>
+            <value>The root namespace.</value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.ProjectParserResult.AssemblyName">
+            <summary>
+            Gets the build target assembly name.
+            </summary>
+            <value>The assembly name.</value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.ProjectParserResult.TargetFrameworkVersion">
+            <summary>
+            Gets the compiler target framework version.
+            </summary>
+            <value>The target framework version.</value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.ProjectParserResult.TargetFrameworkProfile">
+            <summary>
+            Gets the compiler target framework profile.
+            </summary>
+            <value>The target framework profile.</value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.ProjectParserResult.Files">
+            <summary>
+            Gets the project content files.
+            </summary>
+            <value>The files.</value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.ProjectParserResult.References">
+            <summary>
+            Gets the references.
+            </summary>
+            <value>
+            The references.
+            </value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.ProjectParserResult.ProjectReferences">
+            <summary>
+            Gets the references to other projects.
+            </summary>
+            <value>
+            The references.
+            </value>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Project.ProjectParserResult.#ctor(System.String,System.String,System.Guid,System.String,Cake.Core.IO.DirectoryPath,System.String,System.String,System.String,System.String,System.Collections.Generic.IEnumerable{Cake.MSBuildSolutionParser.Project.ProjectFile},System.Collections.Generic.IEnumerable{Cake.MSBuildSolutionParser.Project.ProjectAssemblyReference},System.Collections.Generic.IEnumerable{Cake.MSBuildSolutionParser.Project.ProjectReference})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Cake.MSBuildSolutionParser.Project.ProjectParserResult" /> class.
+            </summary>
+            <param name="configuration">The build configuration.</param>
+            <param name="platform">The target platform.</param>
+            <param name="projectGuid">The unique project identifier.</param>
+            <param name="outputType">The compiler output _Type.</param>
+            <param name="outputPath">The compiler output path.</param>
+            <param name="rootNameSpace">The default root namespace.</param>
+            <param name="assemblyName">Gets the build target assembly name.</param>
+            <param name="targetFrameworkVersion">The compiler framework version.</param>
+            <param name="targetFrameworkProfile">The compiler framework profile.</param>
+            <param name="files">The project content files.</param>
+            <param name="references">The references.</param>
+            <param name="projectReferences">The references to other projects.</param>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Project.ProjectParserResult.#ctor(System.String,System.String,System.String,System.String,Cake.Core.IO.DirectoryPath,System.String,System.String,System.String,System.String,System.Collections.Generic.IEnumerable{Cake.MSBuildSolutionParser.Project.ProjectFile},System.Collections.Generic.IEnumerable{Cake.MSBuildSolutionParser.Project.ProjectAssemblyReference},System.Collections.Generic.IEnumerable{Cake.MSBuildSolutionParser.Project.ProjectReference})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Cake.MSBuildSolutionParser.Project.ProjectParserResult" /> class.
+            </summary>
+            <param name="configuration">The build configuration.</param>
+            <param name="platform">The target platform.</param>
+            <param name="projectGuid">The unique project identifier.</param>
+            <param name="outputType">The compiler output _Type.</param>
+            <param name="outputPath">The compiler output path.</param>
+            <param name="rootNameSpace">The default root namespace.</param>
+            <param name="assemblyName">Gets the build target assembly name.</param>
+            <param name="targetFrameworkVersion">The compiler framework version.</param>
+            <param name="targetFrameworkProfile">The compiler framework profile.</param>
+            <param name="files">The project content files.</param>
+            <param name="references">The references.</param>
+            <param name="projectReferences">The references to other projects.</param>
+        </member>
+        <member name="T:Cake.MSBuildSolutionParser.Project.ProjectReference">
+            <summary>
+            Represents a project reference to another project.
+            </summary>
+            <remarks>
+            Schema from https://msdn.microsoft.com/en-us/library/ms164283.aspx
+            and https://msdn.microsoft.com/en-us/library/bb629388.aspx.
+            </remarks>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.ProjectReference.FilePath">
+            <summary>
+            Gets or sets the path to the referenced project file.
+            </summary>
+            <value>
+            The path to the referenced project file.
+            </value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.ProjectReference.RelativePath">
+            <summary>
+            Gets or sets the relative path to the referenced project file.
+            </summary>
+            <value>
+            The relative path to the referenced project file.
+            </value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.ProjectReference.Name">
+            <summary>
+            Gets or sets the display name of the reference.
+            </summary>
+            <value>
+            The display name of the reference.
+            </value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.ProjectReference.Project">
+            <summary>
+            Gets or sets a GUID for the reference.
+            </summary>
+            <value>
+            A GUID for the reference.
+            </value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.ProjectReference.Package">
+            <summary>
+            Gets or sets the path of the project file that is being referenced.
+            </summary>
+            <value>
+            The path of the project file that is being referenced.
+            </value>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Project.ProjectReference.Private">
+            <summary>
+            Gets or sets whether the reference should be copied to the output folder.
+            </summary>
+            <value>
+            Whether the reference should be copied to the output folder.
+            </value>
+        </member>
+        <member name="T:Cake.MSBuildSolutionParser.Project.ProjectXElement">
+            <summary>
+            MSBuild Project Xml Element XNames.
+            </summary>
+        </member>
+        <member name="F:Cake.MSBuildSolutionParser.Project.ProjectXElement.Project">
+            <summary>
+            Project root element.
+            </summary>
+        </member>
+        <member name="F:Cake.MSBuildSolutionParser.Project.ProjectXElement.ItemGroup">
+            <summary>
+            Item group element.
+            </summary>
+        </member>
+        <member name="F:Cake.MSBuildSolutionParser.Project.ProjectXElement.Reference">
+            <summary>
+            Assembly reference element.
+            </summary>
+        </member>
+        <member name="F:Cake.MSBuildSolutionParser.Project.ProjectXElement.Import">
+            <summary>
+            Namespace import element.
+            </summary>
+        </member>
+        <member name="F:Cake.MSBuildSolutionParser.Project.ProjectXElement.Compile">
+            <summary>
+            Namespace compile element.
+            </summary>
+        </member>
+        <member name="F:Cake.MSBuildSolutionParser.Project.ProjectXElement.PropertyGroup">
+            <summary>
+            Namespace property group element.
+            </summary>
+        </member>
+        <member name="F:Cake.MSBuildSolutionParser.Project.ProjectXElement.RootNamespace">
+            <summary>
+            Namespace root namespace element.
+            </summary>
+        </member>
+        <member name="F:Cake.MSBuildSolutionParser.Project.ProjectXElement.OutputType">
+            <summary>
+            Namespace output _Type element.
+            </summary>
+        </member>
+        <member name="F:Cake.MSBuildSolutionParser.Project.ProjectXElement.OutputPath">
+            <summary>
+            Namespace output path element.
+            </summary>
+        </member>
+        <member name="F:Cake.MSBuildSolutionParser.Project.ProjectXElement.AssemblyName">
+            <summary>
+            Namespace assembly name element.
+            </summary>
+        </member>
+        <member name="F:Cake.MSBuildSolutionParser.Project.ProjectXElement.TargetFrameworkVersion">
+            <summary>
+            Gets the namespace for the target framework version element.
+            </summary>
+        </member>
+        <member name="F:Cake.MSBuildSolutionParser.Project.ProjectXElement.TargetFrameworkProfile">
+            <summary>
+            Gets the namespace for the target framework version element.
+            </summary>
+        </member>
+        <member name="F:Cake.MSBuildSolutionParser.Project.ProjectXElement.Configuration">
+            <summary>
+            Gets the namespace for the configuration element.
+            </summary>
+        </member>
+        <member name="F:Cake.MSBuildSolutionParser.Project.ProjectXElement.Platform">
+            <summary>
+             Gets the namespace for the platform element.
+            </summary>
+        </member>
+        <member name="F:Cake.MSBuildSolutionParser.Project.ProjectXElement.ProjectGuid">
+            <summary>
+            Gets the namespace for the project GUID.
+            </summary>
+        </member>
+        <member name="F:Cake.MSBuildSolutionParser.Project.ProjectXElement.BootstrapperPackage">
+            <summary>
+            Gets the namespace for the bootstrapper package element.
+            </summary>
+        </member>
+        <member name="F:Cake.MSBuildSolutionParser.Project.ProjectXElement.ProjectReference">
+            <summary>
+            Gets the namespace for the project reference element.
+            </summary>
+        </member>
+        <member name="F:Cake.MSBuildSolutionParser.Project.ProjectXElement.Service">
+            <summary>
+            Gets the namespace for the service element.
+            </summary>
+        </member>
+        <member name="F:Cake.MSBuildSolutionParser.Project.ProjectXElement.HintPath">
+            <summary>
+            Gets the namespace for the hint path element.
+            </summary>
+        </member>
+        <member name="F:Cake.MSBuildSolutionParser.Project.ProjectXElement.Name">
+            <summary>
+            Gets the namespace for the name element.
+            </summary>
+        </member>
+        <member name="F:Cake.MSBuildSolutionParser.Project.ProjectXElement.FusionName">
+            <summary>
+            Gets the namespace for the fusion name element.
+            </summary>
+        </member>
+        <member name="F:Cake.MSBuildSolutionParser.Project.ProjectXElement.SpecificVersion">
+            <summary>
+            Gets the namespace for the specific version element.
+            </summary>
+        </member>
+        <member name="F:Cake.MSBuildSolutionParser.Project.ProjectXElement.Aliases">
+            <summary>
+            Gets the namespace for the aliases element.
+            </summary>
+        </member>
+        <member name="F:Cake.MSBuildSolutionParser.Project.ProjectXElement.Private">
+            <summary>
+            Gets the namespace for the private element.
+            </summary>
+        </member>
+        <member name="F:Cake.MSBuildSolutionParser.Project.ProjectXElement.Package">
+            <summary>
+            Gets the namespace for the package element.
+            </summary>
+        </member>
+        <member name="T:Cake.MSBuildSolutionParser.SolutionAliases">
+            <summary>
+            Contains functionality related to MSBuild solution files.
+            </summary>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionAliases.SolutionParser(Cake.Core.ICakeContext)">
+            <summary>
+            An implementation of the <see cref="T:Cake.MSBuildSolutionParser.SolutionParser"/> as a CommandBuilder
+            </summary>
+            <param name="context">The cake context.</param>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionAliases.DeserializeSolution(Cake.Core.ICakeContext,Cake.Core.IO.FilePath)">
+            <summary>
+            Deserializes solution information from a solution file.
+            </summary>
+            <param name="context">The cake context.</param>
+            <param name="solutionPath">The solution path.</param>
+            <returns>A parsed solution.</returns>
+            <example>
+            <code>
+            var solutionPath = "./src/Cake.sln";
+            Information("Parsing {0}", solutionPath);
+            var parsedSolution = ParseSolution(solutionPath);
+            foreach(var project in parsedSolution.Projects)
+            {
+                Information(
+                    @"Solution project file:
+                Name: {0}
+                Path: {1}
+                Id  : {2}
+                Type: {3}",
+                    project.Name,
+                    project.Path,
+                    project.Id,
+                    project.Type
+                );
+            }
+            </code>
+            </example>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionAliases.SerializeSolution(Cake.Core.ICakeContext,Cake.MSBuildSolutionParser.SolutionParserResult,Cake.Core.IO.FilePath)">
+            <summary>
+            Serializes a solution file from solution information.
+            </summary>
+            <param name="context">The cake context.</param>
+            <param name="solutionParserResult">The deserialized solution.</param>
+            <param name="solutionPath">The solution path.</param>
+            <returns>A serialized solution.</returns>
+            <example>
+            <code>
+            var solutionPath = "./src/Cake.sln";
+            Information($"Deserializing {solutionPath}");
+            var deserializeSolution = DeserializeSolution(solutionPath);
+            ...
+            Information($"Serializing {solutionPath}");
+            var serializeSolution = SerializeSolution(parsedSolution, solutionPath);
+            Information($"{nameof(deserializeSolution)} and {nameof(serializeSolution)} are{(deserializeSolution.Equals(serializeSolution) ? "" : " not")} equal.");
+            </code>
+            </example>
+        </member>
+        <member name="T:Cake.MSBuildSolutionParser.Enums.PlatformType">
+            <summary>
+            PlatformTypes are used to specify the operating system and device that a project's executable will run on.
+            </summary>
+        </member>
+        <member name="F:Cake.MSBuildSolutionParser.Enums.PlatformType.AnyCPU">
+            <summary>
+            Designates output that is configured to be able to run on any platform. Your application runs as a 64-bit process whenever possible and falls back to 32-bit when only that mode is available.
+            </summary>
+        </member>
+        <member name="F:Cake.MSBuildSolutionParser.Enums.PlatformType.X86">
+            <summary>
+            Designates a 32-bit Windows operating system that is running on an Intel 80x86 processor or its equivalent.
+            </summary>
+        </member>
+        <member name="F:Cake.MSBuildSolutionParser.Enums.PlatformType.X64">
+            <summary>
+            Designates a 64-bit Windows operating system that is running on an Intel x64 processor or its equivalent.
+            </summary>
+        </member>
+        <member name="F:Cake.MSBuildSolutionParser.Enums.PlatformType.ARM">
+            <summary>
+            Compiles your assembly to run on a computer that has an Advanced RISC Machine (ARM) processor.
+            </summary>
+        </member>
+        <member name="F:Cake.MSBuildSolutionParser.Enums.PlatformType.ARM64">
+            <summary>
+            Compiles your assembly to run on the 64-bit CLR on a computer that has an Advanced RISC Machine (ARM) processor that supports the A64 instruction set.
+            </summary>
+        </member>
+        <member name="F:Cake.MSBuildSolutionParser.Enums.PlatformType.Win32">
+            <summary>
+            A 32-bit Windows platform.
+            </summary>
+        </member>
+        <member name="F:Cake.MSBuildSolutionParser.Enums.PlatformType.Xbox">
+            <summary>
+            Designates the Microsoft Xbox 360 platform.
+            </summary>
+        </member>
+        <member name="F:Cake.MSBuildSolutionParser.Enums.PlatformType.AnyCPU32BitPreferred">
+            <summary>
+            Designates output that runs on any platform. Your application runs in 32-bit mode on systems that support both 64-bit and 32-bit applications.
+            </summary>
+        </member>
+        <member name="T:Cake.MSBuildSolutionParser.Enums.PlatformTypesHelper">
+            <summary>
+            Helpers for the <see cref="T:Cake.MSBuildSolutionParser.Enums.PlatformType"/> enum.
+            </summary>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Enums.PlatformTypesHelper.GetPlatformTypeDescriptor(Cake.MSBuildSolutionParser.Enums.PlatformType)">
+            <summary>
+            Gets the string equivalent to the <see cref="T:Cake.MSBuildSolutionParser.Enums.PlatformType"/> specified.
+            </summary>
+            <param name="platformType">The platform _Type value to get the descriptor of.</param>
+            <returns>The descriptor of the <see cref="T:Cake.MSBuildSolutionParser.Enums.PlatformType"/> or <see langword="null"/> if failed.</returns>
+        </member>
+        <member name="T:Cake.MSBuildSolutionParser.Enums.VisualStudioProjectTypeGuid">
+            <summary>
+            <see href="https://github.com/JamesW75/visual-studio-project-_Type-guid/blob/main/README.md"/>
+            </summary>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Enums.VisualStudioProjectTypeGuidHelper.GetPlatformTypeDescriptor(Cake.MSBuildSolutionParser.Enums.VisualStudioProjectTypeGuid)">
+            <summary>
+            Gets the string equivalent to the <see cref="T:Cake.MSBuildSolutionParser.Enums.VisualStudioProjectTypeGuid"/> specified.
+            </summary>
+            <param name="platformType">The platform _Type value to get the descriptor of.</param>
+            <returns>The descriptor of the <see cref="T:Cake.MSBuildSolutionParser.Enums.VisualStudioProjectTypeGuid"/> or <see langword="null"/> if failed.</returns>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Enums.VisualStudioProjectTypeGuidHelper.GetFromDescriptor(System.String,Cake.MSBuildSolutionParser.Enums.VisualStudioProjectTypeGuid@)">
+            <summary>
+            Gets the value of <see cref="T:Cake.MSBuildSolutionParser.Enums.VisualStudioProjectTypeGuid"/> from the descriptor.
+            </summary>
+            <param name="descriptor">The descriptor of the <see cref="T:Cake.MSBuildSolutionParser.Enums.VisualStudioProjectTypeGuid"/>.</param>
+            <param name="type">Outputs the <see cref="T:Cake.MSBuildSolutionParser.Enums.VisualStudioProjectTypeGuid"/> value of the associated descriptor.</param>
+            <returns><see langword="true"/> if successful; otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="T:Cake.MSBuildSolutionParser.Extensions.CakeExtensions">
+            <summary>
+            Extensions for cake build.
+            </summary>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Extensions.CakeExtensions.MakeRelative(Cake.Core.IO.FilePath,Cake.Core.IO.DirectoryPath)">
+            <summary>
+            Nakes the file path relative to a given parent directory path
+            </summary>
+            <param name="filePath">The given file path.</param>
+            <param name="parent">>The given parent directory path.</param>
+            <returns>A relative file path object.</returns>
+            <exception cref="T:System.InvalidOperationException">Throws if there was a failed attempt to make the file path realtive.</exception>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Extensions.CakeExtensions.MakeRelative(Cake.Core.IO.DirectoryPath,Cake.Core.IO.DirectoryPath)">
+            <summary>
+            Nakes the directory path relative to a given parent directory path
+            </summary>
+            <param name="directoryPath">The given directory path.</param>
+            <param name="parent">The given parent directory path.</param>
+            <returns>A relative directory path object.</returns>
+            <exception cref="T:System.InvalidOperationException">Throws if there was a failed attempt to make the directory path realtive.</exception>
+        </member>
+        <member name="T:Cake.MSBuildSolutionParser.Extensions.DictionaryExtensions">
+            <summary>
+            Extensions fpr <see cref="T:System.Collections.Generic.Dictionary`2"/>.
+            </summary>
+        </member>
+        <member name="T:Cake.MSBuildSolutionParser.Extensions.EnumExtensions">
+            <summary>
+            Extensions fpr <see langword="enum"/>.
+            </summary>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Extensions.EnumExtensions.GetPlatformTypeDescriptor``1(``0)">
+            <summary>
+            Gets the <see cref="T:System.ComponentModel.DescriptionAttribute"/> of an <see langword="enum"/> value specified.
+            </summary>
+            <typeparam name="T">The <see langword="enum"/> to query.</typeparam>
+            <param name="value">The <see langword="enum"/> _Type value to get the <see cref="T:System.ComponentModel.DescriptionAttribute"/> of.</param>
+            <returns>The <see cref="T:System.ComponentModel.DescriptionAttribute"/> of the <see langword="enum"/> or <see langword="null"/> if failed.</returns>
+        </member>
+        <member name="T:Cake.MSBuildSolutionParser.Extensions.ExceptionExtensions">
+            <summary>
+            Extensions fpr <see cref="T:System.Exception"/>.
+            </summary>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Extensions.ExceptionExtensions.ThrowIfGreaterThanOrEqual``1(``0,``0,System.String)">
+            <summary>Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if <paramref name="value"/> is greater than or equal <paramref name="other"/>.</summary>
+            <param name="value">The argument to validate as less than <paramref name="other"/>.</param>
+            <param name="other">The value to compare with <paramref name="value"/>.</param>
+            <param name="paramName">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Extensions.ExceptionExtensions.ThrowIfLessThan``1(``0,``0,System.String)">
+            <summary>Throws an <see cref="T:System.ArgumentOutOfRangeException"/> if <paramref name="value"/> is less than <paramref name="other"/>.</summary>
+            <param name="value">The argument to validate as greater than or equal than <paramref name="other"/>.</param>
+            <param name="other">The value to compare with <paramref name="value"/>.</param>
+            <param name="paramName">The name of the parameter with which <paramref name="value"/> corresponds.</param>
+        </member>
+        <member name="T:Cake.MSBuildSolutionParser.Extensions.ObjectExtensions">
+            <summary>
+            Extensions fpr <see langword="object"/>.
+            </summary>
+        </member>
+        <member name="T:Cake.MSBuildSolutionParser.Extensions.StringBuilderExtensions">
+            <summary>
+            Extensions fpr <see cref="T:System.Text.StringBuilder"/>.
+            </summary>
+        </member>
+        <member name="T:Cake.MSBuildSolutionParser.Extensions.StringExtensions">
+            <summary>
+            Extensions fpr <see langword="string"/>.
+            </summary>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Extensions.StringExtensions.StartsWithAny(System.String,System.String[],System.StringComparison)">
+            <summary>
+            Determines whether the beginning of this <paramref name="string"/> instance matches any specified <paramref name="string"/> in the set when compared using the specified comparison option.
+            </summary>
+            <param name="string">The <see langword="string"/> to compare.</param>
+            <param name="matches">A set of <see langword="string"/>s to compare.</param>
+            <param name="comparison">One of the enumeration values that determines how this string and value are compared.</param>
+            <returns><see langword="true"/> if this instance begins with value; otherwise, <see langword="false"/>.</returns>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Extensions.StringExtensions.StartsWithAny(System.String,System.String[])">
+            <summary>
+            Determines whether the beginning of this <paramref name="string"/> instance matches any specified <paramref name="string"/> in the set.
+            </summary>
+            <param name="string">The <see langword="string"/> to compare.</param>
+            <param name="matches">A set of <see langword="string"/>s to compare.</param>
+            <returns><see langword="true"/> if this instance begins with value; otherwise, <see langword="false"/>.</returns>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Extensions.StringExtensions.ReverseSubstring(System.String,System.Int32,System.Int32)">
+            <summary>
+            Retrieves the inverse of a substring from this instance. The substring starts at a specified character position and has a specified length.
+            </summary>
+            <param name="string">The <see langword="string"/> to substring.</param>
+            <param name="start">The zero-based starting character position of a substring in this instance.</param>
+            <param name="length">The number of characters in the substring.</param>
+            <returns>A <see langword="string"/> that is equivalent to the substring of length length that begins at startIndex in this instance, or <see cref="F:System.String.Empty"/> if startIndex is equal to the length of this instance and length is zero.</returns>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Extensions.StringExtensions.SplitAfter(System.String,System.String,System.StringComparison)">
+            <summary>
+            Splits a <see langword="string"/> into substrings after the provided specified partial <see langword="string"/> when compared using the specified comparison option.
+            </summary>
+            <param name="string">The <see langword="string"/> to split.</param>
+            <param name="match">The <see langword="string"/> to compare.</param>
+            <param name="comparison">One of the enumeration values that determines how this string and value are compared.</param>
+            <returns>An array whose elements contain the substrings from this instance that are delimited by one or more characters in separator. For more information, see the Remarks section.</returns>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Extensions.StringExtensions.SplitAfter(System.String,System.String)">
+            <summary>
+            Splits a <see langword="string"/> into substrings after the provided specified partial <see langword="string"/>.
+            </summary>
+            <param name="string">The <see langword="string"/> to split.</param>
+            <param name="match">The <see langword="string"/> to compare.</param>
+            <returns>An array whose elements contain the substrings from this instance that are delimited by one or more characters in separator. For more information, see the Remarks section.</returns>
+        </member>
+        <member name="T:Cake.MSBuildSolutionParser.Global.GlobalSection">
+            <summary>
+            Global Section for MSBuild Solution
+            </summary>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Global.GlobalSection.SolutionConfigurationPlatforms">
+            <summary>
+            Gets or sets the Configuration/Platform pair collection for the solution configuration.
+            </summary>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Global.GlobalSection.ProjectConfigurationPlatforms">
+            <summary>
+            Gets or sets the Configuration/Platform pair collection for all project configurations.
+            </summary>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Global.GlobalSection.SolutionProperties">
+            <summary>
+            Gets or sets the properties for the solution.
+            </summary>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Global.GlobalSection.NestedProjects">
+            <summary>
+            Gets or sets the nested projects in a solution.
+            </summary>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Global.GlobalSection.ExtensibilityGlobals">
+            <summary>
+            Gets or sets the extensibility globals for the solution.
+            </summary>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Global.GlobalSection.#ctor">
+            <summary>
+            Constructs a new Global Section for the solution.
+            </summary>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Global.GlobalSection.#ctor(Cake.MSBuildSolutionParser.Global.SolutionProperties,Cake.MSBuildSolutionParser.Global.NestedProjects,Cake.MSBuildSolutionParser.Global.ExtensibilityGlobals)">
+            <summary>
+            Constructs a new Global Section for the solution with specific sections.
+            </summary>
+            <param name="solutionProperties">Optional SolutionProperties asignment.</param>
+            <param name="nestedProjects">Optional NestedProjects asignment.</param>
+            <param name="extensibilityGlobals">Optional ExtensibilityGlobals asignment.</param>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Global.GlobalSection.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <inheritdoc />
+        </member>
+        <member name="T:Cake.MSBuildSolutionParser.Global.NestedProjects">
+            <summary>
+            Nested Projects Solution Section.
+            </summary>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Global.NestedProjects.Keys">
+            <inheritdoc />
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Global.NestedProjects.Values">
+            <inheritdoc />
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Global.NestedProjects.Count">
+            <inheritdoc />
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Global.NestedProjects.IsReadOnly">
+            <inheritdoc />
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Global.NestedProjects.Item(System.Guid)">
+            <inheritdoc />
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Global.NestedProjects.Item(System.String)">
+            <inheritdoc cref="P:Cake.MSBuildSolutionParser.Global.NestedProjects.Item(System.Guid)" />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Global.NestedProjects.#ctor">
+            <summary>
+            Constructs new NestedProjects Section.
+            </summary>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Global.NestedProjects.#ctor(System.Boolean)">
+            <summary>
+            Constructs new NestedProjects Section.
+            </summary>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Global.NestedProjects.Equals(Cake.MSBuildSolutionParser.Global.NestedProjects)">
+            <inheritdoc cref="M:Cake.MSBuildSolutionParser.Global.NestedProjects.Equals(System.Object)" />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Global.NestedProjects.Equals(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Global.NestedProjects.GetHashCode">
+            <inheritdoc />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Global.NestedProjects.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <inheritdoc />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Global.NestedProjects.GetEnumerator">
+            <inheritdoc />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Global.NestedProjects.System#Collections#IEnumerable#GetEnumerator">
+            <inheritdoc />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Global.NestedProjects.Add(System.Guid,System.Guid)">
+            <inheritdoc />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Global.NestedProjects.Add(System.String,System.String)">
+            <inheritdoc cref="M:Cake.MSBuildSolutionParser.Global.NestedProjects.Add(System.Guid,System.Guid)" />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Global.NestedProjects.Add(System.Guid,System.String)">
+            <inheritdoc cref="M:Cake.MSBuildSolutionParser.Global.NestedProjects.Add(System.Guid,System.Guid)" />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Global.NestedProjects.Add(System.String,System.Guid)">
+            <inheritdoc cref="M:Cake.MSBuildSolutionParser.Global.NestedProjects.Add(System.Guid,System.Guid)" />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Global.NestedProjects.TryAdd(System.Guid,System.Guid)">
+            <inheritdoc cref="M:Cake.MSBuildSolutionParser.Global.NestedProjects.TryAdd(System.Guid,System.Guid)" />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Global.NestedProjects.TryAdd(System.String,System.String)">
+            <inheritdoc cref="M:Cake.MSBuildSolutionParser.Global.NestedProjects.TryAdd(System.Guid,System.Guid)" />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Global.NestedProjects.TryAdd(System.Guid,System.String)">
+            <inheritdoc cref="M:Cake.MSBuildSolutionParser.Global.NestedProjects.TryAdd(System.Guid,System.Guid)" />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Global.NestedProjects.TryAdd(System.String,System.Guid)">
+            <inheritdoc cref="M:Cake.MSBuildSolutionParser.Global.NestedProjects.TryAdd(System.Guid,System.Guid)" />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Global.NestedProjects.ContainsKey(System.Guid)">
+            <inheritdoc />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Global.NestedProjects.ContainsKey(System.String)">
+            <inheritdoc cref="M:Cake.MSBuildSolutionParser.Global.NestedProjects.ContainsKey(System.Guid)" />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Global.NestedProjects.Remove(System.Guid)">
+            <inheritdoc />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Global.NestedProjects.Remove(System.String)">
+            <inheritdoc cref="M:Cake.MSBuildSolutionParser.Global.NestedProjects.Remove(System.Guid)" />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Global.NestedProjects.Remove(System.Guid,System.Guid@)">
+            <inheritdoc cref="M:Cake.MSBuildSolutionParser.Global.NestedProjects.Remove(System.Guid,System.Guid@)" />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Global.NestedProjects.Remove(System.String,System.String@)">
+            <inheritdoc cref="M:Cake.MSBuildSolutionParser.Global.NestedProjects.Remove(System.Guid,System.Guid@)" />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Global.NestedProjects.Remove(System.Guid,System.String@)">
+            <inheritdoc cref="M:Cake.MSBuildSolutionParser.Global.NestedProjects.Remove(System.Guid,System.Guid@)" />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Global.NestedProjects.Remove(System.String,System.Guid@)">
+            <inheritdoc cref="M:Cake.MSBuildSolutionParser.Global.NestedProjects.Remove(System.Guid,System.Guid@)" />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Global.NestedProjects.TryGetValue(System.Guid,System.Guid@)">
+            <inheritdoc cref="M:Cake.MSBuildSolutionParser.Global.NestedProjects.TryGetValue(System.Guid,System.Guid@)" />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Global.NestedProjects.TryGetValue(System.String,System.String@)">
+            <inheritdoc cref="M:Cake.MSBuildSolutionParser.Global.NestedProjects.TryGetValue(System.Guid,System.Guid@)" />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Global.NestedProjects.TryGetValue(System.Guid,System.String@)">
+            <inheritdoc cref="M:Cake.MSBuildSolutionParser.Global.NestedProjects.TryGetValue(System.Guid,System.Guid@)" />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Global.NestedProjects.TryGetValue(System.String,System.Guid@)">
+            <inheritdoc cref="M:Cake.MSBuildSolutionParser.Global.NestedProjects.TryGetValue(System.Guid,System.Guid@)" />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Global.NestedProjects.Clear">
+            <inheritdoc cref="M:Cake.MSBuildSolutionParser.Global.NestedProjects.Clear" />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Global.NestedProjects.Contains(System.Collections.Generic.KeyValuePair{System.Guid,System.Guid})">
+            <inheritdoc />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Global.NestedProjects.Add(System.Collections.Generic.KeyValuePair{System.Guid,System.Guid})">
+            <inheritdoc />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Global.NestedProjects.CopyTo(System.Collections.Generic.KeyValuePair{System.Guid,System.Guid}[],System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Global.NestedProjects.Remove(System.Collections.Generic.KeyValuePair{System.Guid,System.Guid})">
+            <inheritdoc />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Global.NestedProjects.RemoveAt(System.Int32)">
+            <inheritdoc cref="M:Cake.MSBuildSolutionParser.Global.NestedProjects.RemoveAt(System.Int32)" />
+        </member>
+        <member name="T:Cake.MSBuildSolutionParser.SolutionFolder">
+            <summary>
+            Represents a folder in a MSBuild solution.
+            </summary>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.SolutionFolder.Projects">
+            <summary>
+            Gets child projects of this folder.
+            </summary>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.SolutionFolder.Items">
+            <summary>
+            Gets child items of this folder.
+            </summary>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.SolutionFolder.Type">
+            <inheritdoc cref="P:Cake.MSBuildSolutionParser.SolutionProject.Type"/>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionFolder.#ctor(System.String,System.String,Cake.Core.IO.FilePath)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Cake.MSBuildSolutionParser.SolutionFolder"/> class.
+            </summary>
+            <param name="id">The folder project identity.</param>
+            <param name="name">The folder name.</param>
+            <param name="path">The folder path.</param>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionFolder.#ctor(System.Guid,System.String,Cake.Core.IO.FilePath)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Cake.MSBuildSolutionParser.SolutionFolder"/> class.
+            </summary>
+            <param name="id">The folder project identity.</param>
+            <param name="name">The folder name.</param>
+            <param name="path">The folder path.</param>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionFolder.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <inheritdoc />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionFolder.AddSolutionItem(Cake.Core.IO.FilePath)">
+            <summary>
+            Adds a file item to the solution folder.
+            </summary>
+            <param name="filePath">The path to the solution item.</param>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionFolder.AddSolutionProject(Cake.MSBuildSolutionParser.SolutionProject)">
+            <summary>
+            Adds a project to the solution folder.
+            </summary>
+            <param name="solutionProject">The instance of the solution project.</param>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionFolder.Equals(Cake.MSBuildSolutionParser.SolutionFolder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionFolder.Equals(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionFolder.GetHashCode">
+            <inheritdoc />
+        </member>
+        <member name="T:Cake.MSBuildSolutionParser.SolutionItemCollection">
+            <summary>
+            A collection of solution file items.
+            </summary>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.SolutionItemCollection.Count">
+            <inheritdoc />
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.SolutionItemCollection.IsReadOnly">
+            <inheritdoc />
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.SolutionItemCollection.Item(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionItemCollection.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Cake.MSBuildSolutionParser.SolutionItemCollection"/> class.
+            </summary>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionItemCollection.#ctor(System.Collections.Generic.IEnumerable{Cake.Core.IO.FilePath})">
+            <inheritdoc cref="M:Cake.MSBuildSolutionParser.SolutionItemCollection.#ctor" />
+            <param name="items">The _items in the project's solution folder.</param>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionItemCollection.Equals(Cake.MSBuildSolutionParser.SolutionItemCollection)">
+            <inheritdoc />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionItemCollection.Equals(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionItemCollection.GetHashCode">
+            <inheritdoc />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionItemCollection.GetEnumerator">
+            <inheritdoc />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionItemCollection.System#Collections#IEnumerable#GetEnumerator">
+            <inheritdoc />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionItemCollection.Add(Cake.Core.IO.FilePath)">
+            <inheritdoc />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionItemCollection.Clear">
+            <inheritdoc />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionItemCollection.Contains(Cake.Core.IO.FilePath)">
+            <inheritdoc />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionItemCollection.CopyTo(Cake.Core.IO.FilePath[],System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionItemCollection.Remove(Cake.Core.IO.FilePath)">
+            <inheritdoc />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionItemCollection.IndexOf(Cake.Core.IO.FilePath)">
+            <inheritdoc />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionItemCollection.Insert(System.Int32,Cake.Core.IO.FilePath)">
+            <inheritdoc />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionItemCollection.RemoveAt(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="T:Cake.MSBuildSolutionParser.SolutionParser">
+            <summary>
+            The MSBuild solution file parser.
+            </summary>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionParser.#ctor(Cake.Core.IO.IFileSystem,Cake.Core.ICakeEnvironment)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Cake.MSBuildSolutionParser.SolutionParser"/> class.
+            </summary>
+            <param name="fileSystem">The file system.</param>
+            <param name="environment">The environment.</param>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionParser.Deserialize(Cake.Core.IO.FilePath)">
+            <summary>
+            Deserializes a MSBuild solution into a <see cref="T:Cake.MSBuildSolutionParser.SolutionParserResult"/>.
+            </summary>
+            <param name="solutionPath">The solution path.</param>
+            <returns>A parsed solution.</returns>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionParser.Serialize(Cake.MSBuildSolutionParser.SolutionParserResult,Cake.Core.IO.FilePath)">
+            <summary>
+            Deserialize a <see cref="T:Cake.MSBuildSolutionParser.SolutionParserResult"/> into a MSBuild solution as a string.
+            </summary>
+            <param name="solutionParserResult">The <see cref="T:Cake.MSBuildSolutionParser.SolutionParserResult"/>.</param>
+            <param name="solutionPath">The solution path.</param>
+            <returns>The contents of what a solution file should be.</returns>
+        </member>
+        <member name="T:Cake.MSBuildSolutionParser.SolutionParserResult">
+            <summary>
+            Represents the content in an MSBuild solution file.
+            </summary>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.SolutionParserResult.Version">
+            <summary>
+            Gets the file format version.
+            </summary>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.SolutionParserResult.VisualStudioVersion">
+            <summary>
+            Gets the version of Visual Studio that created the file.
+            </summary>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.SolutionParserResult.MinimumVisualStudioVersion">
+            <summary>
+            Gets the minimum supported version of Visual Studio.
+            </summary>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.SolutionParserResult.Projects">
+            <summary>
+            Gets all solution projects.
+            </summary>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.SolutionParserResult.GlobalSection">
+            <summary>
+            Gets all solution projects.
+            </summary>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionParserResult.#ctor(System.String,System.String,System.String,Cake.MSBuildSolutionParser.SolutionProjectCollection,Cake.MSBuildSolutionParser.Global.GlobalSection)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Cake.MSBuildSolutionParser.SolutionParserResult"/> class.
+            </summary>
+            <param name="version">The file format version.</param>
+            <param name="visualStudioVersion">The version of Visual Studio that created the file.</param>
+            <param name="minimumVisualStudioVersion">The minimum supported version of Visual Studio.</param>
+            <param name="projects">The solution projects.</param>
+            <param name="globalSection">The solution global section.</param>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionParserResult.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <inheritdoc />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionParserResult.AddProject(Cake.MSBuildSolutionParser.SolutionProject)">
+            <summary>
+            Adds a project ton the Solution filling out all fields required.
+            </summary>
+            <param name="solutionProject">The new solution project to add.</param>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionParserResult.NestProjectIn(Cake.MSBuildSolutionParser.SolutionProject,Cake.MSBuildSolutionParser.SolutionFolder)">
+            <summary>
+            Nests the supplied project into a solution folder project.
+            </summary>
+            <param name="projectItem">The project to nest in a solution folder.</param>
+            <param name="hiddenItems">The folder to nest the solution project in.</param>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionParserResult.NestProjectsIn(System.Collections.Generic.ICollection{Cake.MSBuildSolutionParser.SolutionProject},Cake.MSBuildSolutionParser.SolutionFolder)">
+            <summary>
+            Nests the supplied list of projects into a solution folder project.
+            </summary>
+            <param name="projectItems">A list of projects to nest in a solution folder.</param>
+            <param name="hiddenItems">The folder to nest the solution projects in.</param>
+        </member>
+        <member name="T:Cake.MSBuildSolutionParser.SolutionProject">
+            <summary>
+            Represents a project in a MSBuild solution.
+            </summary>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.SolutionProject.Id">
+            <summary>
+            Gets or sets the project identity.
+            </summary>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.SolutionProject.Name">
+            <summary>
+            Gets or sets the project name.
+            </summary>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.SolutionProject.Path">
+            <summary>
+            Gets or sets the project path.
+            </summary>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.SolutionProject.Type">
+            <summary>
+            Gets or sets the project _Type identity.
+            </summary>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.SolutionProject.Parent">
+            <summary>
+            Gets the parent project if any, otherwise null.
+            </summary>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionProject.#ctor(System.String,System.String,Cake.Core.IO.FilePath,Cake.MSBuildSolutionParser.Enums.VisualStudioProjectTypeGuid)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Cake.MSBuildSolutionParser.SolutionProject"/> class.
+            </summary>
+            <param name="id">The project identity.</param>
+            <param name="name">The project name.</param>
+            <param name="path">The project path.</param>
+            <param name="type">The project's msbuild type identity.</param>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionProject.#ctor(System.Guid,System.String,Cake.Core.IO.FilePath,Cake.MSBuildSolutionParser.Enums.VisualStudioProjectTypeGuid)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Cake.MSBuildSolutionParser.SolutionProject"/> class.
+            </summary>
+            <param name="id">The project identity.</param>
+            <param name="name">The project name.</param>
+            <param name="path">The project path.</param>
+            <param name="type">The project _Type identity.</param>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionProject.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <inheritdoc cref="M:System.Runtime.Serialization.ISerializable.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)" />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionProject.LooseEquals(Cake.MSBuildSolutionParser.SolutionProject)">
+            <inheritdoc cref="M:Cake.MSBuildSolutionParser.SolutionProject.Equals(Cake.MSBuildSolutionParser.SolutionProject)" />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionProject.Equals(Cake.MSBuildSolutionParser.SolutionProject)">
+            <inheritdoc />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionProject.Equals(System.Object)">
+            <inheritdoc cref="M:System.Object.Equals(System.Object)" />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionProject.GetHashCode">
+            <inheritdoc cref="M:Cake.MSBuildSolutionParser.SolutionProject.GetHashCode" />
+        </member>
+        <member name="T:Cake.MSBuildSolutionParser.SolutionProjectCollection">
+            <summary>
+            A collection of solution project items.
+            </summary>
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.SolutionProjectCollection.Count">
+            <inheritdoc />
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.SolutionProjectCollection.IsReadOnly">
+            <inheritdoc />
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.SolutionProjectCollection.Item(System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionProjectCollection.Add(Cake.MSBuildSolutionParser.SolutionProject)">
+            <inheritdoc />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionProjectCollection.Clear">
+            <inheritdoc />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionProjectCollection.Contains(Cake.MSBuildSolutionParser.SolutionProject)">
+            <inheritdoc />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionProjectCollection.CopyTo(Cake.MSBuildSolutionParser.SolutionProject[],System.Int32)">
+            <inheritdoc />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionProjectCollection.GetEnumerator">
+            <inheritdoc />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionProjectCollection.System#Collections#IEnumerable#GetEnumerator">
+            <inheritdoc />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionProjectCollection.IndexOf(Cake.MSBuildSolutionParser.SolutionProject)">
+            <inheritdoc />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionProjectCollection.Insert(System.Int32,Cake.MSBuildSolutionParser.SolutionProject)">
+            <inheritdoc />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionProjectCollection.Remove(Cake.MSBuildSolutionParser.SolutionProject)">
+            <inheritdoc />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionProjectCollection.RemoveAt(System.Int32)">
+            <inheritdoc cref="M:System.Collections.Generic.IList`1.RemoveAt(System.Int32)" />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionProjectCollection.Equals(Cake.MSBuildSolutionParser.SolutionProjectCollection)">
+            <summary>
+            Determines whether the specified instance of <see cref="T:Cake.MSBuildSolutionParser.SolutionProjectCollection"/> is equal to the current <see cref="T:Cake.MSBuildSolutionParser.SolutionProjectCollection"/>.
+            </summary>
+            <param name="other">The <see cref="T:Cake.MSBuildSolutionParser.SolutionProjectCollection"/> to compare to the current <see cref="T:Cake.MSBuildSolutionParser.SolutionProjectCollection"/>.</param>
+            <returns><see langword="true"/> if the specified <see cref="T:Cake.MSBuildSolutionParser.SolutionProjectCollection"/> is equal to the current <see cref="T:Cake.MSBuildSolutionParser.SolutionProjectCollection"/>; otherwise <see langword="false"/></returns>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionProjectCollection.Equals(System.Object)">
+            <inheritdoc />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.SolutionProjectCollection.GetHashCode">
+            <inheritdoc />
+        </member>
+        <member name="P:Cake.MSBuildSolutionParser.Utils.IndentStringBuilder.Length">
+             <summary>
+            
+             </summary>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Utils.IndentStringBuilder.#ctor(System.Char,System.Int32)">
+             <summary>
+            
+             </summary>
+             <param name="char"></param>
+             <param name="size"></param>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Utils.IndentStringBuilder.Indent(System.Int32,System.Nullable{System.Char},System.Nullable{System.Int32})">
+             <summary>
+            
+             </summary>
+             <param name="number"></param>
+             <param name="char"></param>
+             <param name="size"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Utils.IndentStringBuilder.Unindent(System.Int32)">
+             <summary>
+            
+             </summary>
+             <param name="number"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Utils.IndentStringBuilder.Append(System.Char)">
+            <inheritdoc cref="M:System.Text.StringBuilder.Append(System.Char)" />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Utils.IndentStringBuilder.Append(System.String)">
+            <inheritdoc cref="M:System.Text.StringBuilder.Append(System.String)" />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Utils.IndentStringBuilder.Append(System.Int32)">
+            <inheritdoc cref="M:System.Text.StringBuilder.Append(System.Int32)" />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Utils.IndentStringBuilder.Append(System.Object)">
+            <inheritdoc cref="M:System.Text.StringBuilder.Append(System.Object)" />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Utils.IndentStringBuilder.AppendLine">
+            <inheritdoc cref="M:System.Text.StringBuilder.AppendLine" />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Utils.IndentStringBuilder.AppendLine(System.String)">
+            <inheritdoc cref="M:System.Text.StringBuilder.AppendLine(System.String)" />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Utils.IndentStringBuilder.ToString">
+            <inheritdoc cref="M:System.Text.StringBuilder.ToString" />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Utils.IndentStringBuilder.ToString(System.Int32,System.Int32)">
+            <inheritdoc cref="M:System.Text.StringBuilder.ToString(System.Int32,System.Int32)" />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Utils.IndentStringBuilder.Equals(Cake.MSBuildSolutionParser.Utils.IndentStringBuilder)">
+             <summary>
+            
+             </summary>
+             <param name="other"></param>
+             <returns></returns>
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Utils.IndentStringBuilder.Equals(System.Text.StringBuilder)">
+            <inheritdoc cref="M:System.Text.StringBuilder.Equals(System.Text.StringBuilder)" />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Utils.IndentStringBuilder.Equals(System.Object)">
+            <inheritdoc cref="M:System.Object.Equals(System.Object)" />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Utils.IndentStringBuilder.GetHashCode">
+            <inheritdoc />
+        </member>
+        <member name="M:Cake.MSBuildSolutionParser.Utils.PathGetter.DriveRegex">
+            <remarks>
+            Pattern:<br/>
+            <code>^[A-Z]:\\\\</code><br/>
+            Explanation:<br/>
+            <code>
+            ○ Match if at the beginning of the string.<br/>
+            ○ Match a character in the set [A-Z].<br/>
+            ○ Match the string ":\\".<br/>
+            </code>
+            </remarks>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.DriveRegex_0">
+            <summary>Custom <see cref="T:System.Text.RegularExpressions.Regex"/>-derived type for the DriveRegex method.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.DriveRegex_0.Instance">
+            <summary>Cached, thread-safe singleton instance.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.DriveRegex_0.#ctor">
+            <summary>Initializes the instance.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.DriveRegex_0.RunnerFactory">
+            <summary>Provides a factory for creating <see cref="T:System.Text.RegularExpressions.RegexRunner"/> instances to be used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.DriveRegex_0.RunnerFactory.CreateInstance">
+            <summary>Creates an instance of a <see cref="T:System.Text.RegularExpressions.RegexRunner"/> used by methods on <see cref="T:System.Text.RegularExpressions.Regex"/>.</summary>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.DriveRegex_0.RunnerFactory.Runner">
+            <summary>Provides the runner that contains the custom logic implementing the specified regular expression.</summary>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.DriveRegex_0.RunnerFactory.Runner.Scan(System.ReadOnlySpan{System.Char})">
+            <summary>Scan the <paramref name="inputSpan"/> starting from base.runtextstart for the next match.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.DriveRegex_0.RunnerFactory.Runner.TryFindNextPossibleStartingPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Search <paramref name="inputSpan"/> starting from base.runtextpos for the next location a match could possibly start.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if a possible match was found; false if no more matches are possible.</returns>
+        </member>
+        <member name="M:System.Text.RegularExpressions.Generated.DriveRegex_0.RunnerFactory.Runner.TryMatchAtCurrentPosition(System.ReadOnlySpan{System.Char})">
+            <summary>Determine whether <paramref name="inputSpan"/> at base.runtextpos is a match for the regular expression.</summary>
+            <param name="inputSpan">The text being scanned by the regular expression.</param>
+            <returns>true if the regular expression matches at the current position; otherwise, false.</returns>
+        </member>
+        <member name="T:System.Text.RegularExpressions.Generated.Utilities">
+            <summary>Helper methods used by generated <see cref="T:System.Text.RegularExpressions.Regex"/>-derived implementations.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_defaultTimeout">
+            <summary>Default timeout value set in <see cref="T:System.AppContext"/>, or <see cref="F:System.Text.RegularExpressions.Regex.InfiniteMatchTimeout"/> if none was set.</summary>
+        </member>
+        <member name="F:System.Text.RegularExpressions.Generated.Utilities.s_hasTimeout">
+            <summary>Whether <see cref="F:System.Text.RegularExpressions.Generated.Utilities.s_defaultTimeout"/> is non-infinite.</summary>
+        </member>
+    </members>
+</doc>

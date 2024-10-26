@@ -1,10 +1,9 @@
 ﻿#nullable enable
 using System;
 using System.Diagnostics;
-using CoreLib.Commands;
-
 using Unity.Entities;
 using Unity.Mathematics;
+using CoreLib.Commands;
 
 namespace NekoBoiNick.CoreKeeper.Common.Util {
   public static class Extensions {
@@ -34,6 +33,7 @@ namespace NekoBoiNick.CoreKeeper.Common.Util {
         return input;
       }
 
+      // ReSharper disable once InvertIf
       if (!input.StartsWith('\'') && input.EndsWith('\'')) {
         failedCommand = new CommandOutput("No matching \' found at index: 0");
         return input;
@@ -43,16 +43,16 @@ namespace NekoBoiNick.CoreKeeper.Common.Util {
     }
 
     public static string GetFullyQualifiedExceptionMessage(this Exception exception, string? message = null) {
-      string output = '[' + exception.GetType().Name + ']';
+      string output = $"[{exception.GetType().Name}]";
 
       if (message is not null) {
-        output += message + '\n';
+        output += $"{message}\n";
       }
 
-      output += exception.Message + '\n';
+      output += $"{exception.Message}\n";
 
       if (exception.HelpLink is not null) {
-        output += "Get help from: " + exception.HelpLink;
+        output += $"Get help from: {exception.HelpLink}";
       }
 
       if (exception.StackTrace is not null) {
@@ -63,9 +63,10 @@ namespace NekoBoiNick.CoreKeeper.Common.Util {
     }
 
     public static string PrintExceptionLike(this StackTrace? stackTrace, string message, Type? exceptionType = null) {
-      return '[' + (exceptionType ?? typeof(Exception)).Name + ']' + message + '\n' + (stackTrace?.ToString() ?? "null StackTrace");
+      return $"[{(exceptionType ?? typeof(Exception)).Name}]{message}\n{stackTrace?.ToString() ?? "null StackTrace"}";
     }
 
+    // ReSharper disable once MemberCanBePrivate.Global
     public static bool Equals(this float3 @value, float3? other) {
       if (other is null) {
         return false;
@@ -84,6 +85,7 @@ namespace NekoBoiNick.CoreKeeper.Common.Util {
       return false;
     }
 
+    // ReSharper disable once MemberCanBePrivate.Global
     public static bool Equals(this float2 @value, float2? other) {
       if (other is null) {
         return false;

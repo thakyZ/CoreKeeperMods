@@ -54,7 +54,7 @@ namespace MoreCommands.Data.Configuration {
     public string? Comment { get; set; }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="JsonCommentAttribute"/> class with the specified comment.
+    /// Initializes a new _instance of the <see cref="JsonCommentAttribute"/> class with the specified comment.
     /// </summary>
     /// <param name="comment">Text contents of the comment.</param>
     public JsonCommentAttribute(string comment) {

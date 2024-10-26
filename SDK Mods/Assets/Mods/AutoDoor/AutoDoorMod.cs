@@ -1,7 +1,4 @@
 ﻿#nullable enable
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using PugMod;
 using Unity.Collections;
@@ -63,7 +60,7 @@ namespace Lever.AutoDoors
         {
             if (Manager.main.player == null)
             {
-              return;
+                return;
             }
 
             const double DistanceToTriggerLocal = 0.95;
@@ -80,18 +77,7 @@ namespace Lever.AutoDoors
                 {
                     if (ghostInstance.ghostType < 0)
                     {
-                      return;
-                    }
-
-                    Debug.Log("objectData.objectID         = " + objectData.objectID);
-                    Debug.Log("entity                      = " + entity);
-                    Debug.Log("entity (FixedString)        = " + entity.ToFixedString());
-                    Debug.Log("ghostInstance               = " + ghostInstance);
-                    try {
-                        Debug.Log("ghostInstance (FixedString) = " + ghostInstance.ToFixedString());
-                    } catch (Exception exception) {
-                      Debug.Log("ghostInstance (FixedString) = !EXCEPTION!");
-                      Debug.Log('[' + exception.GetType().Name + "] " + exception.Message + '\n' + (exception.HelpLink is not null ? "Get Help From: " + exception.HelpLink + '\n' : "") + (exception.StackTrace ?? ""));
+                        return;
                     }
 
                     var distance = math.distancesq(translation.Position, playerPosition);
@@ -131,6 +117,8 @@ namespace Lever.AutoDoors
     [UpdateInGroup(typeof(PredictedSimulationSystemGroup))]
     public partial class DoorGateStateChecker : PugSimulationSystemBase
     {
+        private static string MOD_NAME => AutoDoorMod.MOD_NAME;
+
         internal static void SetOpen(ref ObjectDataCD objectData, bool open)
         {
             // if we should open the door
@@ -172,6 +160,10 @@ namespace Lever.AutoDoors
                 .WithAll<PredictedGhost, Simulate, DoorCD>()
                 .ForEach((ref ObjectDataCD objectData, in LocalTransform translation) =>
                 {
+                    if (objectData.objectID.ToString().Equals("ElectricalDoor")) {
+                        return;
+                    }
+
                     var anyPlayerNearby = false;
                     foreach (var playerPos in playerPositions)
                     {
@@ -184,7 +176,7 @@ namespace Lever.AutoDoors
 
                         anyPlayerNearby = true;
                         //break;
-                        Debug.Log($"Gate/Door ({objectData.objectID}) distance to player is {distance} and variation is {objectData.variation}");
+                        Debug.Log($"[{MOD_NAME}] Gate/Door ({objectData.objectID}) distance to player is {distance} and variation is {objectData.variation}");
                     }
 
                     SetOpen(ref objectData, anyPlayerNearby);
