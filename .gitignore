@@ -558,31 +558,53 @@ FodyWeavers.xsd
 
 # Custom rules (everything added below won't be overridden by 'Generate .gitignore File' if you use 'Update' option)
 
-**/DTAR_*_DTAR
+### Scripts Ignores ###
+
+# Ignore paths in Cake Build Scripts project
+Scripts/ref/*
+!Scripts/ref/.gitkeep
+Scripts/Properties
+
+### Assets Ignores ###
+
+# Initial unignore of all meta files in assets
 !SDK Mods/Assets/**/*.meta
-SDK Mods/Assets/Plugins/**/*.dll.meta
-!SDK Mods/Assets/Plugins/NGTools/**/*.dll.meta
+
+# Ignore various folder and files in the Unity project.
+SDK Mods/Assets/Fonts
+SDK Mods/DTAR_*_DTAR
+SDK Mods/Assets/Mods/**/Libraries/*
+SDK Mods/Assets/Plugins/CoreKeeper/*.dll*
 SDK Mods/Assets/Unity/*/
 SDK Mods/Library/*
-!SDK Mods/Library/PackageCache/.editorconfig
-/SDK Mods/Packages/*
-!/SDK Mods/Packages/CoreLib/*
-!/SDK Mods/Packages/*.json
-!/SDK Mods/Packages/.editorconfig
-!/SDK Mods/ProjectSettings/*.meta
+SDK Mods/Packages/*
 SDK Mods/UserSettings/
-**/CoreKeeperModSDK/**/*.dll
-**/CoreKeeperModSDK/**/*.dll.meta
+SDK Mods/.vsconfig
+
+# Unignore various critical folders and files in the Unity project.
+!SDK Mods/Assets/Mods/**/Libraries/.gitkeep
+!SDK Mods/Assets/Plugins/CoreKeeper/.gitkeep
+!SDK Mods/Assets/Plugins/*.dll
+!SDK Mods/Assets/Plugins/*.dll.meta
+!SDK Mods/Assets/Plugins/CoreKeeperModSDK/**/*.dll
+!SDK Mods/Assets/Plugins/CoreKeeperModSDK/**/*.dll.meta
+!SDK Mods/Assets/Plugins/NGTools/**/*.dll.meta
+!SDK Mods/Library/PackageCache/.editorconfig
+!SDK Mods/Packages/CoreLib/*
+!SDK Mods/Packages/*.json
+!SDK Mods/Packages/.editorconfig
+!SDK Mods/ProjectSettings/*.meta
+
+# Recursively ignore any build or temp folders.
 **/bin/*
 **/obj/*
 **/[Tt]emp/
 **/[Tt]mp/
-todo.txt
-ideas.txt
-todo.txt.meta
-.mypy_cache
-/SDK Mods/Assets/Plugins/CoreKeeper/*
-!/SDK Mods/Assets/Plugins/CoreKeeper/.gitkeep
-/SDK Mods/Assets/Mods/**/Libraries/*
-!/SDK Mods/Assets/Mods/**/Libraries/.gitkeep
+
+# Ignore any cache folders
+.mypy_cache/
+*[Cc]ache/
+
+# Ignore misc unneeded metadata files.
+*.txt.meta
 *.pdf.meta
