@@ -62,8 +62,8 @@ namespace ECSExtension.Panels
             ApplyFilter(true);
         }
 
-        [SuppressMessage("ReSharper", "ForCanBeConvertedToForeach")]
-        [SuppressMessage("ReSharper", "LoopCanBeConvertedToQuery")]
+        // ReSharper disable once ForCanBeConvertedToForeach
+        // ReSharper disable once LoopCanBeConvertedToQuery
         private void ApplyFilter(bool refresh)
         {
             if (string.IsNullOrEmpty(currentFilter))

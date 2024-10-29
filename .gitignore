@@ -595,6 +595,8 @@ SDK Mods/.vsconfig
 !SDK Mods/Packages/.editorconfig
 !SDK Mods/ProjectSettings/*.meta
 
+### Other Ignores ###
+
 # Recursively ignore any build or temp folders.
 **/bin/*
 **/obj/*
@@ -604,6 +606,9 @@ SDK Mods/.vsconfig
 # Ignore any cache folders
 .mypy_cache/
 *[Cc]ache/
+
+# Unignore ECS Cache Folder
+!**/ECS/Cache/
 
 # Ignore misc unneeded metadata files.
 *.txt.meta

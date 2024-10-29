@@ -152,16 +152,3 @@ MonoBehaviour:
     - path: Libraries/Tomlet.dll
     dependencies: []
   modPath: Assets\Mods\UnityExplorer
-  forceReimport: 0
-  buildBundles: 0
-  buildLinux: 0
-  buildBurst: 0
-  cachedBuild: 0
-  assets:
-  - path: Assets/Mods/UnityExplorer/Scripts/UnityExplorer.sln
-    hash: B265A4864E8E87DEC2CB08E6E028C6AA892121046D7BCC71BFC65823E9142DCD
-  - path: Assets/Mods/UnityExplorer/UnityExplorer.asset
-    hash: 647F35FEF65E7D778E74FCFCE11D200C077BEDA50660482C543661275638CC36
-  - path: Assets/Mods/UnityExplorer/UnityExplorer_modio.asset
-    hash: B65A61C40AC6CC97FAE9D12462F7E4BD1F02FFCE9E7648FD839FA02EC206A20A
-  lastBuildLinux: 0
