@@ -1,0 +1,18 @@
+#nullable enable
+using System.Text.Json;
+using MoreCommands.Data.Converter;
+
+// ReSharper disable once CheckNamespace
+namespace MoreCommands.Data {
+  public static class JsonBase {
+    public static JsonSerializerOptions JsonSerializerOptions => new JsonSerializerOptions {
+      ReadCommentHandling = JsonCommentHandling.Skip,
+      AllowTrailingCommas = true,
+      MaxDepth = 1000,
+      Converters = {
+        new Vector3JsonConverter(),
+        new Vector2JsonConverter(),
+      },
+    };
+  }
+}

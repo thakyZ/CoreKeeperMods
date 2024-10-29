@@ -19,23 +19,38 @@ MonoBehaviour:
     disableScripts: 0
     accessesExtraAssemblies: 1
     disableHarmonyPatching: 0
-    requiredOn: 0
+    requiredOn: 3
     files:
     - path: Scripts/Util/Logger.cs
     - path: Scripts/Util/Extensions.cs
-    - path: Scripts/Systems/HomeListSystem.cs
-    - path: Scripts/Systems/DeathSystem.cs
+    - path: Scripts/Systems/HomeList/HomeListWorldEntry.cs
+    - path: Scripts/Systems/HomeList/HomeListSystemOnEepy.cs
+    - path: Scripts/Systems/HomeList/HomeListSystemExtensions.cs
+    - path: Scripts/Systems/HomeList/HomeListSystem.cs
+    - path: Scripts/Systems/HomeList/HomeListPlayerEntry.cs
+    - path: Scripts/Systems/HomeList/HomeListEntry.cs
+    - path: Scripts/Systems/Death/DeathWorldEntry.cs
+    - path: Scripts/Systems/Death/DeathSystemOnDeath.cs
+    - path: Scripts/Systems/Death/DeathSystemExtensions.cs
+    - path: Scripts/Systems/Death/DeathSystem.cs
+    - path: Scripts/Systems/Death/DeathPlayerEntry.cs
+    - path: Scripts/Systems/Death/DeathEntry.cs
     - path: Scripts/Patches/Death_Patch.cs
     - path: Scripts/MoreCommandsMod.cs
     - path: Scripts/Data/JsonBase.cs
-    - path: Scripts/Data/Converter/Float3JsonConverter.cs
-    - path: Scripts/Data/Converter/Float2JsonConverter.cs
+    - path: Scripts/Data/Converter/Vector3JsonConverter.cs
+    - path: Scripts/Data/Converter/Vector2JsonConverter.cs
     - path: Scripts/Data/Configuration/JsonConfigFile.cs
     - path: Scripts/Data/Configuration/JsonCommentConverter.cs
     - path: Scripts/Data/Configuration/IConfiguration.cs
     - path: Scripts/Data/Configuration/Configuration.cs
     - path: Scripts/Commands/HomeCommand.cs
+    - path: Scripts/Commands/DebugCommand.cs
     - path: Scripts/Commands/BackCommand.cs
+    - path: Scripts/Generated/DeathSystemOnDeath__System_14973360260.g.cs
+    - path: Scripts/Generated/HomeListSystemOnEepy__System_12067552530.g.cs
+    - path: Bundles/MoreCommands_Windows.assetbundle
+    - path: Bundles/MoreCommands_Linux.assetbundle
     dependencies:
     - modName: CoreLib
       required: 1

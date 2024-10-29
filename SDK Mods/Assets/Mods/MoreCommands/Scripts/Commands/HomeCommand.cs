@@ -1,0 +1,107 @@
+﻿#nullable enable
+using System.Linq;
+using Unity.Entities;
+using CoreLib.Commands;
+using CoreLib.Commands.Communication;
+using NekoBoiNick.CoreKeeper.Common.Util;
+
+// ReSharper disable once CheckNamespace
+namespace MoreCommands.Chat.Commands {
+  // ReSharper disable once UnusedType.Global
+  public class HomeCommand : IServerCommandHandler {
+    public CommandOutput Execute(string[] parameters, Entity sender) {
+      var playerEntity = sender.GetPlayerEntity();
+      if (parameters.Length < 1) {
+        return GetDescription();
+      }
+
+      var allParameters = string.Join(" ", parameters).TrimQuotes(out CommandOutput? failedCommand);
+      if (failedCommand.HasValue) {
+        return failedCommand.Value;
+      }
+
+      if (int.TryParse(allParameters, out var houseIndex)) {
+        return GoToHome(playerEntity, houseIndex);
+      }
+
+      if (parameters[0] == "list") {
+        if (parameters.Length < 2) {
+          return ListHomes(playerEntity);
+        }
+
+        allParameters = string.Join(" ", parameters.Skip(1)).TrimQuotes(out failedCommand);
+        if (failedCommand.HasValue) {
+          return failedCommand.Value;
+        }
+
+        if (string.IsNullOrEmpty(allParameters)) {
+          return new CommandOutput("Player specified is blank.", CommandStatus.Error);
+        }
+
+        return ListHomes(playerEntity, allParameters);
+      }
+
+      if (parameters[0] != "set" || parameters.Length < 2) {
+        return GoToHome(playerEntity, allParameters);
+      }
+
+      allParameters = string.Join(" ", parameters.Skip(1)).TrimQuotes(out failedCommand);
+      if (failedCommand.HasValue) {
+        return failedCommand.Value;
+      }
+
+      if (allParameters.IsNullOrEmptyOrWhiteSpace() || allParameters.StartsWith("list") ||
+          allParameters.StartsWith("set") || !int.TryParse(allParameters, out _)) {
+        return new CommandOutput("Label specified is invalid.", CommandStatus.Error);
+      }
+
+      return SetHome(playerEntity, allParameters);
+    }
+
+    public string GetDescription() {
+      return "Use /home to manage homes. " + '\n' + "/home {number} Teleport to home with index supplied " + '\n' +
+             "/home {label} Teleport to home with label " + '\n' + "/home set {label} Set home point with label " +
+             '\n' + "  Note: the label of a home cannot start with these words: list, set, or only contain numbers " +
+             '\n' + "/home list Get all homes that are saved to your character " + '\n' + "" + '\n' +
+             "Admin Commands:" + '\n' + "/home list {player} Get list of homes of a player by name ";
+    }
+
+    public string[] GetTriggerNames() {
+      return new[] { "home" };
+    }
+
+    // ReSharper disable once MemberCanBeMadeStatic.Local
+    private CommandOutput SetHome(Entity sender, string label) {
+      return "Soup";
+    }
+
+    // ReSharper disable once MemberCanBeMadeStatic.Local
+    private CommandOutput ListHomes(Entity sender, string playerName) {
+      if (!sender.IsAdmin()) {
+        return new CommandOutput("No privileges for this command.", CommandStatus.Error);
+      }
+
+      PlayerController? findPlayer = CoreLib.Util.Players.GetAllPlayers().First(x => x.playerName == playerName);
+      if (findPlayer == null) {
+        return new CommandOutput("Player not found.", CommandStatus.Error);
+      }
+
+      return "Soup";
+    }
+
+    // ReSharper disable once MemberCanBeMadeStatic.Local
+    private CommandOutput ListHomes(Entity sender) {
+      return "Soup";
+    }
+
+    // ReSharper disable once MemberCanBeMadeStatic.Local
+    private CommandOutput GoToHome(Entity playerEntity, int houseIndex) {
+      return "Soup";
+    }
+
+    // ReSharper disable once MemberCanBeMadeStatic.Local
+    private CommandOutput GoToHome(Entity playerEntity, string houseLabel) {
+      return "Soup";
+    }
+  }
+}
